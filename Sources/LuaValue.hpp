@@ -182,8 +182,19 @@ namespace Diluculum
           */
          bool operator> (const LuaValue& rhs) const;
 
-         // LuaValue operator[] (const LuaValue& key) { return LuaValue(); } // shortcut for table-like access...
-
+         // TODO: A shortcut for table-like access:
+         //       LuaValue& operator[] (const LuaValue& key) { return ...; }
+         // TODO: Notice the reference return value above. Is this supported by
+         //       'boost::any'? If not, will have to use a more traditional
+         //       design ('union' anyone?)
+         // TODO: 'operator==()' for all supported types:
+         //       if (myLuaValue == "blá")
+         //          ...;
+         //       (perhaps also do this for '<', '>' and '!=')
+         // TODO: Replace those 'lua_Number's with 'double's and add explicit
+         //       support for 'int's and friends. This makes the typical use
+         //       much more natural. I don't think I'll ever compile Lua to use
+         //       integers instead of floating point numbers...
       private:
          /// Stores the value (and the type) stored in this \c LuaValue.
          boost::any value_;
