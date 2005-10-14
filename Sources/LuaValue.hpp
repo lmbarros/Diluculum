@@ -206,7 +206,8 @@ namespace Diluculum
    const LuaValue Nil;
 
    /// A constant with value of an empty table.
-   const LuaValue EmptyTable (LuaValueMap());
+   const LuaValueMap EmptyLuaValueMap;
+   const LuaValue EmptyTable (EmptyLuaValueMap);
 
 } // namespace Diluculum
 

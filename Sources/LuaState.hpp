@@ -15,6 +15,7 @@ extern "C"
 #  include <lauxlib.h>
 }
 #include <string>
+#include <vector>
 #include <boost/filesystem/path.hpp>
 #include "LuaValue.hpp"
 
@@ -108,10 +109,29 @@ namespace Diluculum
 
 
 
+   /** A type representing the return value of a Lua function call. The
+    *  <i>i</i>-th element in the \c vector is the <i>i</i> return value.
+    */
+   typedef std::vector<LuaValue> LuaRetVal;
+
+
+
    /// \c LuaState: The Next Generation. A pleasant way to use a Lua state.
    class LuaState
    {
       public:
+         /** Constructs a \c LuaState.
+          *  @param loadStdLib If \c true (the default), makes all
+          *         the Lua standard libraries available.
+          *  @throw LuaError If something goes wrong.
+          */
+         explicit LuaState (bool loadStdLib = true);
+
+         /** Destructs a \c LuaState. This calls \c lua_close()
+          *  on the underlying \c lua_State*.
+          */
+         virtual ~LuaState();
+
 //       /** Executes (or, more precisely, interprets) the contents of the give
 //        *  file.
 //        *  @param fileName The file to be executed. This can be either a Lua
@@ -119,21 +139,31 @@ namespace Diluculum
 //        *  @throw LuaError This method may throw a \c LuaError or any of its more
 //        *         specific subclasses.
 //        */
-         LuaValue doFile (const boost::filesystem::path& fileName); // <--- returns just one value. perhaps create a 'doFileMultiRet()' someday
+         LuaValue doFile (const boost::filesystem::path& fileName); // <--- returns just one value. perhaps create a 'doFileMultRet()' someday
 
-         /** Executes (or, more precisely, interprets) the contents of the give
-          *  string.
-          *  @param what The string to execute.
-          *  @throw LuaError This method may throw a \c LuaError or any of its more
-          *         specific subclasses.
-          *  @todo The function \c lua_dostring(), used in the implementation is
-          *        deprecated. Better avoid to use it.
-          */
-         LuaValue doString (const std::string& what); // <--- returns just one value. perhaps create a 'doStringMultiRet()' someday
+//          /** Executes (or, more precisely, interprets) the contents of the give
+//           *  string.
+//           *  @param what The string to execute.
+//           *  @throw LuaError This method may throw a \c LuaError or any of its more
+//           *         specific subclasses.
+//           *  @todo The function \c lua_dostring(), used in the implementation is
+//           *        deprecated. Better avoid to use it.
+//           */
+         LuaValue doString (const std::string& what); // <--- returns just one value. perhaps create a 'doStringMultRet()' someday
+
+         // interprets the string and returns all the returned values.
+         LuaRetVal doStringMultRet (const std::string& what);
 
       private:
          /// The underlying \c lua_State*.
          lua_State* state_;
+
+         /** Converts and returns the element at index \c index on the stack to
+          *  a \c LuaValue. This keeps the Lua stack untouched. Oh, yes, and it
+          *  accepts both positive and negative indices, just like the standard
+          *  functions on the Lua C API.
+          */
+         LuaValue toLuaValue (int index);
 
          /** Throws an exception if the number passed as parameter corresponds
           *  to an error code from a function from the Lua API.  The exception
@@ -150,9 +180,7 @@ namespace Diluculum
           *  @throw LuaRunTimeError If <tt>retCode == LUA_ERRRUN</tt>.
           *  @throw LuaSyntaxError If <tt>retCode == LUA_ERRSYNTAX</tt>.
           *  @throw LuaMemoryError If <tt>retCode == LUA_ERRMEM</tt>.
-          *  @throw LuaError If \c retCode is not a recognized Lua error code
-          *         (but if the code is compiled without defining \c NDEBUG, the
-          *         function will \c assert() instead of <tt>throw</tt>ing).  // <--- throw always!
+          *  @throw LuaError If \c retCode is not a recognized Lua error code.
           */
          void throwOnLuaError (int retCode);
    };
