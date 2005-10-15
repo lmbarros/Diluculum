@@ -140,8 +140,8 @@ namespace Diluculum
          bool operator> (const LuaValue& rhs) const;
 
          /** "Equal" operator for <tt>LuaValue</tt>s.
-          *  @return The rules for determining who is greater than who are
-          *          similar to the ones described in \c operator<.
+          *  @return \c true if <tt>*this</tt> and \c rhs have the same value.
+          *          \c false otherwise.
           *  @todo A much more efficient implementation can be done.
           */
          bool operator== (const LuaValue& rhs) const
