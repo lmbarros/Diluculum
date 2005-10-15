@@ -17,7 +17,6 @@ namespace Diluculum
    {
       state_ = lua_open();
       if (state_ == 0)
-         // Can't use a localized message, since localization depends on Lua...
          throw LuaError ("Error opening Lua state.");
 
       if (loadStdLib)
