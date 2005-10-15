@@ -20,6 +20,24 @@ namespace Diluculum
 
 
 
+   // - LuaValue::type ---------------------------------------------------------
+   int LuaValue::type() const
+   {
+      if (value_.type() == typeid(void))
+         return LUA_TNIL;
+      else if (value_.type() == typeid (bool))
+         return LUA_TBOOLEAN;
+      else if (value_.type() == typeid (lua_Number))
+         return LUA_TNUMBER;
+      else if (value_.type() == typeid (std::string))
+         return LUA_TSTRING;
+      else if (value_.type() == typeid (LuaValueMap))
+         return LUA_TTABLE;
+      else
+         return LUA_TNONE;
+   }
+
+
    // - LuaValue::typeName -----------------------------------------------------
    std::string LuaValue::typeName() const
    {

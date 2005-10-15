@@ -114,6 +114,11 @@ namespace Diluculum
             : value_(t)
          { }
 
+         /** Returns one of the <tt>LUA_T*</tt> constants from <tt>lua.h</tt>,
+          *  representing the type stored in this \c LuaValue.
+          */
+         int type() const;
+
          /** Returns the type of this \c LuaValue as a string, just like the Lua
           *  built-in function \c type().
           *  @return One of the following strings: <tt>"nil"</tt>,

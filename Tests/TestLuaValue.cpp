@@ -8,6 +8,30 @@
 #include "LuaValue.hpp"
 
 
+// - TestLuaValueType ----------------------------------------------------------
+void TestLuaValueType()
+{
+   using namespace Diluculum;
+
+   LuaValue aNilValue;
+   BOOST_CHECK (aNilValue.type() == LUA_TNIL);
+
+   LuaValue aNumberValue (1.0);
+   BOOST_CHECK (aNumberValue.type() == LUA_TNUMBER);
+
+   LuaValue aStringValue ("Foo");
+   BOOST_CHECK (aStringValue.type() == LUA_TSTRING);
+
+   LuaValue aBooleanValue (true);
+   BOOST_CHECK (aBooleanValue.type() == LUA_TBOOLEAN);
+
+   LuaValueMap aLuaValueMap;
+   LuaValue aTableValue (aLuaValueMap);
+   BOOST_CHECK (aTableValue.type() == LUA_TTABLE);
+}
+
+
+
 // - TestLuaValueTypeName ------------------------------------------------------
 void TestLuaValueTypeName()
 {
@@ -224,6 +248,7 @@ using boost::unit_test_framework::test_suite;
 test_suite* init_unit_test_suite (int, char*[])
 {
    test_suite* test = BOOST_TEST_SUITE ("'LuaValue' tests");
+   test->add (BOOST_TEST_CASE (&TestLuaValueType));
    test->add (BOOST_TEST_CASE (&TestLuaValueTypeName));
    test->add (BOOST_TEST_CASE (&TestLuaValueAsSomethingFunctions));
    test->add (BOOST_TEST_CASE (&TestLuaValueOrderOperators));
