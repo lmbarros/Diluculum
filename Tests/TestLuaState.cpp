@@ -32,27 +32,27 @@ void TestLuaStateDoStringMultiRet()
    BOOST_CHECK (nestedTables.size() == 1);
 
    // Check the returned data; first the easy cases...
-   BOOST_CHECK (one[0].asNumber() == 1.0);
+   BOOST_CHECK (one[0] == 1);
 
-   BOOST_CHECK (oneTwo[0].asNumber() == 1.0);
-   BOOST_CHECK (oneTwo[1].asNumber() == 2.0);
+   BOOST_CHECK (oneTwo[0] == 1);
+   BOOST_CHECK (oneTwo[1] == 2);
 
-   BOOST_CHECK (oneTwoThree[0].asNumber() == 1.0);
-   BOOST_CHECK (oneTwoThree[1].asNumber() == 2.0);
-   BOOST_CHECK (oneTwoThree[2].asString() == "three");
+   BOOST_CHECK (oneTwoThree[0] == 1);
+   BOOST_CHECK (oneTwoThree[1] == 2);
+   BOOST_CHECK (oneTwoThree[2] == "three");
 
-   BOOST_CHECK (oneTwoThreeFalse[0].asNumber() == 1.0);
-   BOOST_CHECK (oneTwoThreeFalse[1].asNumber() == 2.0);
-   BOOST_CHECK (oneTwoThreeFalse[2].asString() == "three");
-   BOOST_CHECK (oneTwoThreeFalse[3].asBoolean() == false);
+   BOOST_CHECK (oneTwoThreeFalse[0] == 1);
+   BOOST_CHECK (oneTwoThreeFalse[1] == 2);
+   BOOST_CHECK (oneTwoThreeFalse[2] == "three");
+   BOOST_CHECK (oneTwoThreeFalse[3] == false);
 
    // ...and now that more complicated table
-   BOOST_CHECK (nestedTables[0].asTable()[1.0].asString() == "one");
-   BOOST_CHECK (nestedTables[0].asTable()[2.0].asNumber() == 2);
-   BOOST_CHECK (nestedTables[0].asTable()[3.0].asTable()[1.0].asString() == "one");
-   BOOST_CHECK (nestedTables[0].asTable()[3.0].asTable()["two"].asNumber() == 2);
-   BOOST_CHECK (nestedTables[0].asTable()[3.0].asTable()[true].asString() == "foo");
-   BOOST_CHECK (nestedTables[0].asTable()[4.0].asBoolean() == false);
+   BOOST_CHECK (nestedTables[0][1] == "one");
+   BOOST_CHECK (nestedTables[0][2] == 2);
+   BOOST_CHECK (nestedTables[0][3][1.0].asString() == "one");
+   BOOST_CHECK (nestedTables[0][3]["two"].asNumber() == 2);
+   BOOST_CHECK (nestedTables[0][3][true].asString() == "foo");
+   BOOST_CHECK (nestedTables[0][4] == false);
 }
 
 
