@@ -44,8 +44,38 @@ namespace Diluculum
          { }
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (lua_Number n)
-            : value_(n)
+         LuaValue (double n)
+            : value_(static_cast<lua_Number>(n))
+         { }
+
+         /// Constructs a \c LuaValue with number type and \c n value.
+         LuaValue (float n)
+            : value_(static_cast<lua_Number>(n))
+         { }
+
+         /// Constructs a \c LuaValue with number type and \c n value.
+         LuaValue (long double n)
+            : value_(static_cast<lua_Number>(n))
+         { }
+
+         /// Constructs a \c LuaValue with number type and \c n value.
+         LuaValue (int n)
+            : value_(static_cast<lua_Number>(n))
+         { }
+
+         /// Constructs a \c LuaValue with number type and \c n value.
+         LuaValue (unsigned n)
+            : value_(static_cast<lua_Number>(n))
+         { }
+
+         /// Constructs a \c LuaValue with number type and \c n value.
+         LuaValue (unsigned long n)
+            : value_(static_cast<lua_Number>(n))
+         { }
+
+         /// Constructs a \c LuaValue with number type and \c n value.
+         LuaValue (long n)
+            : value_(static_cast<lua_Number>(n))
          { }
 
          /// Constructs a \c LuaValue with string type and \c s value.
@@ -147,6 +177,13 @@ namespace Diluculum
          bool operator== (const LuaValue& rhs) const
          { return !(*this > rhs) && !(*this < rhs); }
 
+         /** "Different" operator for <tt>LuaValue</tt>s.
+          *  @return \c true if <tt>*this</tt> and \c rhs don't have the same
+          *          value. \c false otherwise.
+          */
+         bool operator!= (const LuaValue& rhs) const
+         { return !(*this == rhs); }
+
          /** Returns a reference to a field of this \c LuaValue (assuming it is
           *  a table). If there is no value associated with the key passed as
           *  parameter, inserts a new value (\c nil) and returns a reference to
@@ -163,15 +200,7 @@ namespace Diluculum
           */
          const LuaValue& operator[] (const LuaValue& key) const;
 
-         // TODO: Replace those 'lua_Number's with 'double's and add explicit
-         //       support for 'int's and friends. This makes the typical use
-         //       much more natural. I don't think I'll ever compile Lua to use
-         //       integers instead of floating point numbers...
-         // TODO: After doing the previous TODO, change the tests in
-         //       'TestLuaStateDoStringMultiRet()' to use integer indices, not
-         //       those ugly floats. (Should I really do this?)
       private:
-
          /// Almost dummy class; simply represents the type of \c nil.
          class NilType { };
 

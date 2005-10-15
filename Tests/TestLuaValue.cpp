@@ -16,8 +16,17 @@ void TestLuaValueType()
    LuaValue aNilValue;
    BOOST_CHECK (aNilValue.type() == LUA_TNIL);
 
-   LuaValue aNumberValue (1.0);
-   BOOST_CHECK (aNumberValue.type() == LUA_TNUMBER);
+   LuaValue aNumberValue1 (1.0);
+   BOOST_CHECK (aNumberValue1.type() == LUA_TNUMBER);
+
+   LuaValue aNumberValue2 (1.0f);
+   BOOST_CHECK (aNumberValue2.type() == LUA_TNUMBER);
+
+   LuaValue aNumberValue3 (1);
+   BOOST_CHECK (aNumberValue3.type() == LUA_TNUMBER);
+
+   LuaValue aNumberValue4 (1UL);
+   BOOST_CHECK (aNumberValue4.type() == LUA_TNUMBER);
 
    LuaValue aStringValue ("Foo");
    BOOST_CHECK (aStringValue.type() == LUA_TSTRING);
@@ -40,8 +49,17 @@ void TestLuaValueTypeName()
    LuaValue aNilValue;
    BOOST_CHECK (aNilValue.typeName() == "nil");
 
-   LuaValue aNumberValue (1.0);
-   BOOST_CHECK (aNumberValue.typeName() == "number");
+   LuaValue aNumberValue1 (1.0);
+   BOOST_CHECK (aNumberValue1.typeName() == "number");
+
+   LuaValue aNumberValue2 (1.0f);
+   BOOST_CHECK (aNumberValue2.typeName() == "number");
+
+   LuaValue aNumberValue3 (1);
+   BOOST_CHECK (aNumberValue3.typeName() == "number");
+
+   LuaValue aNumberValue4 (1U);
+   BOOST_CHECK (aNumberValue4.typeName() == "number");
 
    LuaValue aStringValue ("Foo");
    BOOST_CHECK (aStringValue.typeName() == "string");
@@ -74,6 +92,7 @@ void TestLuaValueAsSomethingFunctions()
    lvm["Foo"] = false;
    lvm[2.3] = 4.3;
    lvm[5.4] = static_cast<lua_Number>(4);
+   lvm[171] = "Hey!";
    lvm[false] = Nil;
    lvm[true] = std::string("Ahhhh!");
    LuaValue tableValue (lvm);
@@ -89,6 +108,7 @@ void TestLuaValueAsSomethingFunctions()
    BOOST_CHECK (tableValue.asTable()["Foo"].asBoolean() == false);
    BOOST_CHECK (tableValue.asTable()[2.3].asNumber() == 4.3);
    BOOST_CHECK (tableValue.asTable()[5.4].asNumber() == 4);
+   BOOST_CHECK (tableValue.asTable()[171].asString() == "Hey!");
    BOOST_CHECK (tableValue.asTable()[true].asString() == "Ahhhh!");
 
    // Ensure that we get the proper exception when doing the Wrong Thing
@@ -117,15 +137,15 @@ void TestLuaValueAsSomethingFunctions()
 
 
 
-// - TestLuaValueOrderOperators ------------------------------------------------
-void TestLuaValueOrderOperators()
+// - TestLuaValueRelationalOperators -------------------------------------------
+void TestLuaValueRelationalOperators()
 {
    using namespace Diluculum;
 
    LuaValue aNilValue;
    LuaValue anotherNilValue;
    LuaValue aNumberValue1 (1.0);
-   LuaValue aNumberValue2 (2.0);
+   LuaValue aNumberValue2 (2);
    LuaValue aStringValueFoo ("Foo");
    LuaValue aStringValueBar ("Bar");
    LuaValue aBooleanValue (true);
@@ -145,6 +165,9 @@ void TestLuaValueOrderOperators()
    BOOST_CHECK (aBooleanValue < aTableValue);
    BOOST_CHECK (aNumberValue1 < aNumberValue2);
    BOOST_CHECK (aStringValueBar < aStringValueFoo);
+   BOOST_CHECK (aNumberValue1 < 1.01);
+   BOOST_CHECK (aNumberValue2 < 2.5L);
+   BOOST_CHECK (aStringValueFoo < "Zzz");
 
    // ! operator>
    BOOST_CHECK (!(aBooleanValue > aNilValue));
@@ -158,8 +181,11 @@ void TestLuaValueOrderOperators()
    BOOST_CHECK (!(aNumberValue2 > aNumberValue2));
    BOOST_CHECK (!(aBooleanValue > anotherBooleanValue));
    BOOST_CHECK (!(aTableValue > aTableValue));
-   BOOST_CHECK (!(aNumberValue2 < aNumberValue1));
-   BOOST_CHECK (!(aStringValueFoo < aStringValueBar));
+   BOOST_CHECK (!(aNumberValue1 > aNumberValue2));
+   BOOST_CHECK (!(aStringValueBar > aStringValueFoo));
+   BOOST_CHECK (!(aNumberValue1 > 1.01));
+   BOOST_CHECK (!(aNumberValue2 > 2.5L));
+   BOOST_CHECK (!(aStringValueFoo > "Zzz"));
 
    // operator>
    BOOST_CHECK (aNilValue > aBooleanValue);
@@ -172,6 +198,9 @@ void TestLuaValueOrderOperators()
    BOOST_CHECK (aTableValue > aBooleanValue);
    BOOST_CHECK (aNumberValue2 > aNumberValue1);
    BOOST_CHECK (aStringValueFoo > aStringValueBar);
+   BOOST_CHECK (aNumberValue1 > -10);
+   BOOST_CHECK (aNumberValue2 > 1e-10f);
+   BOOST_CHECK (aStringValueFoo > "");
 
    // ! operator<
    BOOST_CHECK (!(aNilValue < aBooleanValue));
@@ -187,6 +216,33 @@ void TestLuaValueOrderOperators()
    BOOST_CHECK (!(aTableValue < aTableValue));
    BOOST_CHECK (!(aNumberValue2 < aNumberValue1));
    BOOST_CHECK (!(aStringValueFoo < aStringValueBar));
+   BOOST_CHECK (!(aNumberValue1 < -10));
+   BOOST_CHECK (!(aNumberValue2 < 1e-10f));
+   BOOST_CHECK (!(aStringValueFoo < ""));
+
+   // operator==
+   BOOST_CHECK (aNumberValue1 == 1);
+   BOOST_CHECK (aNumberValue1 == 1.0f);
+   BOOST_CHECK (aNumberValue1 == 1.0);
+   BOOST_CHECK (aNumberValue1 == 1.0L);
+   BOOST_CHECK (aNumberValue1 == 1U);
+   BOOST_CHECK (aNumberValue1 == 1L);
+   BOOST_CHECK (aNumberValue1 == 1UL);
+   BOOST_CHECK (aStringValueFoo == "Foo");
+   BOOST_CHECK (aStringValueFoo == std::string("Foo"));
+   BOOST_CHECK (aBooleanValue == true);
+
+   // ! operator!=
+   BOOST_CHECK (!(aNumberValue1 != 1));
+   BOOST_CHECK (!(aNumberValue1 != 1.0f));
+   BOOST_CHECK (!(aNumberValue1 != 1.0));
+   BOOST_CHECK (!(aNumberValue1 != 1.0L));
+   BOOST_CHECK (!(aNumberValue1 != 1U));
+   BOOST_CHECK (!(aNumberValue1 != 1L));
+   BOOST_CHECK (!(aNumberValue1 != 1UL));
+   BOOST_CHECK (!(aStringValueFoo != "Foo"));
+   BOOST_CHECK (!(aStringValueFoo != std::string("Foo")));
+   BOOST_CHECK (!(aBooleanValue != true));
 
    // some tests with more complex tables
    LuaValueMap lvmEmpty;
@@ -259,6 +315,7 @@ void TestLuaValueSubscriptOperator()
 
    LuaValueMap lvm;
    lvm[4.0] = 6.5;
+   lvm[555u] = "FiveFiveFive";
    lvm["nested"] = nestedLMV;
    lvm[true] = false;
 
@@ -266,6 +323,7 @@ void TestLuaValueSubscriptOperator()
 
    // Simple data access
    BOOST_CHECK (tableValue[4.0] == 6.5);
+   BOOST_CHECK (tableValue[555] == "FiveFiveFive");
    BOOST_CHECK (tableValue["nested"]["foo"] == "bar");
    BOOST_CHECK (tableValue["nested"][true] == 123.45);
    BOOST_CHECK (tableValue["nested"][2.0] == false);
@@ -317,6 +375,7 @@ void TestLuaValueConstSubscriptOperator()
    lvm[4.0] = 6.5;
    lvm["nested"] = nestedLMV;
    lvm[true] = false;
+   lvm[123L] = 456;
 
    const LuaValue tableValue (lvm);
 
@@ -326,6 +385,7 @@ void TestLuaValueConstSubscriptOperator()
    BOOST_CHECK (tableValue["nested"][true] == 123.45);
    BOOST_CHECK (tableValue["nested"][2.0] == false);
    BOOST_CHECK (tableValue[true] == false);
+   BOOST_CHECK (tableValue[123] == 456);
 
    // Then, ensure that exceptions are thrown when accessing an invalid key
    BOOST_CHECK_THROW (tableValue["dummy"], NoSuchKeyError);
@@ -357,7 +417,7 @@ test_suite* init_unit_test_suite (int, char*[])
    test->add (BOOST_TEST_CASE (&TestLuaValueType));
    test->add (BOOST_TEST_CASE (&TestLuaValueTypeName));
    test->add (BOOST_TEST_CASE (&TestLuaValueAsSomethingFunctions));
-   test->add (BOOST_TEST_CASE (&TestLuaValueOrderOperators));
+   test->add (BOOST_TEST_CASE (&TestLuaValueRelationalOperators));
    test->add (BOOST_TEST_CASE (&TestLuaValueSubscriptOperator));
    test->add (BOOST_TEST_CASE (&TestLuaValueConstSubscriptOperator));
 
