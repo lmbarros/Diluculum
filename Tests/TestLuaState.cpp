@@ -21,14 +21,18 @@ void TestLuaStateDoStringMultiRet()
    const LuaRetVal oneTwoThree = ls.doStringMultRet ("return a, a+1, 'three'");
    const LuaRetVal oneTwoThreeFalse = ls.doStringMultRet(
       "return a, a+a, 'three', a == 10");
+   const LuaRetVal nestedTables = ls.doStringMultRet(
+      "return { 'one', 2, { [1] = 'one', two = 2, [true] = 'foo' }, false }");
+
 
    // Check the size of the returned data
    BOOST_CHECK (nothing.size() == 0);
    BOOST_CHECK (one.size() == 1);
    BOOST_CHECK (oneTwo.size() == 2);
    BOOST_CHECK (oneTwoThree.size() == 3);
+   BOOST_CHECK (nestedTables.size() == 1);
 
-   // Check the returned data
+   // Check the returned data; first the easy cases...
    BOOST_CHECK (one[0].asNumber() == 1.0);
 
    BOOST_CHECK (oneTwo[0].asNumber() == 1.0);
@@ -42,6 +46,14 @@ void TestLuaStateDoStringMultiRet()
    BOOST_CHECK (oneTwoThreeFalse[1].asNumber() == 2.0);
    BOOST_CHECK (oneTwoThreeFalse[2].asString() == "three");
    BOOST_CHECK (oneTwoThreeFalse[3].asBoolean() == false);
+
+   // ...and now that more complicated table
+   BOOST_CHECK (nestedTables[0].asTable()[1.0].asString() == "one");
+   BOOST_CHECK (nestedTables[0].asTable()[2.0].asNumber() == 2);
+   BOOST_CHECK (nestedTables[0].asTable()[3.0].asTable()[1.0].asString() == "one");
+   BOOST_CHECK (nestedTables[0].asTable()[3.0].asTable()["two"].asNumber() == 2);
+   BOOST_CHECK (nestedTables[0].asTable()[3.0].asTable()[true].asString() == "foo");
+   BOOST_CHECK (nestedTables[0].asTable()[4.0].asBoolean() == false);
 }
 
 
@@ -53,7 +65,14 @@ void TestLuaStateDoExceptions()
 
    LuaState ls;
 
+   // Force a syntax error
    BOOST_CHECK_THROW (ls.doStringMultRet ("@#$%#"), LuaSyntaxError);
+
+   // "Lua threads" (coroutines) are not supported by 'LuaValue'. Trying to
+   // return one must generate an error.
+   BOOST_CHECK_THROW (ls.doStringMultRet(
+                         "return coroutine.create(function() end)"),
+                      LuaTypeError);
 }
 
 

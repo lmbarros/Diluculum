@@ -195,6 +195,9 @@ namespace Diluculum
          //       support for 'int's and friends. This makes the typical use
          //       much more natural. I don't think I'll ever compile Lua to use
          //       integers instead of floating point numbers...
+         // TODO: After doing the previous TODO, change the tests in
+         //       'TestLuaStateDoStringMultiRet()' to use integer indices, not
+         //       those ugly floats.
       private:
          /// Stores the value (and the type) stored in this \c LuaValue.
          boost::any value_;

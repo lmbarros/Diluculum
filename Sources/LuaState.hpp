@@ -109,6 +109,20 @@ namespace Diluculum
 
 
 
+   /// An error related to types when doing some Lua-related processing.
+   class LuaTypeError: public LuaError
+   {
+      public:
+         /** Constructs a \c LuaTypeError object.
+          *  @param what The message associated with the error.
+          */
+         LuaTypeError (const char* what)
+            : LuaError (what)
+         { }
+   };
+
+
+
    /** A type representing the return value of a Lua function call. The
     *  <i>i</i>-th element in the \c vector is the <i>i</i> return value.
     */
@@ -162,6 +176,10 @@ namespace Diluculum
           *  a \c LuaValue. This keeps the Lua stack untouched. Oh, yes, and it
           *  accepts both positive and negative indices, just like the standard
           *  functions on the Lua C API.
+          *  @throw LuaTypeError If the element at \c index cannot be converted
+          *         to a \c LuaValue. This can happen if the value at that
+          *         position is, for example, a "Lua Thread" that is not
+          *         supported by \c LuaValue.
           */
          LuaValue toLuaValue (int index);
 
