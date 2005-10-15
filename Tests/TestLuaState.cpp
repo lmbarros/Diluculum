@@ -8,8 +8,47 @@
 #include "LuaState.hpp"
 
 
-// - TestLuaStateDoStringMultiRet ----------------------------------------------
-void TestLuaStateDoStringMultiRet()
+// - TestLuaStateDoFileMultRet -------------------------------------------------
+void TestLuaStateDoFileMultRet()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+   const LuaRetVal ret = ls.doFileMultRet ("Tests/TestLuaStateDoFile.lua");
+
+   BOOST_REQUIRE (ret.size() == 5);
+   BOOST_CHECK (ret[0] == "foo");
+   BOOST_CHECK (ret[1] == 43.21);
+   BOOST_CHECK (ret[2][1] == true);
+   BOOST_CHECK (ret[2][2] == "bar");
+   BOOST_CHECK (ret[3] == "baz");
+   BOOST_CHECK (ret[4] == 4.5);
+
+   const LuaRetVal empty = ls.doFileMultRet(
+      "Tests/TestLuaStateDoFileNoReturn.lua");
+   BOOST_CHECK (empty.size() == 0);
+}
+
+
+
+// - TestLuaStateDoFile --------------------------------------------------------
+void TestLuaStateDoFile()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+   const LuaValue ret = ls.doFile ("Tests/TestLuaStateDoFile.lua");
+
+   BOOST_CHECK (ret == "foo");
+
+   const LuaValue empty = ls.doFile("Tests/TestLuaStateDoFileNoReturn.lua");
+   BOOST_CHECK (empty == Nil);
+}
+
+
+
+// - TestLuaStateDoStringMultRet -----------------------------------------------
+void TestLuaStateDoStringMultRet()
 {
    using namespace Diluculum;
 
@@ -26,10 +65,10 @@ void TestLuaStateDoStringMultiRet()
 
    // Check the size of the returned data
    BOOST_CHECK (nothing.size() == 0);
-   BOOST_CHECK (one.size() == 1);
-   BOOST_CHECK (oneTwo.size() == 2);
-   BOOST_CHECK (oneTwoThree.size() == 3);
-   BOOST_CHECK (nestedTables.size() == 1);
+   BOOST_REQUIRE (one.size() == 1);
+   BOOST_REQUIRE (oneTwo.size() == 2);
+   BOOST_REQUIRE (oneTwoThree.size() == 3);
+   BOOST_REQUIRE (nestedTables.size() == 1);
 
    // Check the returned data; first the easy cases...
    BOOST_CHECK (one[0] == 1);
@@ -57,6 +96,27 @@ void TestLuaStateDoStringMultiRet()
 
 
 
+// - TestLuaStateDoString ------------------------------------------------------
+void TestLuaStateDoString()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+
+   const LuaValue nothing = ls.doString ("a = math.cos(0)");
+   const LuaValue one = ls.doString ("return a");
+   const LuaValue two = ls.doString ("return 2*a, { }");
+   const LuaValue three = ls.doString ("return 'three', true, 3.0");
+
+   // Check the returned data
+   BOOST_CHECK (nothing == Nil);
+   BOOST_CHECK (one == 1);
+   BOOST_CHECK (two == 2);
+   BOOST_CHECK (three == "three");
+}
+
+
+
 // - TestLuaStateDoExceptions --------------------------------------------------
 void TestLuaStateDoExceptions()
 {
@@ -66,12 +126,34 @@ void TestLuaStateDoExceptions()
 
    // Force a syntax error
    BOOST_CHECK_THROW (ls.doStringMultRet ("@#$%#"), LuaSyntaxError);
+   BOOST_CHECK_THROW (ls.doString ("@#$%#"), LuaSyntaxError);
+   BOOST_CHECK_THROW (ls.doFileMultRet ("Tests/SyntaxError.lua"),
+                      LuaSyntaxError);
+   BOOST_CHECK_THROW (ls.doFileMultRet ("Tests/SyntaxError.lua"),
+                      LuaSyntaxError);
+   BOOST_CHECK_THROW (ls.doFile ("Tests/SyntaxError.lua"), LuaSyntaxError);
 
    // "Lua threads" (coroutines) are not supported by 'LuaValue'. Trying to
    // return one must generate an error.
    BOOST_CHECK_THROW (ls.doStringMultRet(
                          "return coroutine.create(function() end)"),
                       LuaTypeError);
+
+   BOOST_CHECK_THROW (ls.doString ("return coroutine.create(function() end)"),
+                      LuaTypeError);
+
+   BOOST_CHECK_THROW (ls.doFileMultRet ("Tests/ReturnThread.lua"),
+                      LuaTypeError);
+
+   BOOST_CHECK_THROW (ls.doFile ("Tests/ReturnThread.lua"), LuaTypeError);
+
+   // We are expected to throw in "file not found" situations
+   BOOST_CHECK_THROW (ls.doFileMultRet ("__THiis_fi1e.doeSNt--exIst.lua"),
+                      LuaFileError);
+
+   BOOST_CHECK_THROW (ls.doFile ("__THiis_fi1e.doeSNt--exIst.lua"),
+                      LuaTypeError);
+
 }
 
 
@@ -82,7 +164,10 @@ using boost::unit_test_framework::test_suite;
 test_suite* init_unit_test_suite (int, char*[])
 {
    test_suite* test = BOOST_TEST_SUITE ("'LuaState' tests");
-   test->add (BOOST_TEST_CASE (&TestLuaStateDoStringMultiRet));
+   test->add (BOOST_TEST_CASE (&TestLuaStateDoFileMultRet));
+   test->add (BOOST_TEST_CASE (&TestLuaStateDoFile));
+   test->add (BOOST_TEST_CASE (&TestLuaStateDoStringMultRet));
+   test->add (BOOST_TEST_CASE (&TestLuaStateDoString));
    test->add (BOOST_TEST_CASE (&TestLuaStateDoExceptions));
 
    return test;

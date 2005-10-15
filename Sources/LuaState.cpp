@@ -42,6 +42,22 @@ namespace Diluculum
 
 
 
+   // - LuaState::doFileMultRet ------------------------------------------------
+   LuaRetVal LuaState::doFileMultRet (const boost::filesystem::path& fileName)
+   {
+      return LuaRetVal(); // <--- stub!
+   }
+
+
+
+   // - LuaState::doFile -------------------------------------------------------
+   LuaValue LuaState::doFile (const boost::filesystem::path& fileName)
+   {
+      return LuaValue(); // <--- stub!
+   }
+
+
+
    // - LuaState::doStringMultRet ----------------------------------------------
    LuaRetVal LuaState::doStringMultRet (const std::string& what)
    {
@@ -65,13 +81,6 @@ namespace Diluculum
       std::reverse (ret.begin(), ret.end());
 
       return ret;
-   }
-
-
-   // - LuaState::doFile -------------------------------------------------------
-   LuaValue LuaState::doFile (const boost::filesystem::path& fileName)
-   {
-      return LuaValue(); // <--- stub!
    }
 
 
