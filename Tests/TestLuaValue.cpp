@@ -88,7 +88,7 @@ void TestLuaValueAsSomethingFunctions()
 
 
 
-// - TestLuaValueOrderOperators-------------------------------------------------
+// - TestLuaValueOrderOperators ------------------------------------------------
 void TestLuaValueOrderOperators()
 {
    using namespace Diluculum;
