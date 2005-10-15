@@ -61,7 +61,7 @@ namespace Diluculum
          /** Destroys a \c TypeMismatchError object.
           *  @note This was defined just to pretend that the destructor does not
           *        throw any exception. While this is something that I cannot
-          *        guarantee (at least whit this implementation), I believe this
+          *        guarantee (at least with this implementation), I believe this
           *        not a very dangerous lie.
           */
          ~TypeMismatchError() throw() { };
