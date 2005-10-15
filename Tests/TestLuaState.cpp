@@ -127,8 +127,7 @@ void TestLuaStateDoExceptions()
    // Force a syntax error
    BOOST_CHECK_THROW (ls.doStringMultRet ("@#$%#"), LuaSyntaxError);
    BOOST_CHECK_THROW (ls.doString ("@#$%#"), LuaSyntaxError);
-   BOOST_CHECK_THROW (ls.doFileMultRet ("Tests/SyntaxError.lua"),
-                      LuaSyntaxError);
+
    BOOST_CHECK_THROW (ls.doFileMultRet ("Tests/SyntaxError.lua"),
                       LuaSyntaxError);
    BOOST_CHECK_THROW (ls.doFile ("Tests/SyntaxError.lua"), LuaSyntaxError);
@@ -152,7 +151,7 @@ void TestLuaStateDoExceptions()
                       LuaFileError);
 
    BOOST_CHECK_THROW (ls.doFile ("__THiis_fi1e.doeSNt--exIst.lua"),
-                      LuaTypeError);
+                      LuaFileError);
 
 }
 
