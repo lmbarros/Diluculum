@@ -137,6 +137,8 @@ namespace Diluculum
     *  low-level. It was essentially a C++ wrapper around a <tt>lua_State*</tt>,
     *  without higher level operations. This is an attempt to allow me to do
     *  the kind of things I do most of the time without much effort.)
+    *  @todo There is a good amount of code replicated in \c doStringMultRet()
+    *        and \c doFileMultRet(). And that's not a pretty thing.
     */
    class LuaState
    {
@@ -171,6 +173,8 @@ namespace Diluculum
           *  @throw LuaError \c LuaError or any of its subclasses can be thrown.
           *         In particular, \c LuaTypeError will be thrown if the
           *         execution returns a type not supported by \c LuaType.
+          *  @todo The current implementation is based on \c doFileMultRet().
+          *        An implementation "from scratch" can be more efficient.
           */
          LuaValue doFile (const boost::filesystem::path& fileName);
 
@@ -192,6 +196,8 @@ namespace Diluculum
           *  @throw LuaError \c LuaError or any of its subclasses can be thrown.
           *         In particular, \c LuaTypeError will be thrown if the
           *         execution returns a type not supported by \c LuaType.
+          *  @todo The current implementation is based on \c doStringMultRet().
+          *        An implementation "from scratch" can be more efficient.
           */
          LuaValue doString (const std::string& what);
 
