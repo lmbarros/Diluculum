@@ -45,15 +45,15 @@ namespace Diluculum
 
 
 
-   /** An error in a \c LuaValueError that happens when a certain type is
-    *  expected but another one is found.
+   /** An error in a \c LuaValue that happens when a certain type is expected
+    *  but another one is found.
     */
    class TypeMismatchError: public LuaValueError
    {
       public:
          /** Constructs a \c TypeMismatchError object.
           *  @param expectedType The type that was expected.
-          *  @param expectedType The type that was actually found.
+          *  @param foundType The type that was actually found.
           */
          TypeMismatchError (const std::string& expectedType,
                             const std::string& foundType);
