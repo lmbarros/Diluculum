@@ -130,7 +130,13 @@ namespace Diluculum
 
 
 
-   /// \c LuaState: The Next Generation. A pleasant way to use a Lua state.
+   /** \c LuaState: The Next Generation. The pleasant way to do perform relevant
+    *  operations on a Lua state.
+    *  <p>(My previous implementation of a class named \c LuaState was pretty
+    *  low-level. It was essentially a C++ wrapper around a <tt>lua_State*</tt>,
+    *  without higher level operations. This is an attempt to allow me to do
+    *  the kind of things I do most of the time without much effort.)
+    */
    class LuaState
    {
       public:
@@ -146,27 +152,47 @@ namespace Diluculum
           */
          virtual ~LuaState();
 
-//       /** Executes (or, more precisely, interprets) the contents of the give
-//        *  file.
-//        *  @param fileName The file to be executed. This can be either a Lua
-//        *         source file or a Lua bytecode file.
-//        *  @throw LuaError This method may throw a \c LuaError or any of its more
-//        *         specific subclasses.
-//        */
-         LuaValue doFile (const boost::filesystem::path& fileName); // <--- returns just one value. perhaps create a 'doFileMultRet()' someday
+         /** Executes the file passed as parameter and returns all the values
+          *  returned by this execution.
+          *  @param fileName The file to be executed.
+          *  @return All the values returned by the file execution.
+          *  @throw LuaError \c LuaError or any of its subclasses can be thrown.
+          *         In particular, \c LuaTypeError will be thrown if the
+          *         execution returns a type not supported by \c LuaType.
+          */
+         LuaRetVal doFileMultRet (const boost::filesystem::path& fileName);
 
-//          /** Executes (or, more precisely, interprets) the contents of the give
-//           *  string.
-//           *  @param what The string to execute.
-//           *  @throw LuaError This method may throw a \c LuaError or any of its more
-//           *         specific subclasses.
-//           *  @todo The function \c lua_dostring(), used in the implementation is
-//           *        deprecated. Better avoid to use it.
-//           */
-         LuaValue doString (const std::string& what); // <--- returns just one value. perhaps create a 'doStringMultRet()' someday
+         /** Executes the file passed as parameter and returns only the first
+          *  value returned by this execution.
+          *  @param fileName The file to be executed.
+          *  @return The first value returned by the file execution. If the
+          *          execution does not return anything, returns \c Nil.
+          *  @throw LuaError \c LuaError or any of its subclasses can be thrown.
+          *         In particular, \c LuaTypeError will be thrown if the
+          *         execution returns a type not supported by \c LuaType.
+          */
+         LuaValue doFile (const boost::filesystem::path& fileName);
 
-         // interprets the string and returns all the returned values.
+         /** Executes the string passed as parameter and returns all the values
+          *  returned by this execution.
+          *  @param what The string to be interpreted.
+          *  @return All the values returned by the execution of \c what.
+          *  @throw LuaError \c LuaError or any of its subclasses can be thrown.
+          *         In particular, \c LuaTypeError will be thrown if the
+          *         execution returns a type not supported by \c LuaType.
+          */
          LuaRetVal doStringMultRet (const std::string& what);
+
+         /** Executes the string passed as parameter and returns only the first
+          *  value returned by this execution.
+          *  @param what The string to be executed.
+          *  @return The first value returned by the execution of \c what. If
+          *          the execution does not return anything, returns \c Nil.
+          *  @throw LuaError \c LuaError or any of its subclasses can be thrown.
+          *         In particular, \c LuaTypeError will be thrown if the
+          *         execution returns a type not supported by \c LuaType.
+          */
+         LuaValue doString (const std::string& what);
 
       private:
          /// The underlying \c lua_State*.
