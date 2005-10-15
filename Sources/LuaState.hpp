@@ -124,7 +124,8 @@ namespace Diluculum
 
 
    /** A type representing the return value of a Lua function call. The
-    *  <i>i</i>-th element in the \c vector is the <i>i</i> return value.
+    *  first return value is stored at the 0th \c vector position, the second
+    *  return value at the 1st \c vector position and so on.
     */
    typedef std::vector<LuaValue> LuaRetVal;
 
