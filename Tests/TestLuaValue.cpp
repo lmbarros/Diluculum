@@ -85,6 +85,10 @@ void TestLuaValueAsSomethingFunctions()
    BOOST_CHECK (aStringValueBar.asString() == "Bar");
    BOOST_CHECK (aBooleanValue.asBoolean() == true);
    BOOST_CHECK (anotherBooleanValue.asBoolean() == false);
+   BOOST_CHECK (tableValue.asTable()["Foo"].asBoolean() == false);
+   BOOST_CHECK (tableValue.asTable()[2.3].asNumber() == 4.3);
+   BOOST_CHECK (tableValue.asTable()[5.4].asNumber() == 4);
+   BOOST_CHECK (tableValue.asTable()[true].asString() == "Ahhhh!");
 
    // Ensure that we get the proper exception when doing the Wrong Thing
    BOOST_CHECK_THROW (aNilValue.asBoolean(), TypeMismatchError);
