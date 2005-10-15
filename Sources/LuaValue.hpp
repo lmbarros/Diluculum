@@ -14,7 +14,7 @@ extern "C"
 #include <map>
 #include <stdexcept>
 #include <string>
-#include <boost/any.hpp>
+#include <boost/variant.hpp>
 
 
 namespace Diluculum
@@ -28,57 +28,6 @@ namespace Diluculum
     *  as a C++ approximation of a Lua table.
     */
    typedef std::map<LuaValue, LuaValue> LuaValueMap;
-
-
-
-   /// A generic <tt>LuaValue</tt>-related error.
-   class LuaValueError: public std::runtime_error
-   {
-      public:
-         /** Constructs a \c LuaValueError object.
-          *  @param what The message associated with the error.
-          */
-         LuaValueError (const char* what)
-            : std::runtime_error (what)
-         { }
-   };
-
-
-
-   /** An error in a \c LuaValue that happens when a certain type is expected
-    *  but another one is found.
-    */
-   class TypeMismatchError: public LuaValueError
-   {
-      public:
-         /** Constructs a \c TypeMismatchError object.
-          *  @param expectedType The type that was expected.
-          *  @param foundType The type that was actually found.
-          */
-         TypeMismatchError (const std::string& expectedType,
-                            const std::string& foundType);
-
-         /** Destroys a \c TypeMismatchError object.
-          *  @note This was defined just to pretend that the destructor does not
-          *        throw any exception. While this is something that I cannot
-          *        guarantee (at least with this implementation), I believe this
-          *        not a very dangerous lie.
-          */
-         ~TypeMismatchError() throw() { };
-
-         /// Returns the type that was expected.
-         std::string getExpectedType() { return expectedType_; }
-
-         /// Returns the type that was actually found.
-         std::string getFoundType() { return foundType_; }
-
-      private:
-         /// The type that was expected.
-         std::string expectedType_;
-
-         /// The type that was actually found.
-         std::string foundType_;
-   };
 
 
 
@@ -147,12 +96,15 @@ namespace Diluculum
           */
          bool asBoolean() const;
 
-         /** Return the value as a table (\c LuaValueMap).
+         /** Returns the value as a table (\c LuaValueMap).
+          *  @note Notice that the table is returned by value. You may strongly
+          *        consider using the subscript operator (that returns a
+          *        reference) for accessing the values stored in a table-typed
+          *        \c LuaValue.
           *  @throw TypeMismatchError If the value is not a table (this is a
           *         strict check; no type conversion is performed).
           */
          LuaValueMap asTable() const;
-
 
          /** "Less than" operator for <tt>LuaValue</tt>s.
           *  @return The order relationship is quite arbitrary for
@@ -187,25 +139,125 @@ namespace Diluculum
           */
          bool operator> (const LuaValue& rhs) const;
 
-         // TODO: A shortcut for table-like access:
-         //       LuaValue& operator[] (const LuaValue& key) { return ...; }
-         // TODO: Notice the reference return value above. Is this supported by
-         //       'boost::any'? If not, will have to use a more traditional
-         //       design ('union' anyone?)
-         // TODO: 'operator==()' for all supported types:
-         //       if (myLuaValue == "blá")
-         //          ...;
-         //       (perhaps also do this for '<', '>' and '!=')
+         /** "Equal" operator for <tt>LuaValue</tt>s.
+          *  @return The rules for determining who is greater than who are
+          *          similar to the ones described in \c operator<.
+          *  @todo A much more efficient implementation can be done.
+          */
+         bool operator== (const LuaValue& rhs) const
+         { return !(*this > rhs) && !(*this < rhs); }
+
+         /** Returns a reference to a field of this \c LuaValue (assuming it is
+          *  a table). If there is no value associated with the key passed as
+          *  parameter, inserts a new value (\c nil) and returns a reference to
+          *  it.
+          *  @throw TypeMismatchError If this \c LuaValue does not hold a table.
+          */
+         LuaValue& operator[] (const LuaValue& key);
+
+         /** Returns a \c const reference to a field of this \c LuaValue
+          *  (assuming it is a table).
+          *  @throw TypeMismatchError If this \c LuaValue does not hold a table.
+          *  @throw NoSuchKeyError If there is no value associated with the key
+          *         passed as parameter.
+          */
+         const LuaValue& operator[] (const LuaValue& key) const;
+
          // TODO: Replace those 'lua_Number's with 'double's and add explicit
          //       support for 'int's and friends. This makes the typical use
          //       much more natural. I don't think I'll ever compile Lua to use
          //       integers instead of floating point numbers...
          // TODO: After doing the previous TODO, change the tests in
          //       'TestLuaStateDoStringMultiRet()' to use integer indices, not
-         //       those ugly floats.
+         //       those ugly floats. (Should I really do this?)
       private:
+
+         /// Almost dummy class; simply represents the type of \c nil.
+         class NilType { };
+
          /// Stores the value (and the type) stored in this \c LuaValue.
-         boost::any value_;
+         boost::variant <NilType, lua_Number, std::string, bool, LuaValueMap>
+         value_;
+   };
+
+
+
+   /// A generic <tt>LuaValue</tt>-related error.
+   class LuaValueError: public std::runtime_error
+   {
+      public:
+         /** Constructs a \c LuaValueError object.
+          *  @param what The message associated with the error.
+          */
+         LuaValueError (const char* what)
+            : std::runtime_error (what)
+         { }
+   };
+
+
+
+   /** An error in a \c LuaValue that happens when a certain type is expected
+    *  but another one is found.
+    */
+   class TypeMismatchError: public LuaValueError
+   {
+      public:
+         /** Constructs a \c TypeMismatchError object.
+          *  @param expectedType The type that was expected.
+          *  @param foundType The type that was actually found.
+          */
+         TypeMismatchError (const std::string& expectedType,
+                            const std::string& foundType);
+
+         /** Destroys a \c TypeMismatchError object.
+          *  @note This was defined just to pretend that the destructor does not
+          *        throw any exception. While this is something that I cannot
+          *        guarantee (at least with this implementation), I believe this
+          *        not a very dangerous lie.
+          */
+         ~TypeMismatchError() throw() { };
+
+         /// Returns the type that was expected.
+         std::string getExpectedType() { return expectedType_; }
+
+         /// Returns the type that was actually found.
+         std::string getFoundType() { return foundType_; }
+
+      private:
+         /// The type that was expected.
+         std::string expectedType_;
+
+         /// The type that was actually found.
+         std::string foundType_;
+   };
+
+
+
+   /** An error in a table-typed \c LuaValue that happens when trying to access
+    *  a key that does not exist.
+    */
+   class NoSuchKeyError: public LuaValueError
+   {
+      public:
+         /** Constructs a \c NoSuchKeyError object.
+          *  @param badKey The key that was not found.
+          */
+         NoSuchKeyError (const LuaValue& badKey);
+
+         /** Destroys a \c NoSuchKeyError object.
+          *  @note This was defined just to pretend that the destructor does not
+          *        throw any exception. While this is something that I cannot
+          *        guarantee (at least with this implementation), I believe this
+          *        not a very dangerous lie.
+          */
+         ~NoSuchKeyError() throw() { };
+
+         /// Returns the key that was not found.
+         const LuaValue& getBadKey() { return badKey_; }
+
+      private:
+         /// The key that was not found.
+         LuaValue badKey_;
    };
 
 

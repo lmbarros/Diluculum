@@ -24,7 +24,6 @@ void TestLuaStateDoStringMultiRet()
    const LuaRetVal nestedTables = ls.doStringMultRet(
       "return { 'one', 2, { [1] = 'one', two = 2, [true] = 'foo' }, false }");
 
-
    // Check the size of the returned data
    BOOST_CHECK (nothing.size() == 0);
    BOOST_CHECK (one.size() == 1);

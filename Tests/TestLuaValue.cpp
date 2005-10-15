@@ -85,6 +85,7 @@ void TestLuaValueAsSomethingFunctions()
    BOOST_CHECK (aStringValueBar.asString() == "Bar");
    BOOST_CHECK (aBooleanValue.asBoolean() == true);
    BOOST_CHECK (anotherBooleanValue.asBoolean() == false);
+
    BOOST_CHECK (tableValue.asTable()["Foo"].asBoolean() == false);
    BOOST_CHECK (tableValue.asTable()[2.3].asNumber() == 4.3);
    BOOST_CHECK (tableValue.asTable()[5.4].asNumber() == 4);
@@ -246,6 +247,107 @@ void TestLuaValueOrderOperators()
 
 
 
+// - TestLuaValueSubscriptOperator ---------------------------------------------
+void TestLuaValueSubscriptOperator()
+{
+   using namespace Diluculum;
+
+   LuaValueMap nestedLMV;
+   nestedLMV["foo"] = "bar";
+   nestedLMV[true] = 123.45;
+   nestedLMV[2.0] = false;
+
+   LuaValueMap lvm;
+   lvm[4.0] = 6.5;
+   lvm["nested"] = nestedLMV;
+   lvm[true] = false;
+
+   LuaValue tableValue (lvm);
+
+   // Simple data access
+   BOOST_CHECK (tableValue[4.0] == 6.5);
+   BOOST_CHECK (tableValue["nested"]["foo"] == "bar");
+   BOOST_CHECK (tableValue["nested"][true] == 123.45);
+   BOOST_CHECK (tableValue["nested"][2.0] == false);
+   BOOST_CHECK (tableValue[true] == false);
+
+   // Change some fields
+   tableValue[true] = 7.89;
+   BOOST_CHECK (tableValue[true] == 7.89);
+   tableValue["nested"][2.0] = "baz";
+   BOOST_CHECK (tableValue["nested"][2.0] == "baz");
+
+   // Add some new fields
+   tableValue["dummy"];
+   BOOST_CHECK (tableValue["dummy"] == Nil);
+
+   tableValue["aaa"] = 2.5;
+   BOOST_CHECK (tableValue["aaa"] == 2.5);
+
+   tableValue["nested"][7.8] = 1.23;
+   BOOST_CHECK (tableValue["nested"][7.8] == 1.23);
+
+   // Try to subscript non-table values
+   LuaValue nilValue;
+   BOOST_CHECK_THROW (nilValue[1.0], TypeMismatchError);
+
+   LuaValue numberValue(1.0);
+   BOOST_CHECK_THROW (numberValue[true], TypeMismatchError);
+
+   LuaValue stringValue("abc");
+   BOOST_CHECK_THROW (stringValue["xyz"], TypeMismatchError);
+
+   LuaValue boolValue(true);
+   BOOST_CHECK_THROW (boolValue[false], TypeMismatchError);
+}
+
+
+
+// - TestLuaValueConstSubscriptOperator ----------------------------------------
+void TestLuaValueConstSubscriptOperator()
+{
+   using namespace Diluculum;
+
+   LuaValueMap nestedLMV;
+   nestedLMV["foo"] = "bar";
+   nestedLMV[true] = 123.45;
+   nestedLMV[2.0] = false;
+
+   LuaValueMap lvm;
+   lvm[4.0] = 6.5;
+   lvm["nested"] = nestedLMV;
+   lvm[true] = false;
+
+   const LuaValue tableValue (lvm);
+
+   // Simple data access
+   BOOST_CHECK (tableValue[4.0] == 6.5);
+   BOOST_CHECK (tableValue["nested"]["foo"] == "bar");
+   BOOST_CHECK (tableValue["nested"][true] == 123.45);
+   BOOST_CHECK (tableValue["nested"][2.0] == false);
+   BOOST_CHECK (tableValue[true] == false);
+
+   // Then, ensure that exceptions are thrown when accessing an invalid key
+   BOOST_CHECK_THROW (tableValue["dummy"], NoSuchKeyError);
+   BOOST_CHECK_THROW (tableValue[123.456], NoSuchKeyError);
+   BOOST_CHECK_THROW (tableValue["nested"][7.8], NoSuchKeyError);
+
+   // Try to subscript non-table values
+   LuaValue nilValue;
+   BOOST_CHECK_THROW (nilValue[1.0], TypeMismatchError);
+
+   LuaValue numberValue(1.0);
+   BOOST_CHECK_THROW (numberValue[true], TypeMismatchError);
+
+   LuaValue stringValue("abc");
+   BOOST_CHECK_THROW (stringValue["xyz"], TypeMismatchError);
+
+   LuaValue boolValue(true);
+   BOOST_CHECK_THROW (boolValue[false], TypeMismatchError);
+}
+
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -256,6 +358,8 @@ test_suite* init_unit_test_suite (int, char*[])
    test->add (BOOST_TEST_CASE (&TestLuaValueTypeName));
    test->add (BOOST_TEST_CASE (&TestLuaValueAsSomethingFunctions));
    test->add (BOOST_TEST_CASE (&TestLuaValueOrderOperators));
+   test->add (BOOST_TEST_CASE (&TestLuaValueSubscriptOperator));
+   test->add (BOOST_TEST_CASE (&TestLuaValueConstSubscriptOperator));
 
    return test;
 }

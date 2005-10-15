@@ -20,10 +20,18 @@ namespace Diluculum
 
 
 
+   // - NoSuchKeyError::NoSuchKeyError -----------------------------------------
+   NoSuchKeyError::NoSuchKeyError (const LuaValue& badKey)
+      : LuaValueError ("Trying to access a table with an invalid key."),
+        badKey_ (badKey)
+   { }
+
+
+
    // - LuaValue::type ---------------------------------------------------------
    int LuaValue::type() const
    {
-      if (value_.type() == typeid(void))
+      if (value_.type() == typeid (NilType))
          return LUA_TNIL;
       else if (value_.type() == typeid (bool))
          return LUA_TBOOLEAN;
@@ -38,10 +46,11 @@ namespace Diluculum
    }
 
 
+
    // - LuaValue::typeName -----------------------------------------------------
    std::string LuaValue::typeName() const
    {
-      if (value_.type() == typeid(void))
+      if (value_.type() == typeid (NilType))
          return "nil";
       else if (value_.type() == typeid (bool))
          return "boolean";
@@ -62,9 +71,9 @@ namespace Diluculum
    {
       try
       {
-         return boost::any_cast<lua_Number>(value_);
+         return boost::get<lua_Number>(value_);
       }
-      catch (boost::bad_any_cast& e)
+      catch (boost::bad_get& e)
       {
          throw TypeMismatchError ("number", typeName());
       }
@@ -77,9 +86,9 @@ namespace Diluculum
    {
       try
       {
-         return boost::any_cast<std::string>(value_);
+         return boost::get<std::string>(value_);
       }
-      catch (boost::bad_any_cast& e)
+      catch (boost::bad_get& e)
       {
          throw TypeMismatchError ("string", typeName());
       }
@@ -92,9 +101,9 @@ namespace Diluculum
    {
       try
       {
-         return boost::any_cast<bool>(value_);
+         return boost::get<bool>(value_);
       }
-      catch (boost::bad_any_cast& e)
+      catch (boost::bad_get& e)
       {
          throw TypeMismatchError ("boolean", typeName());
       }
@@ -107,9 +116,9 @@ namespace Diluculum
    {
       try
       {
-         return boost::any_cast<LuaValueMap>(value_);
+         return boost::get<LuaValueMap>(value_);
       }
-      catch (boost::bad_any_cast& e)
+      catch (boost::bad_get& e)
       {
          throw TypeMismatchError ("table", typeName());
       }
@@ -243,6 +252,37 @@ namespace Diluculum
          else // typename == ""
             return false;
       }
+   }
+
+
+
+   // - LuaValue::LuaValue -----------------------------------------------------
+   LuaValue& LuaValue::operator[] (const LuaValue& key)
+   {
+      if (type() != LUA_TTABLE)
+         throw TypeMismatchError ("table", typeName());
+
+      LuaValueMap& table = boost::get<LuaValueMap>(value_);
+
+      return table[key];
+   }
+
+
+
+   // - LuaValue::LuaValue -----------------------------------------------------
+   const LuaValue& LuaValue::operator[] (const LuaValue& key) const
+   {
+      if (type() != LUA_TTABLE)
+         throw TypeMismatchError ("table", typeName());
+
+      const LuaValueMap& table = boost::get<LuaValueMap>(value_);
+
+      LuaValueMap::const_iterator it = table.find(key);
+
+      if (it == table.end())
+         throw NoSuchKeyError (key);
+
+      return it->second;
    }
 
 } // namespace Diluculum
