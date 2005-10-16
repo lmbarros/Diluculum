@@ -157,6 +157,43 @@ void TestLuaStateDoExceptions()
 
 
 
+// - TestLuaStateSubscriptOperator ---------------------------------------------
+void TestLuaStateSubscriptOperator()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+   ls.doString ("a = 1; b = 'two'; c = true; d = { 'foo', 'bar', 'baz' }");
+
+   // Check if the values can be read
+   BOOST_CHECK (ls["a"] == 1);
+   BOOST_CHECK (ls["b"] == "two");
+   BOOST_CHECK (ls["c"] == true);
+   BOOST_CHECK (ls["d"][1] == "foo");
+   BOOST_CHECK (ls["d"][2] == "bar");
+   BOOST_CHECK (ls["d"][3] == "baz");
+
+   // Change some values and verify if they were really changed
+   ls["a"] = false;
+   ls["b"] = 3 * 7;
+   ls["d"][2] = "two";
+   ls["d"][3] = ls["b"].value(); // <--- TODO: can't I get rid of this '.value()'?
+
+   BOOST_CHECK (ls["a"] == false);
+   BOOST_CHECK (ls["b"] == 21);
+   BOOST_CHECK (ls["d"][2] == "two");
+   BOOST_CHECK (ls["d"][3] == 21);
+
+   // Add some new values, and read them
+   ls["d"][4] = 12.34;
+   ls["z"] = 56.78;
+
+   BOOST_CHECK (ls["d"][4] == 12.34);
+   BOOST_CHECK (ls["z"] == 56.78);
+}
+
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -168,6 +205,7 @@ test_suite* init_unit_test_suite (int, char*[])
    test->add (BOOST_TEST_CASE (&TestLuaStateDoStringMultRet));
    test->add (BOOST_TEST_CASE (&TestLuaStateDoString));
    test->add (BOOST_TEST_CASE (&TestLuaStateDoExceptions));
+   test->add (BOOST_TEST_CASE (&TestLuaStateSubscriptOperator));
 
    return test;
 }

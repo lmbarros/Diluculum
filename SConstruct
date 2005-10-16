@@ -15,6 +15,7 @@ env = Environment (ENV = os.environ,
 env.Program ("Tests/TestLuaValue", [ "Sources/LuaValue.cpp",
                                      "Tests/TestLuaValue.cpp" ])
 
-env.Program ("Tests/TestLuaState", [ "Sources/LuaValue.cpp",
-                                     "Sources/LuaState.cpp",
+env.Program ("Tests/TestLuaState", [ "Sources/LuaState.cpp",
+                                     "Sources/LuaValue.cpp",
+                                     "Sources/LuaVariable.cpp",
                                      "Tests/TestLuaState.cpp" ])

@@ -18,6 +18,7 @@ extern "C"
 #include <vector>
 #include <boost/filesystem/path.hpp>
 #include "LuaValue.hpp"
+#include "LuaVariable.hpp"
 
 
 namespace Diluculum
@@ -200,6 +201,9 @@ namespace Diluculum
           *        An implementation "from scratch" can be more efficient.
           */
          LuaValue doString (const std::string& what);
+
+         // <--- TODO: document after we have something working.
+         LuaVariable operator[] (const std::string& key);
 
       private:
          /// The underlying \c lua_State*.

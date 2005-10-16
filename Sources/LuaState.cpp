@@ -119,6 +119,14 @@ namespace Diluculum
 
 
 
+   // - LuaState::operator[] ---------------------------------------------------
+   LuaVariable LuaState::operator[] (const std::string& key)
+   {
+      return LuaVariable::build();
+   }
+
+
+
    // - LuaState::toLuaValue ---------------------------------------------------
    LuaValue LuaState::toLuaValue (int index)
    {
