@@ -64,7 +64,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /Users/lmb/Develop/Diluculum/Sources/
+INPUT                  = ./Sources/
 FILE_PATTERNS          = *.hpp
 RECURSIVE              = YES
 EXCLUDE                = 
