@@ -209,17 +209,6 @@ namespace Diluculum
          /// The underlying \c lua_State*.
          lua_State* state_;
 
-         /** Converts and returns the element at index \c index on the stack to
-          *  a \c LuaValue. This keeps the Lua stack untouched. Oh, yes, and it
-          *  accepts both positive and negative indices, just like the standard
-          *  functions on the Lua C API.
-          *  @throw LuaTypeError If the element at \c index cannot be converted
-          *         to a \c LuaValue. This can happen if the value at that
-          *         position is, for example, a "Lua Thread" that is not
-          *         supported by \c LuaValue.
-          */
-         LuaValue toLuaValue (int index);
-
          /** Throws an exception if the number passed as parameter corresponds
           *  to an error code from a function from the Lua API.  The exception
           *  thrown is of the proper type, that is, of the subclass of \c

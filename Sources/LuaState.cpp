@@ -5,6 +5,7 @@
 \******************************************************************************/
 
 #include "LuaState.hpp"
+#include "LuaUtils.hpp"
 #include <cassert>
 #include <typeinfo>
 
@@ -57,7 +58,7 @@ namespace Diluculum
 
       for (int i = 1; i <= numResults; ++i)
       {
-         ret.push_back (toLuaValue (-1));
+         ret.push_back (ToLuaValue (state_, -1));
          lua_pop (state_, 1);
       }
 
@@ -96,7 +97,7 @@ namespace Diluculum
 
       for (int i = 1; i <= numResults; ++i)
       {
-         ret.push_back (toLuaValue (-1));
+         ret.push_back (ToLuaValue (state_, -1));
          lua_pop (state_, 1);
       }
 
@@ -122,49 +123,7 @@ namespace Diluculum
    // - LuaState::operator[] ---------------------------------------------------
    LuaVariable LuaState::operator[] (const std::string& key)
    {
-      return LuaVariable::build();
-   }
-
-
-
-   // - LuaState::toLuaValue ---------------------------------------------------
-   LuaValue LuaState::toLuaValue (int index)
-   {
-      switch (lua_type (state_, index))
-      {
-         case LUA_TNIL:
-            return Nil;
-         case LUA_TNUMBER:
-            return lua_tonumber (state_, index);
-         case LUA_TBOOLEAN:
-            return static_cast<bool>(lua_toboolean (state_, index));
-         case LUA_TSTRING:
-            return lua_tostring (state_, index);
-         case LUA_TTABLE:
-         {
-            // Make the index positive if necessary (using a negative index here
-            // will be *bad*, because the stack will be changed in the
-            // 'lua_next()' and a negative index will mess everything.
-            if (index < 0)
-               index = lua_gettop(state_) + index + 1;
-
-            // Traverse the table adding the key/value pairs to 'ret'
-            LuaValueMap ret;
-
-            lua_pushnil (state_);
-            while (lua_next (state_, index) != 0)
-            {
-               ret[toLuaValue (-2)] = toLuaValue (-1);
-               lua_pop (state_, 1);
-            }
-
-            // Alright, return the result
-            return ret;
-         }
-         default:
-            throw LuaTypeError(
-               "Unsupported type found in call to 'LuaState::toLuaValue()'");
-      }
+      return LuaVariable::build (state_, key);
    }
 
 

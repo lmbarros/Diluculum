@@ -12,10 +12,12 @@ env = Environment (ENV = os.environ,
                          "boost_unit_test_framework-gcc-mt"],
                    CPPPATH = "Sources")
 
-env.Program ("Tests/TestLuaValue", [ "Sources/LuaValue.cpp",
+env.Program ("Tests/TestLuaValue", [ "Sources/LuaUtils.cpp",
+                                     "Sources/LuaValue.cpp",
                                      "Tests/TestLuaValue.cpp" ])
 
 env.Program ("Tests/TestLuaState", [ "Sources/LuaState.cpp",
+                                     "Sources/LuaUtils.cpp",
                                      "Sources/LuaValue.cpp",
                                      "Sources/LuaVariable.cpp",
                                      "Tests/TestLuaState.cpp" ])
