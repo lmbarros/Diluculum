@@ -21,10 +21,6 @@ namespace Diluculum
    }
 
 
-   LuaVariable::LuaVariable (const LuaVariable&)
-   {
-   }
-
 
    // - LuaVariable::operator= -------------------------------------------------
    LuaVariable& LuaVariable::operator= (const LuaValue& rhs)
