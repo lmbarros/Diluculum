@@ -34,6 +34,18 @@ namespace Diluculum
           */
          LuaVariable& operator= (const LuaValue& rhs);
 
+         /** Assigns the value of a \c LuaVariable to this \c LuaVariable.
+          *  @todo The assignment is based on the value of \c rhs. Recall that
+          *        "real" copy of <tt>LuaVariable</tt>s is forbidden by design,
+          *        so this makes some sense. But, the design is objectionable,
+          *        and I expect to rethink it soon. If I decide that copying
+          *        <tt>LuaVariable</tt>s is OK, then I must change the
+          *        documentation accordingly. If not, then add this discussion
+          *        as a note.
+          */
+         LuaVariable& operator= (const LuaVariable& rhs)
+         { *this = rhs.value(); return *this; }
+
          /** Returns the value associated with this variable.
           *  @todo Throw a more specific exception (instead \c LuaError), and a
           *        more adequate message (instead of "Duh"). When doing this,
