@@ -67,6 +67,28 @@ void TestLuaVariableSubscriptOperator()
 
 
 
+// - TestLuaVariableAssignmentOperator -----------------------------------------
+void TestLuaVariableAssignmentOperator()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+   ls.doString ("a = 1; b = 'two'; c = true; d = { 'foo', 'bar', [5] = 'baz' }");
+
+   // "Multiple" assignment
+   ls["a"] = ls["c"] = ls["d"][5] = 123.456;
+
+   BOOST_CHECK (ls["a"] == 123.456);
+   BOOST_CHECK (ls["c"] == 123.456);
+   BOOST_CHECK (ls["d"][5] == 123.456);
+
+   // The other fields shall be untouched
+   BOOST_CHECK (ls["b"] == "two");
+   BOOST_CHECK (ls["d"][1] == "foo");
+   BOOST_CHECK (ls["d"][2] == "bar");
+}
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -74,6 +96,7 @@ test_suite* init_unit_test_suite (int, char*[])
 {
    test_suite* test = BOOST_TEST_SUITE ("'LuaVariable' tests");
    test->add (BOOST_TEST_CASE (&TestLuaVariableSubscriptOperator));
+   test->add (BOOST_TEST_CASE (&TestLuaVariableAssignmentOperator));
 
    return test;
 }

@@ -29,8 +29,11 @@ namespace Diluculum
          /** Assigns a new value to this \c LuaVariable. The corresponding
           *  variable in the Lua state is updated accordingly.
           *  @param rhs The new value for the variable.
-          *  @todo Add tests for multiple assignments, like
-          *        <tt>x = y = z = 1</tt>.
+          *  @return \c *this, so that a sequence of assignments, like
+          *          <tt>a = b = c = 1;</tt> works.
+          *  @todo Considering that <tt>LuaVariable</tt>s shouldn't be copyable
+          *        by the current design, perhaps it would make more sense to
+          *        return a \c LuaValue (<tt>this->value()</tt>).
           */
          LuaVariable& operator= (const LuaValue& rhs);
 
