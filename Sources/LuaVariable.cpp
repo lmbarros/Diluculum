@@ -95,10 +95,4 @@ namespace Diluculum
    }
 
 
-   // - LuaVariable::operator== ------------------------------------------------
-   bool LuaVariable::operator== (const LuaValue& rhs)
-   {
-      return value() == rhs;
-   }
-
 } // namespace Diluculum

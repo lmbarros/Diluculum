@@ -55,7 +55,14 @@ namespace Diluculum
           */
          LuaVariable operator[] (const LuaValue& key);
 
-         bool operator== (const LuaValue& rhs);
+         /** Checks whether the value stored in this variable is equal to the
+          *  value at \c rhs.
+          *  @param rhs The value against which the comparison will be done.
+          *  @return \c true if this variable's value is equal to \c rhs.
+          *          \c false otherwise.
+          */
+         bool operator== (const LuaValue& rhs)
+         { return value() == rhs; }
 
       private:
          /// A sequence of keys, used to access nested tables.
