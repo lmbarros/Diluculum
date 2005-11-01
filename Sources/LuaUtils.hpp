@@ -16,7 +16,6 @@ namespace Diluculum
     *  \c LuaValue. This keeps the Lua stack untouched. Oh, yes, and it accepts
     *  both positive and negative indices, just like the standard functions on
     *  the Lua C API.
-    *  @todo There are no tests for this function!
     *  @throw LuaTypeError If the element at \c index cannot be converted to a
     *         \c LuaValue. This can happen if the value at that position is, for
     *         example, a "Lua Thread" that is not supported by \c LuaValue.
@@ -25,7 +24,6 @@ namespace Diluculum
 
    /** Calls the appropriate <tt>lua_push*()</tt> function, in order to push the
     *  value stored at \c value to the Lua stack.
-    *  @todo There are no tests for this function!
     *  @todo There is at least one unhandled error situation: a \c LuaValueMap
     *        can use \c Nil as index, but a Lua table can't; something bad will
     *        most likely happen if we try to \c PushLuaValue() a \c LuaValueMap

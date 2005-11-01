@@ -22,6 +22,10 @@ env.Program ("Tests/TestLuaVariable", [ "Sources/LuaState.cpp",
                                         "Sources/LuaVariable.cpp",
                                         "Tests/TestLuaVariable.cpp" ])
 
+env.Program ("Tests/TestLuaUtils", [ "Sources/LuaUtils.cpp",
+                                     "Sources/LuaValue.cpp",
+                                     "Tests/TestLuaUtils.cpp" ])
+
 env.Program ("Tests/TestLuaState", [ "Sources/LuaState.cpp",
                                      "Sources/LuaUtils.cpp",
                                      "Sources/LuaValue.cpp",
