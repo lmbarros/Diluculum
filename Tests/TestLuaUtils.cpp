@@ -6,7 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <cstring>
-#include "LuaState.hpp"
+#include "LuaExceptions.hpp"
 #include "LuaUtils.hpp"
 
 

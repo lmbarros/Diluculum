@@ -53,9 +53,7 @@ namespace Diluculum
           *  @todo Throw a more specific exception (instead \c LuaError), and a
           *        more adequate message (instead of "Duh"). When doing this,
           *        add some tests to ensure that the proper exception is thrown
-          *        when calling \c value() and \c operator[]. It is probably a
-          *        good idea to put all exceptions in a new file
-          *        (<tt>LuaExceptions.hpp</tt>?).
+          *        when calling \c value() and \c operator[].
           *  @bug In fact, no exception is currently being thrown. Must add test
           *       cases, check the code and document.
           */

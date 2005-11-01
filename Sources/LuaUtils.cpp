@@ -5,7 +5,7 @@
 \******************************************************************************/
 
 #include "LuaUtils.hpp"
-#include "LuaState.hpp"
+#include "LuaExceptions.hpp"
 
 
 namespace Diluculum
