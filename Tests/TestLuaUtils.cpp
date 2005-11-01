@@ -6,6 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <cstring>
+#include "LuaState.hpp"
 #include "LuaUtils.hpp"
 
 
@@ -44,6 +45,10 @@ void TestToLuaValue()
    BOOST_CHECK (ToLuaValue (ls, -2) == "The book is on the table.");
    BOOST_CHECK (ToLuaValue (ls, -3) == 171.171);
    BOOST_CHECK (ToLuaValue (ls, -4) == true);
+
+   // Ensure that trying to convert unsupported types throws an exception
+   lua_newthread (ls);
+   BOOST_CHECK_THROW (ToLuaValue (ls, -1), LuaTypeError);
 
    // Close the Lua state used in this test
    lua_close (ls);
