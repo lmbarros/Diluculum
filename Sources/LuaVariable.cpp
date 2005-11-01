@@ -61,7 +61,7 @@ namespace Diluculum
 
 
    // - LuaVariable::value -----------------------------------------------------
-   LuaValue LuaVariable::value()
+   LuaValue LuaVariable::value() const
    {
       int index = LUA_GLOBALSINDEX;
 

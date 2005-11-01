@@ -44,7 +44,7 @@ namespace Diluculum
           *  @bug In fact, no exception is currently being thrown. Must add test
           *       cases, check the code and document.
           */
-         LuaValue value();
+         LuaValue value() const;
 
          /** Assuming that this \c LuaVariable holds a table, returns the value
           *  whose index is \c key.
