@@ -202,8 +202,16 @@ namespace Diluculum
           */
          LuaValue doString (const std::string& what);
 
-         // <--- TODO: document after we have something working.
-         LuaVariable operator[] (const std::string& key);
+         /** Returns a \c LuaVariable representing the global variable named
+          *  \c variable. Since the returned value also has a subscript
+          *  operator, this is a handy way to access variables stored in tables.
+          *  Also, since the \c LuaVariable has read/write support, this can be
+          *  used even to modify the variables stored in the \c LuaState.
+          *  @param variable The name of the global variable to be accessed.
+          *  @returns The global variable named \c variable.
+          *  @todo Document exceptions (and add test cases for exceptions).
+          */
+         LuaVariable operator[] (const std::string& variable);
 
       private:
          /// The underlying \c lua_State*.
@@ -211,8 +219,8 @@ namespace Diluculum
 
          /** Throws an exception if the number passed as parameter corresponds
           *  to an error code from a function from the Lua API.  The exception
-          *  thrown is of the proper type, that is, of the subclass of \c
-          *  LuaError that best describes the error.  Furthermore, the string
+          *  thrown is of the proper type, that is, of the subclass of
+          *   \c LuaError that best describes the error. Furthermore, the string
           *  associated with the exception (the \c what parameter) is set to
           *  whatever Lua returned as the error message.
           *  <p>If the number passed as parameter is 0 (which is the code for

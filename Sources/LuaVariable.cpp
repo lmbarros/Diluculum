@@ -59,6 +59,7 @@ namespace Diluculum
    }
 
 
+
    // - LuaVariable::value -----------------------------------------------------
    LuaValue LuaVariable::value()
    {
@@ -86,8 +87,9 @@ namespace Diluculum
    }
 
 
+
    // - LuaVariable::operator[] ------------------------------------------------
-   LuaVariable LuaVariable::operator[] (const LuaValue& rhs)
+   LuaVariable LuaVariable::operator[] (const LuaValue& key)
    {
       return build (state_, rhs, keys_);
    }
