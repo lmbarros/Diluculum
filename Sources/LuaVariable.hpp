@@ -73,7 +73,7 @@ namespace Diluculum
           *  <tt>LuaState</tt>'s subscript operator instead.
           */
          LuaVariable (lua_State* state, const LuaValue& key,
-                      const KeyList& predKeys);
+                      const KeyList& predKeys = KeyList());
 
          /** <tt>LuaVariable</tt>'s copy constructor.
           *  @note This is just declared, not not defined. In other words,
@@ -88,20 +88,6 @@ namespace Diluculum
           */
          LuaVariable (const LuaVariable&);
 
-         /** @todo Documentation!
-          *  @note Curiously, GCC 3.4.3 don't allow me to put this function
-          *        definition on the \c .cpp file: I get "sorry, this method is
-          *        private" errors when trying to call it -- even from methods
-          *        from this very same class. I haven't tried other compilers
-          *        and really don't know what the standard says about private
-          *        static member functions (this is a conceptual monstrosity, I
-          *        admit).
-          */
-         static LuaVariable build (lua_State* state, const LuaValue& key,
-                                   const KeyList& predKeys = KeyList())
-         {
-            return LuaVariable (state, key, predKeys);
-         }
 
          /// The Lua state in which this \c LuaVariable lives.
          lua_State* state_;
