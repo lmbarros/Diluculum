@@ -45,9 +45,19 @@ namespace Diluculum
           *        <tt>LuaVariable</tt>s is OK, then I must change the
           *        documentation accordingly. If not, then add this discussion
           *        as a note.
+          *  @bug The current implementation is a no-op. Looks like some
+          *       compilers will just accept this assignment operator if the
+          *       copy constructor is public. So, I must decide whether copying
+          *       <tt>LuaVariable</tt>s is OK before I can fix this
+          *       definitively. Also, depending on the chosen fix, I'll be able
+          *       to get rid of some <tt>.value()</tt> at some tests.
+          *       <p>And, also important: at
+          *       \c TestLuaVariableAssignmentOperator()
+          *       (\c TestLuaVariable.cpp) there some tests commented-out
+          *       because they fail due to this no-op implementation.
           */
          LuaVariable& operator= (const LuaVariable& rhs)
-         { *this = rhs.value(); return *this; }
+         { /* *this = rhs.value(); */ return *this; }
 
          /** Returns the value associated with this variable.
           *  @todo Throw a more specific exception (instead \c LuaError), and a

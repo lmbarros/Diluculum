@@ -180,7 +180,7 @@ void TestLuaStateSubscriptOperator()
 
    // Change some values and verify if they were really changed
    ls["a"] = ls["a"].value().asNumber() + 1;
-   ls["b"] = ls["d"]["a"];
+   ls["b"] = ls["d"]["a"].value();
 
    BOOST_CHECK (ls["a"] == 2);
    BOOST_CHECK (ls["b"] == "baz");
