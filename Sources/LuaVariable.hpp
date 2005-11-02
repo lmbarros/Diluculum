@@ -86,9 +86,23 @@ namespace Diluculum
          /// A sequence of keys, used to access nested tables.
          typedef std::vector<LuaValue> KeyList;
 
-         /** Constructs a \c LuaVariable. Note that this is private, so that no
-          *  one is expected to construct a \c LuaVariable directly. Use
-          *  <tt>LuaState</tt>'s subscript operator instead.
+         /** Constructs a \c LuaVariable.
+          *   @note This is private because no one is expected to construct a
+          *         \c LuaVariable directly. For Diluculum users, the only
+          *         allowed way to create a new \c LuaVariable is by using
+          *         <tt>LuaState</tt>'s subscript operator.
+          *   @param state The <tt>lua_State*</tt> in which the variable
+          *          represented by this \c LuaVariable resides.
+          *   @param key The "key" used to access the variable represented by
+          *          this \c LuaVariable. This can be variable name (for the case
+          *          of a global variable) or a "real" key (when it is a field in
+          *          a possibly nested table).
+
+          *   @param predKeys The sequence of keys used to access the table that
+          *          contains the variable represented by this \c LuaVariable.
+          *          For a global variable, this list will be empty. For a
+          *          variable stored in a possibly nested table, the list can be
+          *          arbitrarily long.
           */
          LuaVariable (lua_State* state, const LuaValue& key,
                       const KeyList& predKeys = KeyList());
@@ -99,6 +113,9 @@ namespace Diluculum
          /** The sequence of keys used to get to this variable. For a global
           *  variable, this will consist of a single key; for variables inside
           *  nested tables, this sequence can be arbitrarily long.
+          *  <p>Just to relate this with the parameters passed to the
+          *  constructor: this sequence equals to \c predKeys parameter, with
+          *  the \c key parameter appended to it.
           */
          std::vector<LuaValue> keys_;
    };
