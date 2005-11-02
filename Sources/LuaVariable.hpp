@@ -28,6 +28,13 @@ namespace Diluculum
       public:
          /** Assigns a new value to this \c LuaVariable. The corresponding
           *  variable in the Lua state is updated accordingly.
+          *  @note Notice that this is the assignment of a new value to a
+          *        variable. The user is also allowed to assign a
+          *        \c LuaVariable to another \c LuaVariable (using the
+          *        compiler-generated assignment operator). In that case, the
+          *        \c LuaVariable at the left hand side will refer to the same
+          *        variable as the \c LuaVariable at the right hand side, but no
+          *        values will be changed.
           *  @param rhs The new value for the variable.
           *  @return \c rhs, so that a sequence of assignments, like
           *          <tt>a = b = c = 1;</tt> works. Actually, returning
