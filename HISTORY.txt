@@ -1,0 +1,23 @@
+Version 0.1 (02005-10-02)
+~~~~~~~~~~~
+Not yet a public release, but the first "quite usable"
+release. Some positive remarks:
+ - A 'LuaState' class nicely encapsulating the Lua state.
+ - A 'LuaValue' class that approximates in C++ most valid Lua values.
+ - A 'LuaVariable' class that provides easy read/write access to
+   variables stored in a Lua state.
+ - Quite complete unit tests.
+ - Pretty well documented.
+ - No known bugs.
+ - Just four TODOs. Three are related to possible performance
+   improvements. The other one concerns some code duplication. So,
+   there are no really big issues.
+ - As a bonus, there are two "pure Lua" packages: one with console
+   tricks (changing font color, positioning the cursor and so on) and
+   a command-line options parser.
+But some things are still missing, most notably:
+ - Testing with other compilers/platforms (other than GCC under Linux).
+ - Improving the 'SConstruct' and directory structure so that it looks
+   like a real library, not a bunch of files.
+ - And the big thing: a good (but not necessarily excellent) way to
+   call C++ from Lua.
