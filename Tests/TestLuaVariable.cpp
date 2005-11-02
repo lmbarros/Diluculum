@@ -67,8 +67,8 @@ void TestLuaVariableSubscriptOperator()
 
 
 
-// - TestLuaVariableAssignmentOperator -----------------------------------------
-void TestLuaVariableAssignmentOperator()
+// - TestLuaVariableAssignmentOperatorValue ------------------------------------
+void TestLuaVariableAssignmentOperatorValue()
 {
    using namespace Diluculum;
 
@@ -77,11 +77,8 @@ void TestLuaVariableAssignmentOperator()
 
    // "Multiple" assignment
    ls["a"] = ls["c"] = ls["d"][5] = 123.456;
-
-      // These tests are temporarily disabled, until I fix the issues related to
-      // "can 'LuaVariable's be copyed?"
-//    BOOST_CHECK (ls["a"] == 123.456);
-//    BOOST_CHECK (ls["c"] == 123.456);
+   BOOST_CHECK (ls["a"] == 123.456);
+   BOOST_CHECK (ls["c"] == 123.456);
    BOOST_CHECK (ls["d"][5] == 123.456);
 
    // The other fields shall be untouched
@@ -91,6 +88,190 @@ void TestLuaVariableAssignmentOperator()
 }
 
 
+
+// - TestLuaVariableAssignmentOperatorVariable ---------------------------------
+void TestLuaVariableAssignmentOperatorVariable()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+   ls.doString ("a = 1; b = 'two'; c = { 1.1, 2.2, 3.3 }");
+
+   // Create two 'LuaVariable's and, just in case, check if they have the proper
+   // values
+   LuaVariable lv1 = ls["a"];
+   LuaVariable lv2 = ls["b"];
+   BOOST_CHECK (lv1 == 1);
+   BOOST_CHECK (lv2 == "two");
+
+   // Test for self assignment
+   lv1 = lv1;
+   lv2 = lv2;
+   BOOST_CHECK (lv1 == 1);
+   BOOST_CHECK (lv2 == "two");
+
+   // Assign one to another. Check if they now refer to the same variable
+   lv2 = lv1;
+   BOOST_CHECK (lv1 == 1);
+   BOOST_CHECK (lv2 == 1);
+
+   lv2 = false;
+   BOOST_CHECK (lv1 == false);
+   BOOST_CHECK (lv2 == false);
+
+   // "Multiple" assignment
+   LuaVariable lv3 = ls["c"];
+   lv1 = lv2 = lv3;
+   BOOST_CHECK (lv1[1] == 1.1);
+   BOOST_CHECK (lv1[2] == 2.2);
+   BOOST_CHECK (lv1[3] == 3.3);
+   BOOST_CHECK (lv2[1] == 1.1);
+   BOOST_CHECK (lv2[2] == 2.2);
+   BOOST_CHECK (lv2[3] == 3.3);
+   BOOST_CHECK (lv3[1] == 1.1);
+   BOOST_CHECK (lv3[2] == 2.2);
+   BOOST_CHECK (lv3[3] == 3.3);
+}
+
+
+
+// - TestLuaVariableCopyConstructor --------------------------------------------
+void TestLuaVariableCopyConstructor()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+   ls.doString ("a = 1");
+
+   // Create two 'LuaVariable's referring to the same variable in the same
+   // 'LuaState'. Then chack if changing one also changes the another one.
+   LuaVariable lv = ls["a"];
+   BOOST_CHECK (lv == 1); // just to be sure, this is already tested elsewhere
+
+   LuaVariable lvc (lv);
+   BOOST_CHECK (lvc == 1);
+
+   lvc = "a string";
+   BOOST_CHECK (lvc == "a string");
+   BOOST_CHECK (lv == "a string");
+
+   lv = true;
+   BOOST_CHECK (lv == true);
+   BOOST_CHECK (lvc == true);
+}
+
+
+
+// - TestLuaVariableEqualityOperator -------------------------------------------
+void TestLuaVariableEqualityOperator()
+{
+   using namespace Diluculum;
+
+   LuaState ls1;
+   ls1.doString ("a = 1; b = 'two'");
+
+   LuaState ls2;
+   ls2.doString ("a = 1; b = 'two'");
+
+   LuaVariable lv1 = ls1["a"];
+   LuaVariable lv2 = ls1["b"];
+   LuaVariable lv3 = ls2["a"];
+   LuaVariable lv4 = ls2["b"];
+
+   LuaVariable lv5 = ls1["a"];
+   LuaVariable lv6 = ls1["b"];
+   LuaVariable lv7 = ls2["a"];
+   LuaVariable lv8 = ls2["b"];
+
+   // Each variable is expected to be equal to itself
+   BOOST_CHECK (lv1 == lv1);
+   BOOST_CHECK (lv2 == lv2);
+   BOOST_CHECK (lv3 == lv3);
+   BOOST_CHECK (lv4 == lv4);
+   BOOST_CHECK (lv5 == lv5);
+   BOOST_CHECK (lv6 == lv6);
+   BOOST_CHECK (lv7 == lv7);
+   BOOST_CHECK (lv8 == lv8);
+
+   // Each variable is expected to be no different than itself
+   BOOST_CHECK (!(lv1 != lv1));
+   BOOST_CHECK (!(lv2 != lv2));
+   BOOST_CHECK (!(lv3 != lv3));
+   BOOST_CHECK (!(lv4 != lv4));
+   BOOST_CHECK (!(lv5 != lv5));
+   BOOST_CHECK (!(lv6 != lv6));
+   BOOST_CHECK (!(lv7 != lv7));
+   BOOST_CHECK (!(lv8 != lv8));
+
+   // 'LuaVariable's created as referring to the same variables should be equal
+   BOOST_CHECK (lv1 == lv5);
+   BOOST_CHECK (lv2 == lv6);
+   BOOST_CHECK (lv3 == lv7);
+   BOOST_CHECK (lv4 == lv8);
+
+   BOOST_CHECK (!(lv1 != lv5));
+   BOOST_CHECK (!(lv2 != lv6));
+   BOOST_CHECK (!(lv3 != lv7));
+   BOOST_CHECK (!(lv4 != lv8));
+
+   // The same as the previous, but inverting the operands
+   BOOST_CHECK (lv5 == lv1);
+   BOOST_CHECK (lv6 == lv2);
+   BOOST_CHECK (lv7 == lv3);
+   BOOST_CHECK (lv8 == lv4);
+
+   BOOST_CHECK (!(lv5 != lv1));
+   BOOST_CHECK (!(lv6 != lv2));
+   BOOST_CHECK (!(lv7 != lv3));
+   BOOST_CHECK (!(lv8 != lv4));
+
+   // If the variables differ "just" by the 'LuaState', they are still different
+   BOOST_CHECK (lv1 != lv3);
+   BOOST_CHECK (lv2 != lv4);
+
+   BOOST_CHECK (!(lv1 == lv3));
+   BOOST_CHECK (!(lv2 == lv4));
+
+   // Try some other assorted comparisons
+   BOOST_CHECK (lv1 != lv2);
+   BOOST_CHECK (lv1 != lv3);
+   BOOST_CHECK (lv1 != lv4);
+
+   BOOST_CHECK (!(lv1 == lv2));
+   BOOST_CHECK (!(lv1 == lv3));
+   BOOST_CHECK (!(lv1 == lv4));
+
+   // Finally, ensure that variables are equal after one is assigned to another
+   lv1 = lv2;
+   lv3 = lv4 = lv5 = lv6;
+
+   BOOST_CHECK (lv1 == lv1);
+   BOOST_CHECK (lv1 == lv2);
+   BOOST_CHECK (lv2 == lv2);
+
+   BOOST_CHECK (lv3 == lv3);
+   BOOST_CHECK (lv3 == lv4);
+   BOOST_CHECK (lv3 == lv5);
+   BOOST_CHECK (lv3 == lv6);
+
+   BOOST_CHECK (lv4 == lv3);
+   BOOST_CHECK (lv4 == lv4);
+   BOOST_CHECK (lv4 == lv5);
+   BOOST_CHECK (lv4 == lv6);
+
+   BOOST_CHECK (lv5 == lv3);
+   BOOST_CHECK (lv5 == lv4);
+   BOOST_CHECK (lv5 == lv5);
+   BOOST_CHECK (lv5 == lv6);
+
+   BOOST_CHECK (lv6 == lv3);
+   BOOST_CHECK (lv6 == lv4);
+   BOOST_CHECK (lv6 == lv5);
+   BOOST_CHECK (lv6 == lv6);
+}
+
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -98,7 +279,10 @@ test_suite* init_unit_test_suite (int, char*[])
 {
    test_suite* test = BOOST_TEST_SUITE ("'LuaVariable' tests");
    test->add (BOOST_TEST_CASE (&TestLuaVariableSubscriptOperator));
-   test->add (BOOST_TEST_CASE (&TestLuaVariableAssignmentOperator));
+   test->add (BOOST_TEST_CASE (&TestLuaVariableAssignmentOperatorValue));
+   test->add (BOOST_TEST_CASE (&TestLuaVariableAssignmentOperatorVariable));
+   test->add (BOOST_TEST_CASE (&TestLuaVariableCopyConstructor));
+   test->add (BOOST_TEST_CASE (&TestLuaVariableEqualityOperator));
 
    return test;
 }

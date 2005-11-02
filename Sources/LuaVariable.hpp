@@ -29,35 +29,12 @@ namespace Diluculum
          /** Assigns a new value to this \c LuaVariable. The corresponding
           *  variable in the Lua state is updated accordingly.
           *  @param rhs The new value for the variable.
-          *  @return \c *this, so that a sequence of assignments, like
-          *          <tt>a = b = c = 1;</tt> works.
-          *  @todo Considering that <tt>LuaVariable</tt>s shouldn't be copyable
-          *        by the current design, perhaps it would make more sense to
-          *        return a \c LuaValue (<tt>this->value()</tt>).
+          *  @return \c rhs, so that a sequence of assignments, like
+          *          <tt>a = b = c = 1;</tt> works. Actually, returning
+          *          \c rhs is the same as returning <tt>this->value()</tt>,
+          *          that perhaps make more sense.
           */
-         LuaVariable& operator= (const LuaValue& rhs);
-
-         /** Assigns the value of a \c LuaVariable to this \c LuaVariable.
-          *  @todo The assignment is based on the value of \c rhs. Recall that
-          *        "real" copy of <tt>LuaVariable</tt>s is forbidden by design,
-          *        so this makes some sense. But, the design is objectionable,
-          *        and I expect to rethink it soon. If I decide that copying
-          *        <tt>LuaVariable</tt>s is OK, then I must change the
-          *        documentation accordingly. If not, then add this discussion
-          *        as a note.
-          *  @bug The current implementation is a no-op. Looks like some
-          *       compilers will just accept this assignment operator if the
-          *       copy constructor is public. So, I must decide whether copying
-          *       <tt>LuaVariable</tt>s is OK before I can fix this
-          *       definitively. Also, depending on the chosen fix, I'll be able
-          *       to get rid of some <tt>.value()</tt> at some tests.
-          *       <p>And, also important: at
-          *       \c TestLuaVariableAssignmentOperator()
-          *       (\c TestLuaVariable.cpp) there some tests commented-out
-          *       because they fail due to this no-op implementation.
-          */
-         LuaVariable& operator= (const LuaVariable& rhs)
-         { /* *this = rhs.value(); */ return *this; }
+         const LuaValue& operator= (const LuaValue& rhs);
 
          /** Returns the value associated with this variable.
           *  @todo Throw a more specific exception (instead \c LuaError), and a
@@ -87,6 +64,24 @@ namespace Diluculum
          bool operator== (const LuaValue& rhs) const
          { return value() == rhs; }
 
+         /** Checks whether this \c LuaVariable refers to the same variable as
+          *  \c rhs.
+          *  @param rhs The variable against which the comparison will be done.
+          *  @return \c true if both involved <tt>LuaVariable</tt>s refer to the
+          *          same variable. \c false otherwise.
+          */
+         bool operator== (const LuaVariable& rhs) const
+         { return state_ == rhs.state_ && keys_ == rhs.keys_; }
+
+         /** Checks whether this \c LuaVariable refers to a different variable
+          *  than \c rhs.
+          *  @param rhs The variable against which the comparison will be done.
+          *  @return \c false if both involved <tt>LuaVariable</tt>s refer to the
+          *          same variable. \c true otherwise.
+          */
+         bool operator!= (const LuaVariable& rhs) const
+         { return state_ != rhs.state_ || keys_ != rhs.keys_; }
+
       private:
          /// A sequence of keys, used to access nested tables.
          typedef std::vector<LuaValue> KeyList;
@@ -97,19 +92,6 @@ namespace Diluculum
           */
          LuaVariable (lua_State* state, const LuaValue& key,
                       const KeyList& predKeys = KeyList());
-
-         /** <tt>LuaVariable</tt>'s copy constructor.
-          *  @note This is just declared, not not defined. In other words,
-          *        trying to copy a \c LuaVariable will result in a link-time
-          *        error, and this is so by design.
-          *  @todo I firstly disallowed copying because it sounded hard to keep
-          *        multiple copies of the save variable in sync (for example, if
-          *        a new value is assigned to a variable, its copies should
-          *        refer to the new value if their \c value() method is called).
-          *        Now, it sounds like it is not that hard to allow copies. Must
-          *        check this.
-          */
-         LuaVariable (const LuaVariable&);
 
          /// The Lua state in which this \c LuaVariable lives.
          lua_State* state_;

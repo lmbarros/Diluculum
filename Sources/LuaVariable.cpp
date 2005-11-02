@@ -23,7 +23,7 @@ namespace Diluculum
 
 
    // - LuaVariable::operator= -------------------------------------------------
-   LuaVariable& LuaVariable::operator= (const LuaValue& rhs)
+   const LuaValue& LuaVariable::operator= (const LuaValue& rhs)
    {
       // Push the globals table onto the stack
       lua_pushstring (state_, "_G");
@@ -55,7 +55,7 @@ namespace Diluculum
       lua_settable (state_, -3);
       lua_pop (state_, 1);
 
-      return *this;
+      return rhs;
    }
 
 
