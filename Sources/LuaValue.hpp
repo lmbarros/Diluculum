@@ -193,10 +193,9 @@ namespace Diluculum
          LuaValue& operator[] (const LuaValue& key);
 
          /** Returns a \c const reference to a field of this \c LuaValue
-          *  (assuming it is a table).
+          *  (assuming it is a table). If there is no value associated with the
+          *  key passed as parameter, returns \c Nil.
           *  @throw TypeMismatchError If this \c LuaValue does not hold a table.
-          *  @throw NoSuchKeyError If there is no value associated with the key
-          *         passed as parameter.
           */
          const LuaValue& operator[] (const LuaValue& key) const;
 
@@ -207,86 +206,6 @@ namespace Diluculum
          /// Stores the value (and the type) stored in this \c LuaValue.
          boost::variant <NilType, lua_Number, std::string, bool, LuaValueMap>
          value_;
-   };
-
-
-
-   /// A generic <tt>LuaValue</tt>-related error.
-   class LuaValueError: public std::runtime_error
-   {
-      public:
-         /** Constructs a \c LuaValueError object.
-          *  @param what The message associated with the error.
-          */
-         LuaValueError (const char* what)
-            : std::runtime_error (what)
-         { }
-   };
-
-
-
-   /** An error in a \c LuaValue that happens when a certain type is expected
-    *  but another one is found.
-    */
-   class TypeMismatchError: public LuaValueError
-   {
-      public:
-         /** Constructs a \c TypeMismatchError object.
-          *  @param expectedType The type that was expected.
-          *  @param foundType The type that was actually found.
-          */
-         TypeMismatchError (const std::string& expectedType,
-                            const std::string& foundType);
-
-         /** Destroys a \c TypeMismatchError object.
-          *  @note This was defined just to pretend that the destructor does not
-          *        throw any exception. While this is something that I cannot
-          *        guarantee (at least with this implementation), I believe this
-          *        not a very dangerous lie.
-          */
-         ~TypeMismatchError() throw() { };
-
-         /// Returns the type that was expected.
-         std::string getExpectedType() { return expectedType_; }
-
-         /// Returns the type that was actually found.
-         std::string getFoundType() { return foundType_; }
-
-      private:
-         /// The type that was expected.
-         std::string expectedType_;
-
-         /// The type that was actually found.
-         std::string foundType_;
-   };
-
-
-
-   /** An error in a table-typed \c LuaValue that happens when trying to access
-    *  a key that does not exist.
-    */
-   class NoSuchKeyError: public LuaValueError
-   {
-      public:
-         /** Constructs a \c NoSuchKeyError object.
-          *  @param badKey The key that was not found.
-          */
-         NoSuchKeyError (const LuaValue& badKey);
-
-         /** Destroys a \c NoSuchKeyError object.
-          *  @note This was defined just to pretend that the destructor does not
-          *        throw any exception. While this is something that I cannot
-          *        guarantee (at least with this implementation), I believe this
-          *        not a very dangerous lie.
-          */
-         ~NoSuchKeyError() throw() { };
-
-         /// Returns the key that was not found.
-         const LuaValue& getBadKey() { return badKey_; }
-
-      private:
-         /// The key that was not found.
-         LuaValue badKey_;
    };
 
 

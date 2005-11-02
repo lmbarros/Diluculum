@@ -272,6 +272,41 @@ void TestLuaVariableEqualityOperator()
 
 
 
+// - TestLuaVariableExceptions -------------------------------------------------
+void TestLuaVariableExceptions()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+   ls.doString ("t = { a = 1, b = 'b', c = true }");
+
+   // Accessing a valid global variable shall not throw.
+   LuaVariable lv1 = ls["t"];
+   BOOST_CHECK_NO_THROW (lv1.value());
+
+   // Accessing an invalid global variable shall not throw ('Nil' is returned)
+   LuaVariable lv2 = ls["x"];
+   BOOST_CHECK_NO_THROW (lv2.value());
+   BOOST_CHECK (lv2.value() == Nil);
+
+   // Accessing a valid table key shall not throw
+   LuaVariable lv3 = ls["t"]["a"];
+   BOOST_CHECK_NO_THROW (lv3.value());
+
+   // Accessing an invalid table key shall not throw ('Nil' is returned)
+   LuaVariable lv4 = ls["t"]["x"];
+   BOOST_CHECK_NO_THROW (lv4.value());
+   BOOST_CHECK (lv4.value() == Nil);
+
+   // Accessing an (obviously) invalid key of an invalid table shall throw
+   BOOST_CHECK_THROW (ls["x"]["x"].value(), TypeMismatchError);
+
+   // Subscripting a non-table shall throw, too
+   BOOST_CHECK_THROW (ls["a"]["x"].value(), TypeMismatchError);
+}
+
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -283,6 +318,7 @@ test_suite* init_unit_test_suite (int, char*[])
    test->add (BOOST_TEST_CASE (&TestLuaVariableAssignmentOperatorVariable));
    test->add (BOOST_TEST_CASE (&TestLuaVariableCopyConstructor));
    test->add (BOOST_TEST_CASE (&TestLuaVariableEqualityOperator));
+   test->add (BOOST_TEST_CASE (&TestLuaVariableExceptions));
 
    return test;
 }

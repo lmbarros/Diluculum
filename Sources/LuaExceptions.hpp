@@ -8,6 +8,8 @@
 #define _DILUCULUM_LUA_EXCEPTIONS_HPP_
 
 #include <stdexcept>
+#include "LuaValue.hpp"
+
 
 namespace Diluculum
 {
@@ -107,6 +109,43 @@ namespace Diluculum
          LuaTypeError (const char* what)
             : LuaError (what)
          { }
+   };
+
+
+
+   /** An error that happens when a certain type is expected but another one is
+    *  found.
+    */
+   class TypeMismatchError: public LuaError
+   {
+      public:
+         /** Constructs a \c TypeMismatchError object.
+          *  @param expectedType The type that was expected.
+          *  @param foundType The type that was actually found.
+          */
+         TypeMismatchError (const std::string& expectedType,
+                            const std::string& foundType);
+
+         /** Destroys a \c TypeMismatchError object.
+          *  @note This was defined just to pretend that the destructor does not
+          *        throw any exception. While this is something that I cannot
+          *        guarantee (at least with this implementation), I believe this
+          *        not a very dangerous lie.
+          */
+         ~TypeMismatchError() throw() { };
+
+         /// Returns the type that was expected.
+         std::string getExpectedType() const { return expectedType_; }
+
+         /// Returns the type that was actually found.
+         std::string getFoundType() const { return foundType_; }
+
+      private:
+         /// The type that was expected.
+         std::string expectedType_;
+
+         /// The type that was actually found.
+         std::string foundType_;
    };
 
 } // namespace Diluculum

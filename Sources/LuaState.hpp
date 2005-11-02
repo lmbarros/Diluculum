@@ -108,8 +108,9 @@ namespace Diluculum
           *  Also, since the \c LuaVariable has read/write support, this can be
           *  used even to modify the variables stored in the \c LuaState.
           *  @param variable The name of the global variable to be accessed.
-          *  @returns The global variable named \c variable.
-          *  @todo Document exceptions (and add test cases for exceptions).
+          *  @returns The global variable named \c variable. If no such variable
+          *           exists, returns a variable containing \c Nil.
+          *  @note This operator does not throw exceptions.
           */
          LuaVariable operator[] (const std::string& variable);
 

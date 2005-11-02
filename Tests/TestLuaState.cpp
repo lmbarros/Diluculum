@@ -191,6 +191,13 @@ void TestLuaStateSubscriptOperator()
 
    BOOST_CHECK (ls["d"][4] == 12.34);
    BOOST_CHECK (ls["z"] == 56.78);
+
+   // Ensure that accessing a non-existent variable returns \c Nil...
+   BOOST_CHECK (ls["nope"] == Nil);
+
+   //... but also certify that we can set such variable's value.
+   ls["nope"] = "yup";
+   BOOST_CHECK (ls["nope"] == "yup");
 }
 
 

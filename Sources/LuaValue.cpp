@@ -5,29 +5,10 @@
 \******************************************************************************/
 
 #include "LuaValue.hpp"
+#include "LuaExceptions.hpp"
 
 namespace Diluculum
 {
-
-   // - TypeMismatchError::TypeMismatchError -----------------------------------
-   TypeMismatchError::TypeMismatchError (const std::string& expectedType,
-                                         const std::string& foundType)
-      : LuaValueError (("Type mismatch: '" + expectedType
-                        + "' was expected but '" + foundType
-                        + "' was found.").c_str()),
-        expectedType_ (expectedType), foundType_(foundType)
-   { }
-
-
-
-   // - NoSuchKeyError::NoSuchKeyError -----------------------------------------
-   NoSuchKeyError::NoSuchKeyError (const LuaValue& badKey)
-      : LuaValueError ("Trying to access a table with an invalid key."),
-        badKey_ (badKey)
-   { }
-
-
-
    // - LuaValue::type ---------------------------------------------------------
    int LuaValue::type() const
    {
@@ -280,7 +261,7 @@ namespace Diluculum
       LuaValueMap::const_iterator it = table.find(key);
 
       if (it == table.end())
-         throw NoSuchKeyError (key);
+         return Nil;
 
       return it->second;
    }

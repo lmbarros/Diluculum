@@ -19,7 +19,6 @@ namespace Diluculum
     *  the corresponding variable in the Lua state is changed, too.
     *  <p><tt>LuaVariable</tt>s cannot be directly constructed. They are
     *  designed to be returned by <tt>LuaState</tt>'s subscript operator.
-    *  @todo Add tests for expected exceptions.
     */
    class LuaVariable
    {
@@ -43,13 +42,10 @@ namespace Diluculum
           */
          const LuaValue& operator= (const LuaValue& rhs);
 
-         /** Returns the value associated with this variable.
-          *  @todo Throw a more specific exception (instead \c LuaError), and a
-          *        more adequate message (instead of "Duh"). When doing this,
-          *        add some tests to ensure that the proper exception is thrown
-          *        when calling \c value() and \c operator[].
-          *  @bug In fact, no exception is currently being thrown. Must add test
-          *       cases, check the code and document.
+         /** Returns the value associated with this variable. If the variable
+          *  does not exist, returns \c Nil.
+          *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
+          *         something that is not a table.
           */
          LuaValue value() const;
 
@@ -57,8 +53,10 @@ namespace Diluculum
           *  whose index is \c key.
           *  @param key The key whose value is desired.
           *  @return The value whose index is \c key.
-          *  @todo What about exceptions? Must add test cases, check the code
-          *        and document.
+          *  @note This method doesn't throw anything, even if this
+          *        \c LuaVariable doesn't hold a table. But an exception will
+          *        be thrown if one tries to access the value of the returned
+          *        variable (see \c value()).
           */
          LuaVariable operator[] (const LuaValue& key) const;
 
@@ -67,6 +65,8 @@ namespace Diluculum
           *  @param rhs The value against which the comparison will be done.
           *  @return \c true if this variable's value is equal to \c rhs.
           *          \c false otherwise.
+          *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
+          *         something that is not a table.
           */
          bool operator== (const LuaValue& rhs) const
          { return value() == rhs; }

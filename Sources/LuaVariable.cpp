@@ -70,10 +70,11 @@ namespace Diluculum
       {
          PushLuaValue (state_, *p);
          lua_gettable (state_, index);
-//          if (!lua_istable(state_, -1))
-//          {
-//             throw LuaError ("Duh.");
-//          }
+
+         assert (keys_.size() > 0 && "There should be at least one key here.");
+
+         if (keys_.size() > 1 && p != keys_.end()-1 && !lua_istable(state_, -1))
+            throw TypeMismatchError ("table", p->typeName());
 
          if (index != LUA_GLOBALSINDEX)
             lua_remove (state_, -2);

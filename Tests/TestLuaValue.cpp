@@ -5,6 +5,7 @@
 \******************************************************************************/
 
 #include <boost/test/unit_test.hpp>
+#include "LuaExceptions.hpp"
 #include "LuaValue.hpp"
 
 
@@ -387,10 +388,10 @@ void TestLuaValueConstSubscriptOperator()
    BOOST_CHECK (tableValue[true] == false);
    BOOST_CHECK (tableValue[123] == 456);
 
-   // Then, ensure that exceptions are thrown when accessing an invalid key
-   BOOST_CHECK_THROW (tableValue["dummy"], NoSuchKeyError);
-   BOOST_CHECK_THROW (tableValue[123.456], NoSuchKeyError);
-   BOOST_CHECK_THROW (tableValue["nested"][7.8], NoSuchKeyError);
+   // Then, ensure that accessing an invalid key returns 'Nil'
+   BOOST_CHECK (tableValue["dummy"] == Nil);
+   BOOST_CHECK (tableValue[123.456] == Nil);
+   BOOST_CHECK (tableValue["nested"][7.8] == Nil);
 
    // Try to subscript non-table values
    LuaValue nilValue;
