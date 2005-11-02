@@ -82,9 +82,12 @@ namespace Diluculum
             const LuaValueMap table = value.asTable();
             for (iter_t p = table.begin(); p != table.end(); ++p)
             {
-               PushLuaValue (state, p->first);
-               PushLuaValue (state, p->second);
-               lua_settable (state, -3);
+               if (p->first != Nil) // Ignore 'Nil'-indexed entries
+               {
+                  PushLuaValue (state, p->first);
+                  PushLuaValue (state, p->second);
+                  lua_settable (state, -3);
+               }
             }
 
             break;

@@ -24,10 +24,8 @@ namespace Diluculum
 
    /** Calls the appropriate <tt>lua_push*()</tt> function, in order to push the
     *  value stored at \c value to the Lua stack.
-    *  @todo There is at least one unhandled error situation: a \c LuaValueMap
-    *        can use \c Nil as index, but a Lua table can't; something bad will
-    *        most likely happen if we try to \c PushLuaValue() a \c LuaValueMap
-    *        with a \c Nil index.
+    *  @note If \c value holds a table, then any entry that happens to have
+    *        \c Nil as key will be ignored.
     */
    void PushLuaValue (lua_State* state, const LuaValue& value);
 
