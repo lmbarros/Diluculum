@@ -185,7 +185,7 @@ void TestLuaStateSubscriptOperator()
    BOOST_CHECK (ls["a"] == 2);
    BOOST_CHECK (ls["b"] == "baz");
 
-   // Add a new values, and read it
+   // Add new values, and read them
    ls["d"][4] = 12.34;
    ls["z"] = 56.78;
 
