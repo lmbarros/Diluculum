@@ -76,7 +76,7 @@ namespace Diluculum
           *  @todo What about exceptions? Must add test cases, check the code
           *        and document.
           */
-         LuaVariable operator[] (const LuaValue& key);
+         LuaVariable operator[] (const LuaValue& key) const;
 
          /** Checks whether the value stored in this variable is equal to the
           *  value at \c rhs.
@@ -84,7 +84,7 @@ namespace Diluculum
           *  @return \c true if this variable's value is equal to \c rhs.
           *          \c false otherwise.
           */
-         bool operator== (const LuaValue& rhs)
+         bool operator== (const LuaValue& rhs) const
          { return value() == rhs; }
 
       private:

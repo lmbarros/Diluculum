@@ -89,7 +89,7 @@ namespace Diluculum
 
 
    // - LuaVariable::operator[] ------------------------------------------------
-   LuaVariable LuaVariable::operator[] (const LuaValue& key)
+   LuaVariable LuaVariable::operator[] (const LuaValue& key) const
    {
       return LuaVariable (state_, key, keys_);
    }
