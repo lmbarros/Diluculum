@@ -111,7 +111,6 @@ namespace Diluculum
           */
          LuaVariable (const LuaVariable&);
 
-
          /// The Lua state in which this \c LuaVariable lives.
          lua_State* state_;
 
