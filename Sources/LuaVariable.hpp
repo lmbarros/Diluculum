@@ -107,7 +107,6 @@ namespace Diluculum
           *          this \c LuaVariable. This can be variable name (for the case
           *          of a global variable) or a "real" key (when it is a field in
           *          a possibly nested table).
-
           *   @param predKeys The sequence of keys used to access the table that
           *          contains the variable represented by this \c LuaVariable.
           *          For a global variable, this list will be empty. For a
