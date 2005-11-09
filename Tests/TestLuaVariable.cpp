@@ -307,6 +307,21 @@ void TestLuaVariableExceptions()
 
 
 
+// - TestLuaVariableFunctionCall -----------------------------------------------
+void TestLuaVariableFunctionCall()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+
+//    // <--- Just wondering... not real tests yet...
+//    LuaValue f = ls.doString ("return function (x) return x * x end");
+
+//    BOOST_CHECK (1 == 2);
+}
+
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -319,6 +334,7 @@ test_suite* init_unit_test_suite (int, char*[])
    test->add (BOOST_TEST_CASE (&TestLuaVariableCopyConstructor));
    test->add (BOOST_TEST_CASE (&TestLuaVariableEqualityOperator));
    test->add (BOOST_TEST_CASE (&TestLuaVariableExceptions));
+   test->add (BOOST_TEST_CASE (&TestLuaVariableFunctionCall));
 
    return test;
 }

@@ -22,6 +22,8 @@ namespace Diluculum
          return LUA_TSTRING;
       else if (value_.type() == typeid (LuaValueMap))
          return LUA_TTABLE;
+      else if (value_.type() == typeid (lua_CFunction))
+         return LUA_TFUNCTION;
       else
          return LUA_TNONE;
    }
@@ -41,6 +43,8 @@ namespace Diluculum
          return "string";
       else if (value_.type() == typeid (LuaValueMap))
          return "table";
+      else if (value_.type() == typeid (lua_CFunction))
+         return "function";
       else
          return "";
    }
@@ -106,6 +110,20 @@ namespace Diluculum
    }
 
 
+   // - LuaValue::asFunction ---------------------------------------------------
+   lua_CFunction LuaValue::asFunction() const
+   {
+      try
+      {
+         return boost::get<lua_CFunction>(value_);
+      }
+      catch (boost::bad_get& e)
+      {
+         throw TypeMismatchError ("function", typeName());
+      }
+   }
+
+
 
    // - LuaValue::operator< ----------------------------------------------------
    bool LuaValue::operator< (const LuaValue& rhs) const
@@ -127,6 +145,8 @@ namespace Diluculum
             return asNumber() < rhs.asNumber();
          else if (lhsTypeName == "string")
             return asString() < rhs.asString();
+         else if (lhsTypeName == "function")
+            return asFunction() < rhs.asFunction();
          else if (lhsTypeName == "table")
          {
             const LuaValueMap lhsMap = asTable();
@@ -192,6 +212,8 @@ namespace Diluculum
             return asNumber() > rhs.asNumber();
          else if (lhsTypeName == "string")
             return asString() > rhs.asString();
+         else if (lhsTypeName == "function")
+            return asFunction() > rhs.asFunction();
          else if (lhsTypeName == "table")
          {
             const LuaValueMap lhsMap = asTable();

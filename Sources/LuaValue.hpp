@@ -93,6 +93,11 @@ namespace Diluculum
             : value_(t)
          { }
 
+         /// Constructs a \c LuaValue with function type and \c f value.
+         LuaValue (lua_CFunction f)
+            : value_(f)
+         { }
+
          /** Returns one of the <tt>LUA_T*</tt> constants from <tt>lua.h</tt>,
           *  representing the type stored in this \c LuaValue.
           */
@@ -102,9 +107,15 @@ namespace Diluculum
           *  built-in function \c type().
           *  @return One of the following strings: <tt>"nil"</tt>,
           *          <tt>"boolean"</tt>, <tt>"number"</tt>, <tt>"string"</tt>,
-          *          <tt>"table"</tt>. If the stored value is different than
-          *          those for some reason, returns an empty string
-          *          (<tt>""</tt>).
+          *          <tt>"table"</tt>, <tt>"function"</tt>. If the stored value
+          *          is different than those for some reason, returns an empty
+          *          string (<tt>""</tt>).
+          *  @todo This "returns an empty string is something weird happens"
+          *        policy is not nice. An exception (or, perhaps even better in
+          *        this case, an \c assert()) would be possibly nicer. When
+          *        fixing this, also take a look at \c operator< and its
+          *        relatives, because they have an \c else to catch an empty
+          *        string type name.
           */
          std::string typeName() const;
 
@@ -135,6 +146,12 @@ namespace Diluculum
           *         strict check; no type conversion is performed).
           */
          LuaValueMap asTable() const;
+
+         /** Return the value as a function.
+          *  @throw TypeMismatchError If the value is not a function (this is a
+          *         strict check; no type conversion is performed).
+          */
+         lua_CFunction asFunction() const;
 
          /** "Less than" operator for <tt>LuaValue</tt>s.
           *  @return The order relationship is quite arbitrary for
@@ -204,8 +221,8 @@ namespace Diluculum
          class NilType { };
 
          /// Stores the value (and the type) stored in this \c LuaValue.
-         boost::variant <NilType, lua_Number, std::string, bool, LuaValueMap>
-         value_;
+         boost::variant <NilType, lua_Number, std::string, bool, LuaValueMap,
+                         lua_CFunction> value_;
    };
 
 
