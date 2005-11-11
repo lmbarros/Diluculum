@@ -76,7 +76,8 @@ void TestLuaVariableAssignmentOperatorValue()
    ls.doString ("a = 1; b = 'two'; c = true; d = { 'foo', 'bar', [5] = 'baz' }");
 
    // "Multiple" assignment
-   ls["a"] = ls["c"] = ls["d"][5] = 123.456;
+   ls["newField"] = ls["a"] = ls["c"] = ls["d"][5] = 123.456;
+   BOOST_CHECK (ls["newField"] == 123.456);
    BOOST_CHECK (ls["a"] == 123.456);
    BOOST_CHECK (ls["c"] == 123.456);
    BOOST_CHECK (ls["d"][5] == 123.456);
@@ -85,6 +86,16 @@ void TestLuaVariableAssignmentOperatorValue()
    BOOST_CHECK (ls["b"] == "two");
    BOOST_CHECK (ls["d"][1] == "foo");
    BOOST_CHECK (ls["d"][2] == "bar");
+
+   // Try with other types, too
+   ls["a"] = "Boo!";
+   BOOST_CHECK (ls["a"] == "Boo!");
+
+   ls["a"] = false;
+   BOOST_CHECK (ls["a"] == false);
+
+   ls["a"] = Nil;
+   BOOST_CHECK (ls["a"] == Nil);
 }
 
 
