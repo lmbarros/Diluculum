@@ -84,16 +84,16 @@ void TestPushLuaValue()
    // Check if the values were properly pushed
    BOOST_CHECK (lua_isnil (ls, 1));
 
-   BOOST_CHECK (lua_isboolean (ls, 2));
+   BOOST_REQUIRE (lua_isboolean (ls, 2));
    BOOST_CHECK (lua_toboolean (ls, 2) == false);
 
-   BOOST_CHECK (lua_isstring (ls, 3));
+   BOOST_REQUIRE (lua_isstring (ls, 3));
    BOOST_CHECK (std::strcmp (lua_tostring (ls, 3), "The sky is blue.") == 0);
 
-   BOOST_CHECK (lua_isnumber (ls, 4));
+   BOOST_REQUIRE (lua_isnumber (ls, 4));
    BOOST_CHECK (lua_tonumber (ls, 4) == 2.7183);
 
-   BOOST_CHECK (lua_iscfunction (ls, 5));
+   BOOST_REQUIRE (lua_iscfunction (ls, 5));
    BOOST_CHECK (lua_tocfunction (ls, 5) == CLuaFunctionExample);
 
    // Close the Lua state used in this test
