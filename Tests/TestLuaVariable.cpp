@@ -122,6 +122,9 @@ void TestLuaVariableAssignmentOperatorValue()
 
    ls["a"] = CLuaFunctionTimesTwo;
    BOOST_CHECK (ls["a"] == CLuaFunctionTimesTwo);
+
+   // Subscripting a non-table shall throw
+   BOOST_CHECK_THROW (ls["a"]["a"] = "Ugh!", TypeMismatchError);
 }
 
 

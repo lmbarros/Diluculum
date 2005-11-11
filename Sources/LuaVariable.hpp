@@ -39,9 +39,8 @@ namespace Diluculum
           *          <tt>a = b = c = 1;</tt> works. Actually, returning
           *          \c rhs is the same as returning <tt>this->value()</tt>,
           *          that perhaps make more sense.
-          *  @todo There is a <tt>throw LuaError ("Duh.");</tt> statement in the
-          *        implementation. This is ridiculous, and (worse!) the
-          *        exception is not documented. Bad, uh?
+          *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
+          *         something that is not a table.
           */
          const LuaValue& operator= (const LuaValue& rhs);
 

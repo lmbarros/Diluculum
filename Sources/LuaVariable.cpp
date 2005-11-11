@@ -43,7 +43,8 @@ namespace Diluculum
          lua_gettable (state_, -2);
          if (!lua_istable(state_, -1))
          {
-            throw LuaError ("Duh.");
+            throw TypeMismatchError ("table",
+                                     ToLuaValue (state_, -1).typeName());
          }
 
          lua_remove (state_, -2);
