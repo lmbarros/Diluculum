@@ -25,7 +25,10 @@ namespace Diluculum
       else if (value_.type() == typeid (lua_CFunction))
          return LUA_TFUNCTION;
       else
-         return LUA_TNONE;
+      {
+         assert (false
+                 && "Invalid type found in a call to 'LuaValue::type()'.");
+      }
    }
 
 
@@ -46,7 +49,10 @@ namespace Diluculum
       else if (value_.type() == typeid (lua_CFunction))
          return "function";
       else
-         return "";
+      {
+         assert (false
+                 && "Invalid type found in a call to 'LuaValue::typeName()'.");
+      }
    }
 
 
@@ -185,8 +191,12 @@ namespace Diluculum
                return false;
             }
          }
-         else // typename == ""
-            return false;
+         else
+         {
+            assert (false && "Unsupported type found at a call "
+                    "to 'LuaValue::operator<()'");
+            return false; // make the compiler happy.
+         }
       }
    }
 
@@ -252,8 +262,12 @@ namespace Diluculum
                return false;
             }
          }
-         else // typename == ""
-            return false;
+         else
+         {
+            assert (false && "Unsupported type found at a call "
+                    "to 'LuaValue::operator>()'");
+            return false; // make the compiler happy.
+         }
       }
    }
 

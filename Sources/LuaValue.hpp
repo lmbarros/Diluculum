@@ -110,12 +110,6 @@ namespace Diluculum
           *          <tt>"table"</tt>, <tt>"function"</tt>. If the stored value
           *          is different than those for some reason, returns an empty
           *          string (<tt>""</tt>).
-          *  @todo This "returns an empty string is something weird happens"
-          *        policy is not nice. An exception (or, perhaps even better in
-          *        this case, an \c assert()) would be possibly nicer. When
-          *        fixing this, also take a look at \c operator< and its
-          *        relatives, because they have an \c else to catch an empty
-          *        string type name.
           */
          std::string typeName() const;
 
