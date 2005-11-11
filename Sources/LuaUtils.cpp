@@ -45,6 +45,14 @@ namespace Diluculum
             // Alright, return the result
             return ret;
          }
+         case LUA_TFUNCTION:
+            if (lua_iscfunction (state, index))
+               return lua_tocfunction (state, index);
+            else
+            {
+               throw LuaTypeError(
+                  "Lua functions not yet supported by 'ToLuaValue()'.");
+            }
          default:
             throw LuaTypeError(
                "Unsupported type found in call to 'ToLuaValue()'");
@@ -92,6 +100,10 @@ namespace Diluculum
 
             break;
          }
+
+         case LUA_TFUNCTION:
+            lua_pushcfunction (state, value.asFunction());
+            break;
 
          default:
             throw LuaTypeError(

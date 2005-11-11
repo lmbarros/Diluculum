@@ -10,6 +10,12 @@
 #include "LuaUtils.hpp"
 
 
+int CLuaFunctionExample (lua_State* ls)
+{
+   return 0;
+}
+
+
 // - TestToLuaValue ------------------------------------------------------------
 void TestToLuaValue()
 {
@@ -21,30 +27,36 @@ void TestToLuaValue()
    lua_pushnumber (ls, 171.171);
    lua_pushstring (ls, "The book is on the table.");
    lua_pushnil (ls);
+   lua_pushcfunction (ls, CLuaFunctionExample);
 
    LuaValue lvTrue (true);
    LuaValue lv171 (171.171);
    LuaValue lvTBIOTT ("The book is on the table.");
+   LuaValue lvCLua (CLuaFunctionExample);
 
    // Try reading using positive (absolute) indexes
    BOOST_CHECK (ToLuaValue (ls, 1) == lvTrue);
    BOOST_CHECK (ToLuaValue (ls, 2) == lv171);
    BOOST_CHECK (ToLuaValue (ls, 3) == lvTBIOTT);
    BOOST_CHECK (ToLuaValue (ls, 4) == Nil);
+   BOOST_CHECK (ToLuaValue (ls, 5) == lvCLua);
 
    // And now, try with negative indexes
-   BOOST_CHECK (ToLuaValue (ls, -1) == Nil);
-   BOOST_CHECK (ToLuaValue (ls, -2) == lvTBIOTT);
-   BOOST_CHECK (ToLuaValue (ls, -3) == lv171);
-   BOOST_CHECK (ToLuaValue (ls, -4) == lvTrue);
+   BOOST_CHECK (ToLuaValue (ls, -1) == lvCLua);
+   BOOST_CHECK (ToLuaValue (ls, -2) == Nil);
+   BOOST_CHECK (ToLuaValue (ls, -3) == lvTBIOTT);
+   BOOST_CHECK (ToLuaValue (ls, -4) == lv171);
+   BOOST_CHECK (ToLuaValue (ls, -5) == lvTrue);
 
    // Just to be complete, do everything once more using "constants"
    BOOST_CHECK (ToLuaValue (ls, 1) == true);
    BOOST_CHECK (ToLuaValue (ls, 2) == 171.171);
    BOOST_CHECK (ToLuaValue (ls, 3) == "The book is on the table.");
-   BOOST_CHECK (ToLuaValue (ls, -2) == "The book is on the table.");
-   BOOST_CHECK (ToLuaValue (ls, -3) == 171.171);
-   BOOST_CHECK (ToLuaValue (ls, -4) == true);
+   BOOST_CHECK (ToLuaValue (ls, 5) == CLuaFunctionExample);
+   BOOST_CHECK (ToLuaValue (ls, -1) == CLuaFunctionExample);
+   BOOST_CHECK (ToLuaValue (ls, -3) == "The book is on the table.");
+   BOOST_CHECK (ToLuaValue (ls, -4) == 171.171);
+   BOOST_CHECK (ToLuaValue (ls, -5) == true);
 
    // Ensure that trying to convert unsupported types throws an exception
    lua_newthread (ls);
@@ -67,6 +79,7 @@ void TestPushLuaValue()
    PushLuaValue (ls, false);
    PushLuaValue (ls, "The sky is blue.");
    PushLuaValue (ls, 2.7183);
+   PushLuaValue (ls, CLuaFunctionExample);
 
    // Check if the values were properly pushed
    BOOST_CHECK (lua_isnil (ls, 1));
@@ -79,6 +92,9 @@ void TestPushLuaValue()
 
    BOOST_CHECK (lua_isnumber (ls, 4));
    BOOST_CHECK (lua_tonumber (ls, 4) == 2.7183);
+
+   BOOST_CHECK (lua_iscfunction (ls, 5));
+   BOOST_CHECK (lua_tocfunction (ls, 5) == CLuaFunctionExample);
 
    // Close the Lua state used in this test
    lua_close (ls);

@@ -8,6 +8,29 @@
 #include "LuaState.hpp"
 
 
+int CLuaFunctionTimesTwo (lua_State* ls)
+{
+   int numArgs = lua_gettop (ls);
+   if (numArgs != 1)
+   {
+      lua_pushstring (ls, "expected two parameters in call to 'TimesTwo()'");
+      lua_error (ls);
+   }
+
+   if (!lua_isnumber (ls, 1))
+   {
+      lua_pushstring(ls, "argument to function 'TimesTwo()' should be a number.");
+      lua_error(ls);
+   }
+
+   lua_Number num = lua_tonumber (ls, 1);
+
+   lua_pushnumber (ls, num * 2);
+   return 1;
+}
+
+
+
 // - TestLuaVariableSubscriptOperator ------------------------------------------
 void TestLuaVariableSubscriptOperator()
 {
@@ -96,6 +119,9 @@ void TestLuaVariableAssignmentOperatorValue()
 
    ls["a"] = Nil;
    BOOST_CHECK (ls["a"] == Nil);
+
+   ls["a"] = CLuaFunctionTimesTwo;
+   BOOST_CHECK (ls["a"] == CLuaFunctionTimesTwo);
 }
 
 
@@ -333,6 +359,24 @@ void TestLuaVariableFunctionCall()
 
 
 
+// - TestLuaVariableCFunction --------------------------------------------------
+void TestLuaVariableCFunction()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+
+   // Register a C function in Lua, call it from Lua and check the return value.
+   ls["TimesTwo"] = CLuaFunctionTimesTwo;
+   LuaValue val = ls.doString ("return TimesTwo (50)");
+   BOOST_CHECK (val == 100);
+
+   // Forcing a call to 'lua_error()' in the C function shall translate to
+   // an exception.
+   BOOST_CHECK_THROW (ls.doString ("return TimesTwo (1, 2)"), LuaRunTimeError);
+}
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -346,6 +390,7 @@ test_suite* init_unit_test_suite (int, char*[])
    test->add (BOOST_TEST_CASE (&TestLuaVariableEqualityOperator));
    test->add (BOOST_TEST_CASE (&TestLuaVariableExceptions));
    test->add (BOOST_TEST_CASE (&TestLuaVariableFunctionCall));
+   test->add (BOOST_TEST_CASE (&TestLuaVariableCFunction));
 
    return test;
 }
