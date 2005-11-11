@@ -8,6 +8,7 @@
 #include "LuaState.hpp"
 
 
+// - CLuaFunctionTimesTwo ------------------------------------------------------
 int CLuaFunctionTimesTwo (lua_State* ls)
 {
    int numArgs = lua_gettop (ls);

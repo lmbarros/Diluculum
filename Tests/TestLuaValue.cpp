@@ -9,11 +9,13 @@
 #include "LuaValue.hpp"
 
 
+// - CLuaFunctionExample -------------------------------------------------------
 int CLuaFunctionExample (lua_State* ls)
 {
    return 0;
 }
 
+// - AnotherCLuaFunctionExample ------------------------------------------------
 int AnotherCLuaFunctionExample (lua_State* ls)
 {
    return 0;
