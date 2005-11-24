@@ -14,7 +14,7 @@ int CLuaFunctionTimesTwo (lua_State* ls)
    int numArgs = lua_gettop (ls);
    if (numArgs != 1)
    {
-      lua_pushstring (ls, "expected two parameters in call to 'TimesTwo()'");
+      lua_pushstring (ls, "expected one parameter in call to 'TimesTwo()'");
       lua_error (ls);
    }
 
