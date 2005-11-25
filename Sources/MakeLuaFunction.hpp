@@ -15,13 +15,26 @@ namespace Diluculum
 {
    namespace Impl
    {
-      /** @todo Docs!
+      /** Issues a Lua error (by calling \c lua_error()) if a given condition
+       *  is true.
+       *  @param ls The Lua state on which \c lua_error() will possibly be
+       *         called.
+       *  @param condition The error will be raised only if this is \c true.
+       *  @param function The function name as available in Lua. This is used
+       *         only to give some additional information to the error message.
+       *  @param message An error message that will be associated with the
+       *         generated error
        */
       void MLF_IssueLuaErrorIf (lua_State* ls, bool condition,
                                 const std::string& function,
                                 const std::string& message);
 
-      /** @todo Docs!
+      /** Reads the parameters passed to a function. The parameters are read
+       *  from the stack of a Lua state and written to an array.
+       *  @param ls The Lua state from whose stack the parameters will be read.
+       *  @param params The array to which the parameters will be written.
+       *         Please, ensure that it is large enough to hold all parameters.
+       *  @param n The number of parameters to be read.
        */
       void MLF_ReadParameters (lua_State* ls, Diluculum::LuaValue params[], int n);
 
@@ -30,12 +43,19 @@ namespace Diluculum
 } // namespace Diluculum
 
 
-/**
- *  @todo Should I raise an error when the wrong number of arguments is passed?
- *        Perhaps, in some situations it is better to get some 'nil's, and let
- *        the function deal with them (e.g., when creating functions with
- *        default or optional parameters). This note is valid for all the macros
- *        defined in this file.
+
+/** Creates a wrapper \c lua_CFunction around a function taking no parameters
+ *  and returning \c void.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ *  @todo This macro (and all other \c DILUCULUM_MAKE_LUA_FUNCTION* macros)
+ *        raises a Lua error if the wrong number of parameters is passed from
+ *        Lua. I wonder if this is the best way to go. Perhaps the ideal is to
+ *        pass all absent parameters as 'nil's, so that \c FUNC can do whatever
+ *        it wants (for example, "simulating" default parameters).
  */
 #define DILUCULUM_MAKE_LUA_FUNCTION_0_VOID(FUNC,NEW_FUNC,LUA_NAME)         \
 int NEW_FUNC (lua_State* ls)                                               \
@@ -63,6 +83,14 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 
 
+/** Creates a wrapper \c lua_CFunction around a function taking no parameters
+ *  and returning a \c LuaValue.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ */
 #define DILUCULUM_MAKE_LUA_FUNCTION_0_RET(FUNC,NEW_FUNC,LUA_NAME)          \
 int NEW_FUNC (lua_State* ls)                                               \
 {                                                                          \
@@ -91,6 +119,14 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 
 
+/** Creates a wrapper \c lua_CFunction around a function taking one \c LuaValue
+ *  parameter and returning \c void.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ */
 #define DILUCULUM_MAKE_LUA_FUNCTION_1_VOID(FUNC,NEW_FUNC,LUA_NAME)         \
 int NEW_FUNC (lua_State* ls)                                               \
 {                                                                          \
@@ -121,6 +157,14 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 
 
+/** Creates a wrapper \c lua_CFunction around a function taking one \c LuaValue
+ *  parameter and returning another \c LuaValue.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ */
 #define DILUCULUM_MAKE_LUA_FUNCTION_1_RET(FUNC,NEW_FUNC,LUA_NAME)          \
 int NEW_FUNC (lua_State* ls)                                               \
 {                                                                          \
@@ -152,6 +196,14 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 
 
+/** Creates a wrapper \c lua_CFunction around a function taking two \c LuaValue
+ *  parameters and returning \c void.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ */
 #define DILUCULUM_MAKE_LUA_FUNCTION_2_VOID(FUNC,NEW_FUNC,LUA_NAME)         \
 int NEW_FUNC (lua_State* ls)                                               \
 {                                                                          \
@@ -182,6 +234,14 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 
 
+/** Creates a wrapper \c lua_CFunction around a function taking two \c LuaValue
+ *  parameters and returning another \c LuaValue.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ */
 #define DILUCULUM_MAKE_LUA_FUNCTION_2_RET(FUNC,NEW_FUNC,LUA_NAME)          \
 int NEW_FUNC (lua_State* ls)                                               \
 {                                                                          \
@@ -213,6 +273,14 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 
 
+/** Creates a wrapper \c lua_CFunction around a function taking three
+ *  \c LuaValue parameters and returning \c void.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ */
 #define DILUCULUM_MAKE_LUA_FUNCTION_3_VOID(FUNC,NEW_FUNC,LUA_NAME)         \
 int NEW_FUNC (lua_State* ls)                                               \
 {                                                                          \
@@ -243,6 +311,14 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 
 
+/** Creates a wrapper \c lua_CFunction around a function taking three
+ *  \c LuaValue parameters and returning another \c LuaValue.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ */
 #define DILUCULUM_MAKE_LUA_FUNCTION_3_RET(FUNC,NEW_FUNC,LUA_NAME)          \
 int NEW_FUNC (lua_State* ls)                                               \
 {                                                                          \
@@ -274,6 +350,14 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 
 
+/** Creates a wrapper \c lua_CFunction around a function taking four \c LuaValue
+ *  parameters and returning \c void.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ */
 #define DILUCULUM_MAKE_LUA_FUNCTION_4_VOID(FUNC,NEW_FUNC,LUA_NAME)         \
 int NEW_FUNC (lua_State* ls)                                               \
 {                                                                          \
@@ -304,6 +388,14 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 
 
+/** Creates a wrapper \c lua_CFunction around a function taking four \c LuaValue
+ *  parameters and returning another \c LuaValue.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ */
 #define DILUCULUM_MAKE_LUA_FUNCTION_4_RET(FUNC,NEW_FUNC,LUA_NAME)          \
 int NEW_FUNC (lua_State* ls)                                               \
 {                                                                          \
@@ -336,6 +428,14 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 
 
+/** Creates a wrapper \c lua_CFunction around a function taking five \c LuaValue
+ *  parameters and returning \c void.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ */
 #define DILUCULUM_MAKE_LUA_FUNCTION_5_VOID(FUNC,NEW_FUNC,LUA_NAME)         \
 int NEW_FUNC (lua_State* ls)                                               \
 {                                                                          \
@@ -366,6 +466,14 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 
 
+/** Creates a wrapper \c lua_CFunction around a function taking five \c LuaValue
+ *  parameters and returning another \c LuaValue.
+ *  @param FUNC The function to be wrapped.
+ *  @param NEW_FUNC The name to be given to the wrapper function that will be
+ *         created.
+ *  @param LUA_NAME A string with the function name, as it is expected to be
+ *         called from Lua. This is used for error reporting.
+ */
 #define DILUCULUM_MAKE_LUA_FUNCTION_5_RET(FUNC,NEW_FUNC,LUA_NAME)          \
 int NEW_FUNC (lua_State* ls)                                               \
 {                                                                          \
