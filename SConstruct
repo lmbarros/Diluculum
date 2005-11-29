@@ -24,7 +24,7 @@ envBase = Environment (ENV = os.environ,
 if envBase["CXX"] == "g++":
     envBase["CXXFLAGS"] += " -Wall"
 
-    buildMode = ARGUMENTS.get ("BUILD_MODE", "opt")
+    buildMode = ARGUMENTS.get ("mode", "")
 
     if buildMode == "opt":
         envBase["CXXFLAGS"] += " -O3"
