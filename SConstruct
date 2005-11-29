@@ -4,42 +4,69 @@
 # By Leandro Motta Barros
 #
 
+
+# ------------------------------------------------------------------------------
+#  The "base" building environment
+#  This is used as a template to create the more specific building environments
+#  that are actually used to build something.
+# ------------------------------------------------------------------------------
+
+# Inherit the environment from, well, from the environment.
+# TODO: I suppose that's not the best way to create a 'SConstruct'. But for a
+#       rootless GoboLinux user (with installed in his own $HOME), this
+#       simplifies the things quite a lot.
 import os
-env = Environment (ENV = os.environ,
-                   CC = 'g++',
-                   CCFLAGS = '-Wall',
-                   LIBS=["lua", "lualib", "boost_filesystem-gcc-mt", "dl",
-                         "boost_unit_test_framework-gcc-mt"],
-                   CPPPATH = "Sources")
+envBase = Environment (ENV = os.environ,
+                       CPPPATH = "#/Sources",
+                       LIBPATH = "#/lib")
 
-env.Program ("Tests/TestLuaValue", [ "Sources/LuaExceptions.cpp",
-                                     "Sources/LuaUtils.cpp",
-                                     "Sources/LuaValue.cpp",
-                                     "Tests/TestLuaValue.cpp" ])
+# Add some flags manually...
+if envBase["CXX"] == "g++":
+    envBase["CXXFLAGS"] += " -Wall"
 
-env.Program ("Tests/TestLuaVariable", [ "Sources/LuaExceptions.cpp",
-                                        "Sources/LuaState.cpp",
-                                        "Sources/LuaUtils.cpp",
-                                        "Sources/LuaValue.cpp",
-                                        "Sources/LuaVariable.cpp",
-                                        "Tests/TestLuaVariable.cpp" ])
+    buildMode = ARGUMENTS.get ("BUILD_MODE", "opt")
 
-env.Program ("Tests/TestLuaUtils", [ "Sources/LuaExceptions.cpp",
-                                     "Sources/LuaUtils.cpp",
-                                     "Sources/LuaValue.cpp",
-                                     "Tests/TestLuaUtils.cpp" ])
+    if buildMode == "opt":
+        envBase["CXXFLAGS"] += " -O3"
+    elif buildMode == "debug":
+        envBase["CXXFLAGS"] += " -g"
+        envBase["LINKFLAGS"] += " -g"
+    elif buildMode == "profile":
+        envBase["CXXFLAGS"] += " -g -pg"
+        envBase["LINKFLAGS"] += " -g -pg"
 
-env.Program ("Tests/TestLuaState", [ "Sources/LuaExceptions.cpp",
-                                     "Sources/LuaState.cpp",
-                                     "Sources/LuaUtils.cpp",
-                                     "Sources/LuaValue.cpp",
-                                     "Sources/LuaVariable.cpp",
-                                     "Tests/TestLuaState.cpp" ])
 
-env.Program ("Tests/TestMakeLuaFunction", [ "Sources/LuaExceptions.cpp",
-                                            "Sources/LuaState.cpp",
-                                            "Sources/LuaUtils.cpp",
-                                            "Sources/LuaValue.cpp",
-                                            "Sources/LuaVariable.cpp",
-                                            "Sources/MakeLuaFunction.cpp",
-                                            "Tests/TestMakeLuaFunction.cpp" ])
+# ------------------------------------------------------------------------------
+#  The library building environment
+#  This is one is used to build the Diluculum library. Currently, it is no
+#  different than the base building environment.
+# ------------------------------------------------------------------------------
+envLib = envBase.Copy()
+
+
+# ------------------------------------------------------------------------------
+#  The tests building environment
+#  This is one is used to build the Diluculum unit tests.
+# ------------------------------------------------------------------------------
+envTests = envBase.Copy (LIBS = ["Diluculum", "lua", "lualib", "dl",
+                                 "boost_filesystem-gcc-mt",
+                                 "boost_unit_test_framework-gcc-mt"])
+
+
+
+# ------------------------------------------------------------------------------
+#  The build targets
+#  The things that are actually built.
+# ------------------------------------------------------------------------------
+envLib.Library ("lib/Diluculum", [ "Sources/LuaExceptions.cpp",
+                                   "Sources/LuaState.cpp",
+                                   "Sources/LuaUtils.cpp",
+                                   "Sources/LuaValue.cpp",
+                                   "Sources/LuaVariable.cpp",
+                                   "Sources/MakeLuaFunction.cpp"])
+
+envTests.Program ("Tests/TestLuaValue", "Tests/TestLuaValue.cpp")
+envTests.Program ("Tests/TestLuaVariable", "Tests/TestLuaVariable.cpp")
+envTests.Program ("Tests/TestLuaUtils", "Tests/TestLuaUtils.cpp")
+envTests.Program ("Tests/TestLuaState", "Tests/TestLuaState.cpp")
+envTests.Program ("Tests/TestMakeLuaFunction", "Tests/TestMakeLuaFunction.cpp")
