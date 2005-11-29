@@ -7,7 +7,6 @@
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/MakeLuaFunction.hpp>
 #include <Diluculum/LuaState.hpp>
-#include <iostream>
 
 
 namespace
