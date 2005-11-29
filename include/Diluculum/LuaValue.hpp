@@ -107,9 +107,7 @@ namespace Diluculum
           *  built-in function \c type().
           *  @return One of the following strings: <tt>"nil"</tt>,
           *          <tt>"boolean"</tt>, <tt>"number"</tt>, <tt>"string"</tt>,
-          *          <tt>"table"</tt>, <tt>"function"</tt>. If the stored value
-          *          is different than those for some reason, returns an empty
-          *          string (<tt>""</tt>).
+          *          <tt>"table"</tt>, <tt>"function"</tt>.
           */
          std::string typeName() const;
 
