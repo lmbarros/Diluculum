@@ -59,6 +59,17 @@ void TestLuaVariableSubscriptOperator()
    BOOST_CHECK (ls["d"][2] == "two");
    BOOST_CHECK (ls["d"][3] == 21);
 
+   // Now, change some values in Lua and verify if they were really changed
+   ls.doString ("a = 'So I\\'m crazy!'");
+   ls.doString ("b = 'What-what-what can I do?'");
+   ls.doString ("c = 'So are you!'");
+   ls.doString ("d[3] = 123.456");
+
+   BOOST_CHECK (ls["a"] == "So I'm crazy!");
+   BOOST_CHECK (ls["b"] == "What-what-what can I do?");
+   BOOST_CHECK (ls["c"] == "So are you!");
+   BOOST_CHECK (ls["d"][3] == 123.456);
+
    // Add some new values, and read them
    LuaValueMap nestedLVM;
    nestedLVM[1] = "I";
@@ -87,6 +98,17 @@ void TestLuaVariableSubscriptOperator()
    BOOST_CHECK (ls["d"][true][6]["six"] == "VI");
    BOOST_CHECK (ls["d"][true][6][false] == 0);
    BOOST_CHECK (ls["z"] == 56.78);
+
+   // Now in Lua: add values and check if they can be read from C++
+   ls.doString ("e = true");
+   ls.doString ("f = { 11.22, 33.44, yup = 'nope' }");
+   ls.doString ("d[171] = 99.88");
+
+   BOOST_CHECK (ls["e"] == true);
+   BOOST_CHECK (ls["f"][1] == 11.22);
+   BOOST_CHECK (ls["f"][2] == 33.44);
+   BOOST_CHECK (ls["f"]["yup"] == "nope");
+   BOOST_CHECK (ls["d"][171] == 99.88);
 }
 
 
