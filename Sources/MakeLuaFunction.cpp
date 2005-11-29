@@ -5,7 +5,7 @@
 * Leandro Motta Barros                                                         *
 \******************************************************************************/
 
-#include "MakeLuaFunction.hpp"
+#include <Diluculum/MakeLuaFunction.hpp>
 
 namespace Diluculum
 {

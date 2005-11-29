@@ -6,8 +6,8 @@
 
 #include <boost/test/unit_test.hpp>
 #include <cstring>
-#include "LuaExceptions.hpp"
-#include "LuaUtils.hpp"
+#include <Diluculum/LuaExceptions.hpp>
+#include <Diluculum/LuaUtils.hpp>
 
 
 int CLuaFunctionExample (lua_State* ls)

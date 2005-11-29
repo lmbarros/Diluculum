@@ -5,9 +5,9 @@
 \******************************************************************************/
 
 #include <cassert>
-#include "LuaState.hpp"
-#include "LuaUtils.hpp"
-#include "LuaVariable.hpp"
+#include <Diluculum/LuaState.hpp>
+#include <Diluculum/LuaUtils.hpp>
+#include <Diluculum/LuaVariable.hpp>
 
 
 namespace Diluculum

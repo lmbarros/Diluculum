@@ -5,8 +5,8 @@
 \******************************************************************************/
 
 #include <boost/test/unit_test.hpp>
-#include "LuaExceptions.hpp"
-#include "LuaValue.hpp"
+#include <Diluculum/LuaExceptions.hpp>
+#include <Diluculum/LuaValue.hpp>
 
 
 // - CLuaFunctionExample -------------------------------------------------------

@@ -4,10 +4,10 @@
 * Leandro Motta Barros                                                         *
 \******************************************************************************/
 
-#include "LuaState.hpp"
-#include "LuaUtils.hpp"
 #include <cassert>
 #include <typeinfo>
+#include <Diluculum/LuaState.hpp>
+#include <Diluculum/LuaUtils.hpp>
 
 
 namespace Diluculum

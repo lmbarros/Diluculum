@@ -17,9 +17,9 @@ extern "C"
 #include <string>
 #include <vector>
 #include <boost/filesystem/path.hpp>
-#include "LuaExceptions.hpp"
-#include "LuaValue.hpp"
-#include "LuaVariable.hpp"
+#include <Diluculum/LuaExceptions.hpp>
+#include <Diluculum/LuaValue.hpp>
+#include <Diluculum/LuaVariable.hpp>
 
 
 namespace Diluculum

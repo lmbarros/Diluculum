@@ -8,7 +8,7 @@
 #define _DILUCULUM_LUA_EXCEPTIONS_HPP_
 
 #include <stdexcept>
-#include "LuaValue.hpp"
+#include <Diluculum/LuaValue.hpp>
 
 
 namespace Diluculum

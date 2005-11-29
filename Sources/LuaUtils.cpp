@@ -4,8 +4,8 @@
 * Leandro Motta Barros                                                         *
 \******************************************************************************/
 
-#include "LuaUtils.hpp"
-#include "LuaExceptions.hpp"
+#include <Diluculum/LuaUtils.hpp>
+#include <Diluculum/LuaExceptions.hpp>
 
 
 namespace Diluculum

@@ -8,7 +8,7 @@
 #define _DILUCULUM_LUA_VARIABLE_HPP_
 
 #include <vector>
-#include "LuaValue.hpp"
+#include <Diluculum/LuaValue.hpp>
 
 
 namespace Diluculum

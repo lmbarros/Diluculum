@@ -8,8 +8,8 @@
 #ifndef _DILUCULUM_MAKE_LUA_FUNCTION_HPP_
 #define _DILUCULUM_MAKE_LUA_FUNCTION_HPP_
 
-#include "LuaValue.hpp"
-#include "LuaUtils.hpp"
+#include <Diluculum/LuaValue.hpp>
+#include <Diluculum/LuaUtils.hpp>
 
 namespace Diluculum
 {

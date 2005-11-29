@@ -7,7 +7,7 @@
 #ifndef _DILUCULUM_LUA_UTILS_HPP_
 #define _DILUCULUM_LUA_UTILS_HPP_
 
-#include "LuaValue.hpp"
+#include <Diluculum/LuaValue.hpp>
 
 namespace Diluculum
 {

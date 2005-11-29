@@ -17,7 +17,7 @@
 #       simplifies the things quite a lot.
 import os
 envBase = Environment (ENV = os.environ,
-                       CPPPATH = "#/Sources",
+                       CPPPATH = "#/include",
                        LIBPATH = "#/lib")
 
 # Add some flags manually...
