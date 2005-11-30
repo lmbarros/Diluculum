@@ -24,7 +24,7 @@ envBase = Environment (ENV = os.environ,
 if envBase["CXX"] == "g++":
     envBase["CXXFLAGS"] += " -Wall"
 
-    buildMode = ARGUMENTS.get ("mode", "")
+    buildMode = ARGUMENTS.get ("mode", "no-opt")
 
     if buildMode == "opt":
         envBase["CXXFLAGS"] += " -O3"
@@ -34,6 +34,21 @@ if envBase["CXX"] == "g++":
     elif buildMode == "profile":
         envBase["CXXFLAGS"] += " -g -pg"
         envBase["LINKFLAGS"] += " -g -pg"
+
+# A friendly help message...
+envBase.Help("""
+Diluculum build system
+
+Just type 'scons' to build everything. Or, use the following option to
+select the compilation mode:
+
+   mode=<MODE>, where <MODE> is one of the following:
+      o 'profile', for compiling with profiling ('gprof') support
+      o 'debug', for compiling with debug support
+      o 'no-opt' (the default), for compiling without optimizations or
+        debug support or anything else
+      o 'opt', for compiling with optimizations enabled
+""")
 
 
 # ------------------------------------------------------------------------------
