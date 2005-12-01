@@ -231,7 +231,7 @@ void TestLuaVariableEqualityOperator()
    using namespace Diluculum;
 
    LuaState ls1;
-   ls1.doString ("a = 1; b = 'two'");
+   ls1.doString ("a = 1; b = 'two'; c = 3; d = 3");
 
    LuaState ls2;
    ls2.doString ("a = 1; b = 'two'");
@@ -245,6 +245,9 @@ void TestLuaVariableEqualityOperator()
    LuaVariable lv6 = ls1["b"];
    LuaVariable lv7 = ls2["a"];
    LuaVariable lv8 = ls2["b"];
+
+   LuaVariable lv9 = ls1["c"];
+   LuaVariable lv10 = ls1["d"];
 
    // Each variable is expected to be equal to itself
    BOOST_CHECK (lv1 == lv1);
@@ -304,7 +307,7 @@ void TestLuaVariableEqualityOperator()
    BOOST_CHECK (!(lv1 == lv3));
    BOOST_CHECK (!(lv1 == lv4));
 
-   // Finally, ensure that variables are equal after one is assigned to another
+   // Ensure that variables are equal after one is assigned to another
    lv1 = lv2;
    lv3 = lv4 = lv5 = lv6;
 
@@ -331,6 +334,12 @@ void TestLuaVariableEqualityOperator()
    BOOST_CHECK (lv6 == lv4);
    BOOST_CHECK (lv6 == lv5);
    BOOST_CHECK (lv6 == lv6);
+
+   // Finally, verify that two distinct 'LuaVariable's are different, even if
+   // they have the same value.
+   BOOST_REQUIRE (lv9.value() == lv10.value());
+   BOOST_CHECK (lv9 != lv10);
+   BOOST_CHECK (!(lv9 == lv10));
 }
 
 
