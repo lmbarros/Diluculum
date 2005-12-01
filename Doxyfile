@@ -64,7 +64,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ./Sources/
+INPUT                  = ./include/
 FILE_PATTERNS          = *.hpp
 RECURSIVE              = YES
 EXCLUDE                = 
