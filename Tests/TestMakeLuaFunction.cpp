@@ -80,13 +80,17 @@ namespace
       const Diluculum::LuaValue& v3, const Diluculum::LuaValue& v4)
    {
       if (v1.asBoolean())
+      {
          TheGlobal = static_cast<int>(v2.asNumber())
             + static_cast<int>(v3.asNumber())
             + static_cast<int>(v4.asNumber());
+      }
       else
+      {
          TheGlobal = static_cast<int>(v2.asNumber())
             * static_cast<int>(v3.asNumber())
             * static_cast<int>(v4.asNumber());
+      }
    }
 
    DILUCULUM_MAKE_LUA_FUNCTION_4_VOID(
