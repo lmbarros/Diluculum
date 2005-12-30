@@ -62,37 +62,127 @@ namespace Diluculum
           */
          LuaVariable operator[] (const LuaValue& key) const;
 
-         /** @todo WIP!
+         /** Assuming that this \c LuaVariable holds a function, calls this
+          *  function and returns its return values. Both "pure" Lua functions
+          *  and functions written in C/C++ and "exported" to Lua are supported.
+          *  @param params All the parameters to be passed to the function being
+          *         called. The first parameter at index 0, the second at
+          *         index 1 and so on.
+          *  @return All the values returned by the called function. The first
+          *          return value at index 0, the second at index 1 and so on.
+          *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
+          *         something that is not a table.
+          *  @throw LuaRunTimeError If something bad happens while executing the
+          *         function.
           */
          LuaValueList operator()(const LuaValueList& params);
 
-         /** @todo WIP!
+         /** Assuming that this \c LuaVariable holds a function, calls this
+          *  function (without passing any parameter to it) and returns its
+          *  return values. Both "pure" Lua functions and functions written in
+          *  C/C++ and "exported" to Lua are supported.
+          *  @return All the values returned by the called function. The first
+          *          return value at index 0, the second at index 1 and so on.
+          *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
+          *         something that is not a table.
+          *  @throw LuaRunTimeError If something bad happens while executing the
+          *         function.
           */
          LuaValueList operator()();
 
-         /** @todo WIP!
+         /** Assuming that this \c LuaVariable holds a function, calls this
+          *  function and returns its return values. Both "pure" Lua functions
+          *  and functions written in C/C++ and "exported" to Lua are supported.
+          *  @param param The one and only parameter to be passed to the
+          *         function being called
+          *  @return All the values returned by the called function. The first
+          *          return value at index 0, the second at index 1 and so on.
+          *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
+          *         something that is not a table.
+          *  @throw LuaRunTimeError If something bad happens while executing the
+          *         function.
           */
          LuaValueList operator() (const LuaValue& param);
 
-         /** @todo WIP!
+         /** Assuming that this \c LuaVariable holds a function, calls this
+          *  function and returns its return values. Both "pure" Lua functions
+          *  and functions written in C/C++ and "exported" to Lua are supported.
+          *  @param param1 The first parameter to be passed to the function
+          *         being called
+          *  @param param2 The second parameter to be passed to the function
+          *         being called
+          *  @return All the values returned by the called function. The first
+          *          return value at index 0, the second at index 1 and so on.
+          *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
+          *         something that is not a table.
+          *  @throw LuaRunTimeError If something bad happens while executing the
+          *         function.
           */
          LuaValueList operator() (const LuaValue& param1,
                                   const LuaValue& param2);
 
-         /** @todo WIP!
+         /** Assuming that this \c LuaVariable holds a function, calls this
+          *  function and returns its return values. Both "pure" Lua functions
+          *  and functions written in C/C++ and "exported" to Lua are supported.
+          *  @param param1 The first parameter to be passed to the function
+          *         being called
+          *  @param param2 The second parameter to be passed to the function
+          *         being called
+          *  @param param3 The third parameter to be passed to the function
+          *         being called
+          *  @return All the values returned by the called function. The first
+          *          return value at index 0, the second at index 1 and so on.
+          *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
+          *         something that is not a table.
+          *  @throw LuaRunTimeError If something bad happens while executing the
+          *         function.
           */
          LuaValueList operator() (const LuaValue& param1,
                                   const LuaValue& param2,
                                   const LuaValue& param3);
 
-         /** @todo WIP!
+         /** Assuming that this \c LuaVariable holds a function, calls this
+          *  function and returns its return values. Both "pure" Lua functions
+          *  and functions written in C/C++ and "exported" to Lua are supported.
+          *  @param param1 The first parameter to be passed to the function
+          *         being called
+          *  @param param2 The second parameter to be passed to the function
+          *         being called
+          *  @param param3 The third parameter to be passed to the function
+          *         being called
+          *  @param param4 The fourth parameter to be passed to the function
+          *         being called
+          *  @return All the values returned by the called function. The first
+          *          return value at index 0, the second at index 1 and so on.
+          *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
+          *         something that is not a table.
+          *  @throw LuaRunTimeError If something bad happens while executing the
+          *         function.
           */
          LuaValueList operator() (const LuaValue& param1,
                                   const LuaValue& param2,
                                   const LuaValue& param3,
                                   const LuaValue& param4);
 
-         /** @todo WIP!
+         /** Assuming that this \c LuaVariable holds a function, calls this
+          *  function and returns its return values. Both "pure" Lua functions
+          *  and functions written in C/C++ and "exported" to Lua are supported.
+          *  @param param1 The first parameter to be passed to the function
+          *         being called
+          *  @param param2 The second parameter to be passed to the function
+          *         being called
+          *  @param param3 The third parameter to be passed to the function
+          *         being called
+          *  @param param4 The fourth parameter to be passed to the function
+          *         being called
+          *  @param param5 The fifth parameter to be passed to the function
+          *         being called
+          *  @return All the values returned by the called function. The first
+          *          return value at index 0, the second at index 1 and so on.
+          *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
+          *         something that is not a table.
+          *  @throw LuaRunTimeError If something bad happens while executing the
+          *         function.
           */
          LuaValueList operator() (const LuaValue& param1,
                                   const LuaValue& param2,
