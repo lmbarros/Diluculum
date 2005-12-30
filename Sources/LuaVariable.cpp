@@ -65,25 +65,7 @@ namespace Diluculum
    // - LuaVariable::value -----------------------------------------------------
    LuaValue LuaVariable::value() const
    {
-      int index = LUA_GLOBALSINDEX;
-
-      typedef std::vector<LuaValue>::const_iterator iter_t;
-      for (iter_t p = keys_.begin(); p != keys_.end(); ++p)
-      {
-         PushLuaValue (state_, *p);
-         lua_gettable (state_, index);
-
-         assert (keys_.size() > 0 && "There should be at least one key here.");
-
-         if (keys_.size() > 1 && p != keys_.end()-1 && !lua_istable(state_, -1))
-            throw TypeMismatchError ("table", p->typeName());
-
-         if (index != LUA_GLOBALSINDEX)
-            lua_remove (state_, -2);
-         else
-            index = -2;
-      }
-
+      pushTheReferencedValue();
       LuaValue ret = ToLuaValue (state_, -1);
       lua_pop (state_, 1);
       return ret;
@@ -104,56 +86,46 @@ namespace Diluculum
    {
       int topBefore = lua_gettop (state_);
 
-      // <--- code replicated with 'value()'! Factor...
-      int index = LUA_GLOBALSINDEX;
-
-      typedef std::vector<LuaValue>::const_iterator iter_t;
-      for (iter_t p = keys_.begin(); p != keys_.end(); ++p)
-      {
-         PushLuaValue (state_, *p);
-         lua_gettable (state_, index);
-
-         assert (keys_.size() > 0 && "There should be at least one key here.");
-
-         if (keys_.size() > 1 && p != keys_.end()-1 && !lua_istable(state_, -1))
-            throw TypeMismatchError ("table", p->typeName());
-
-         if (index != LUA_GLOBALSINDEX)
-            lua_remove (state_, -2);
-         else
-            index = -2;
-      }
+      pushTheReferencedValue();
 
       if (lua_type (state_, -1) != LUA_TFUNCTION)
          throw TypeMismatchError ("function", lua_typename (state_, -1));
 
-      // <--- at index '-1', the function
-      for (LuaValueList::const_iterator p = params.begin();
-           p != params.end();
-           ++p)
-      {
+      typedef LuaValueList::const_iterator iter_t;
+      for (iter_t p = params.begin(); p != params.end(); ++p)
          PushLuaValue (state_, *p);
-      }
 
       int ret = lua_pcall (state_, params.size(), LUA_MULTRET, 0);
 
       if (ret != 0)
       {
+         std::string errMessage = lua_tostring (state_, -1);
+         lua_pop (state_, 1);
+
          switch (ret)
          {
             case LUA_ERRRUN:
-               throw LuaRunTimeError ("LUA_ERRRUN");
+               throw LuaRunTimeError(
+                  ("'LUA_ERRRUN' returned while calling function from Lua. "
+                   "Additional error message: '" + errMessage + "'.").c_str());
 
             case LUA_ERRMEM:
-               throw LuaRunTimeError ("LUA_ERRMEM");
+               throw LuaRunTimeError(
+                  ("'LUA_ERRMEM' returned while calling function from Lua. "
+                   "Additional error message: '" + errMessage + "'.").c_str());
 
             case LUA_ERRERR:
-               throw LuaRunTimeError ("LUA_ERRERR");
+               throw LuaRunTimeError(
+                  ("'LUA_ERR' returned while calling function from Lua. "
+                   "Additional error message: '" + errMessage + "'.").c_str());
 
             default:
                throw LuaRunTimeError(
-                  ("Unknown error code: "
-                   + boost::lexical_cast<std::string>(ret)).c_str());
+                  ("Unknown error code ("
+                   + boost::lexical_cast<std::string>(ret)
+                   + ") returned while calling function from Lua. "
+                   + "Additional error message: '" + errMessage
+                   + "'.").c_str());
          }
       }
 
@@ -227,6 +199,31 @@ namespace Diluculum
       params.push_back (param4);
       params.push_back (param5);
       return (*this)(params);
+   }
+
+
+
+   // - LuaVariable::pushTheReferencedValue ------------------------------------
+   void LuaVariable::pushTheReferencedValue() const
+   {
+      int index = LUA_GLOBALSINDEX;
+
+      typedef std::vector<LuaValue>::const_iterator iter_t;
+      for (iter_t p = keys_.begin(); p != keys_.end(); ++p)
+      {
+         PushLuaValue (state_, *p);
+         lua_gettable (state_, index);
+
+         assert (keys_.size() > 0 && "There should be at least one key here.");
+
+         if (keys_.size() > 1 && p != keys_.end()-1 && !lua_istable(state_, -1))
+            throw TypeMismatchError ("table", p->typeName());
+
+         if (index != LUA_GLOBALSINDEX)
+            lua_remove (state_, -2);
+         else
+            index = -2;
+      }
    }
 
 } // namespace Diluculum
