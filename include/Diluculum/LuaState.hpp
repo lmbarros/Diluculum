@@ -32,8 +32,6 @@ namespace Diluculum
     *  low-level. It was essentially a C++ wrapper around a <tt>lua_State*</tt>,
     *  without higher level operations. This is an attempt to allow me to do
     *  the kind of things I do most of the time without much effort.)
-    *  @todo There is a good amount of code replicated in \c doStringMultRet()
-    *        and \c doFileMultRet(). And that's not a pretty thing.
     */
    class LuaState
    {
@@ -61,7 +59,8 @@ namespace Diluculum
           *         In particular, \c LuaTypeError will be thrown if the
           *         execution returns a type not supported by \c LuaType.
           */
-         LuaValueList doFile (const boost::filesystem::path& fileName);
+         LuaValueList doFile (const boost::filesystem::path& fileName)
+         { return doStringOrFile (false, fileName.native_file_string()); }
 
          /** Executes the string passed as parameter and returns all the values
           *  returned by this execution. Notice that when a \c LuaValueList is
@@ -74,7 +73,8 @@ namespace Diluculum
           *         In particular, \c LuaTypeError will be thrown if the
           *         execution returns a type not supported by \c LuaType.
           */
-         LuaValueList doString (const std::string& what);
+         LuaValueList doString (const std::string& what)
+         { return doStringOrFile (true, what); }
 
          /** Returns a \c LuaVariable representing the global variable named
           *  \c variable. Since the returned value also has a subscript
@@ -89,6 +89,21 @@ namespace Diluculum
          LuaVariable operator[] (const std::string& variable);
 
       private:
+         /** Since The implementation of \c doString and \c doFile() are quite
+          *  similar, it looked like a good idea to use the same function to
+          *  implement both at a lower level. This is it.
+          *  @param isString If \c true, means that it is desired to execute the
+          *         contents of a string. If \c false, means that it is desired
+          *         to execute the contents of a file.
+          *  @param str Can be either a string of Lua code to be executed or a
+          *         file with Lua code to be executed. The exact interpretation
+          *         of this parameter depends on the first parameter,
+          *         \c isString.
+          *         In particular, \c LuaTypeError will be thrown if the
+          *         execution returns a type not supported by \c LuaType.
+          */
+         LuaValueList doStringOrFile (bool isString, const std::string& str);
+
          /// The underlying \c lua_State*.
          lua_State* state_;
 

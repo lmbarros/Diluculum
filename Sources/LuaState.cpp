@@ -43,55 +43,33 @@ namespace Diluculum
 
 
 
-   // - LuaState::doFile -------------------------------------------------------
-   LuaValueList LuaState::doFile (const boost::filesystem::path& fileName)
+   // - LuaState::doStringOrFile -----------------------------------------------
+   LuaValueList LuaState::doStringOrFile (bool isString, const std::string& str)
    {
       const int stackSizeAtBeginning = lua_gettop (state_);
 
-      throwOnLuaError (luaL_loadfile (state_,
-                                      fileName.native_file_string().c_str()));
-      throwOnLuaError (lua_pcall (state_, 0, LUA_MULTRET, 0));
-
-      const int numResults = lua_gettop (state_) - stackSizeAtBeginning;
-
-      LuaValueList ret;
-
-      for (int i = 1; i <= numResults; ++i)
+      if (isString)
       {
-         ret.push_back (ToLuaValue (state_, -1));
-         lua_pop (state_, 1);
+         throwOnLuaError (luaL_loadbuffer (state_, str.c_str(),
+                                           str.length(), "line"));
       }
-
-      std::reverse (ret.begin(), ret.end());
-
-      return ret;
-   }
-
-
-
-   // - LuaState::doString -----------------------------------------------------
-   LuaValueList LuaState::doString (const std::string& what)
-   {
-      const int stackSizeAtBeginning = lua_gettop (state_);
-
-      throwOnLuaError (luaL_loadbuffer (state_, what.c_str(),
-                                        what.length(), "line"));
+      else
+      {
+         throwOnLuaError (luaL_loadfile (state_, str.c_str()));
+      }
 
       throwOnLuaError (lua_pcall (state_, 0, LUA_MULTRET, 0));
 
       const int numResults = lua_gettop (state_) - stackSizeAtBeginning;
 
-      LuaValueList ret;
+      LuaValueList results;
 
-      for (int i = 1; i <= numResults; ++i)
-      {
-         ret.push_back (ToLuaValue (state_, -1));
-         lua_pop (state_, 1);
-      }
+      for (int i = numResults; i > 0; --i)
+         results.push_back (ToLuaValue (state_, -i));
 
-      std::reverse (ret.begin(), ret.end());
+      lua_pop (state_, numResults);
 
-      return ret;
+      return results;
    }
 
 
