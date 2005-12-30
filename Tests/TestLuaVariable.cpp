@@ -535,6 +535,16 @@ void TestLuaVariableFunctionCall()
    BOOST_CHECK (ret[2] == 14);
    BOOST_CHECK (ret[3] == 17);
 
+   // Just for the sake of completeness, call the overload of 'operator()' that
+   // takes a 'LuaValueList' as parameter.
+   LuaValueList params;
+   params.push_back (true);
+   params.push_back (false);
+   params.push_back (true);
+   params.push_back (true);
+   retValue = fCalcEvenParityBit (params);
+   BOOST_CHECK (retValue == true);
+
    // Finally, check if the proper exceptions are thrown
    ls["noFunc"] = 123.456;
    LuaVariable noFunc = ls["noFunc"];
