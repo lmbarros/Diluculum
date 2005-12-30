@@ -1,3 +1,26 @@
+Version 0.2 (02005-12-30)
+~~~~~~~~~~~
+Still not a public release (actually, I'm offline now, so this is out
+of question). Biggest news:
+ - A not-that-bad way to register C++ functions in a
+   'LuaState'. Actually, calling C++ from Lua and Lua from C++ is
+   quite acceptable now.
+ - The 'SConstruct' was rewritten. Now, Diliculum compiles to a real
+   library, and the directory structure looks much better that before.
+ - No known bugs introduced. Since no known bugs were known before,
+   this means that Diluculum is bug-free, AFAIK.
+ - The only TODO persisting is a more philosophical design question
+   than anything else. I'll leave the code as is until I have some
+   subsidy to decide what's the best way to deal with this specific
+   aspect.
+I think that this version is already public releaseable. Anyway, there
+are two things that would make good additions for a next version:
+ - A way to deal with userdata. As with support for C++ functions in
+   Lua, a perfect solution is not really necessary, but some support
+   for it can be nice.
+ - A 'install' target for the 'SConstruct'. I didn't bother yet to
+   look how to do this, or if there is a standard way to do this.
+
 Version 0.1 (02005-10-02)
 ~~~~~~~~~~~
 Not yet a public release, but the first "quite usable"
