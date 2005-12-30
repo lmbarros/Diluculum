@@ -10,6 +10,30 @@
 
 namespace Diluculum
 {
+   // - LuaValue::LuaValue -----------------------------------------------------
+   LuaValue::LuaValue (const LuaValueList& v)
+   {
+      if (v.size() >= 1)
+         *this = v[0];
+      else
+         *this = Nil;
+   }
+
+
+
+   // - LuaValue::operator= ----------------------------------------------------
+   const LuaValueList& LuaValue::operator= (const LuaValueList& rhs)
+   {
+      if (rhs.size() >= 1)
+         *this = rhs[0];
+      else
+         *this = Nil;
+
+      return rhs;
+   }
+
+
+
    // - LuaValue::type ---------------------------------------------------------
    int LuaValue::type() const
    {

@@ -98,19 +98,18 @@ namespace Diluculum
             : value_(f)
          { }
 
-         /** @todo Not tested.
-          *  @todo Problem if <tt>v.size() == 0</tt>. Set to \c Nil in this
-          *        case?
+         /** Constructs a \c LuaValue from a \c LuaValueList. The first value on
+          *  the list is used to initialize the \c LuaValue. If the
+          *  \c LuaValueList is empty, initializes the constructed \c LuaValue
+          *  to \c Nil.
           */
-         LuaValue (const LuaValueList& v)
-         { *this = v[0]; }
+         LuaValue (const LuaValueList& v);
 
-         /** @todo Not tested.
-          *  @todo Problem if <tt>v.size() == 0</tt>. Set to \c Nil in this
-          *        case?
+         /** Assigns a \c LuaValueList to a \c LuaValue. The first value on
+          *  the list is used to initialize the \c LuaValue. If the
+          *  \c LuaValueList is empty, sets the \c LuaValue to \c Nil.
           */
-         const LuaValueList& operator= (const LuaValueList& rhs)
-         { *this = rhs[0]; return rhs; }
+         const LuaValueList& operator= (const LuaValueList& rhs);
 
          /** Returns one of the <tt>LUA_T*</tt> constants from <tt>lua.h</tt>,
           *  representing the type stored in this \c LuaValue.

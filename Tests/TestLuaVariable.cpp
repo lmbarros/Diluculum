@@ -421,11 +421,10 @@ void TestLuaVariableFunctionCall()
    LuaVariable funcTimesTwo = ls["TimesTwo"];
    LuaVariable funcTimesTwoThreeFour = ls["TimesTwoThreeFour"];
 
-   LuaValueList ret = funcTimesTwo (2);
-   BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0] == 4);
+   LuaValue retValue = funcTimesTwo (2);
+   BOOST_CHECK (retValue == 4);
 
-   ret = funcTimesTwoThreeFour (3);
+   LuaValueList ret = funcTimesTwoThreeFour (3);
    BOOST_REQUIRE (ret.size() == 3);
    BOOST_CHECK (ret[0] == 6);
    BOOST_CHECK (ret[1] == 9);

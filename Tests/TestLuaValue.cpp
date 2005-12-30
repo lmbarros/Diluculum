@@ -22,6 +22,26 @@ int AnotherCLuaFunctionExample (lua_State* ls)
 }
 
 
+// - TestLuaValueAndValueLists -------------------------------------------------
+void TestLuaValueAndValueLists()
+{
+   using namespace Diluculum;
+
+   LuaValueList valueList;
+   valueList.push_back (123.456);
+   valueList.push_back ("Well, well, well...");
+   valueList.push_back (false);
+   valueList.push_back (-543);
+
+   const LuaValue lv1 (valueList);
+   BOOST_CHECK (lv1 == 123.456);
+
+   LuaValue lv2;
+   lv2 = valueList;
+   BOOST_CHECK (lv2 == 123.456);
+}
+
+
 // - TestLuaValueType ----------------------------------------------------------
 void TestLuaValueType()
 {
@@ -473,6 +493,7 @@ using boost::unit_test_framework::test_suite;
 test_suite* init_unit_test_suite (int, char*[])
 {
    test_suite* test = BOOST_TEST_SUITE ("'LuaValue' tests");
+   test->add (BOOST_TEST_CASE (&TestLuaValueAndValueLists));
    test->add (BOOST_TEST_CASE (&TestLuaValueType));
    test->add (BOOST_TEST_CASE (&TestLuaValueTypeName));
    test->add (BOOST_TEST_CASE (&TestLuaValueAsSomethingFunctions));

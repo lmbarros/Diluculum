@@ -51,50 +51,30 @@ namespace Diluculum
          virtual ~LuaState();
 
          /** Executes the file passed as parameter and returns all the values
-          *  returned by this execution.
+          *  returned by this execution. Notice that when a \c LuaValueList is
+          *  assigned to a \c LuaValue, just the first value in the list is
+          *  assigned, so this is handy for situations when only the first
+          *  return value is desired.
           *  @param fileName The file to be executed.
           *  @return All the values returned by the file execution.
           *  @throw LuaError \c LuaError or any of its subclasses can be thrown.
           *         In particular, \c LuaTypeError will be thrown if the
           *         execution returns a type not supported by \c LuaType.
           */
-         LuaValueList doFileMultRet (const boost::filesystem::path& fileName);
-
-         /** Executes the file passed as parameter and returns only the first
-          *  value returned by this execution.
-          *  @param fileName The file to be executed.
-          *  @return The first value returned by the file execution. If the
-          *          execution does not return anything, returns \c Nil.
-          *  @throw LuaError \c LuaError or any of its subclasses can be thrown.
-          *         In particular, \c LuaTypeError will be thrown if the
-          *         execution returns a type not supported by \c LuaType.
-          *  @todo The current implementation is based on \c doFileMultRet().
-          *        An implementation "from scratch" can be more efficient.
-          */
-         LuaValue doFile (const boost::filesystem::path& fileName);
+         LuaValueList doFile (const boost::filesystem::path& fileName);
 
          /** Executes the string passed as parameter and returns all the values
-          *  returned by this execution.
+          *  returned by this execution. Notice that when a \c LuaValueList is
+          *  assigned to a \c LuaValue, just the first value in the list is
+          *  assigned, so this is handy for situations when only the first
+          *  return value is desired.
           *  @param what The string to be interpreted.
           *  @return All the values returned by the execution of \c what.
           *  @throw LuaError \c LuaError or any of its subclasses can be thrown.
           *         In particular, \c LuaTypeError will be thrown if the
           *         execution returns a type not supported by \c LuaType.
           */
-         LuaValueList doStringMultRet (const std::string& what);
-
-         /** Executes the string passed as parameter and returns only the first
-          *  value returned by this execution.
-          *  @param what The string to be executed.
-          *  @return The first value returned by the execution of \c what. If
-          *          the execution does not return anything, returns \c Nil.
-          *  @throw LuaError \c LuaError or any of its subclasses can be thrown.
-          *         In particular, \c LuaTypeError will be thrown if the
-          *         execution returns a type not supported by \c LuaType.
-          *  @todo The current implementation is based on \c doStringMultRet().
-          *        An implementation "from scratch" can be more efficient.
-          */
-         LuaValue doString (const std::string& what);
+         LuaValueList doString (const std::string& what);
 
          /** Returns a \c LuaVariable representing the global variable named
           *  \c variable. Since the returned value also has a subscript

@@ -14,7 +14,7 @@ void TestLuaStateDoFileMultRet()
    using namespace Diluculum;
 
    LuaState ls;
-   const LuaValueList ret = ls.doFileMultRet ("Tests/TestLuaStateDoFile.lua");
+   const LuaValueList ret = ls.doFile ("Tests/TestLuaStateDoFile.lua");
 
    BOOST_REQUIRE (ret.size() == 5);
    BOOST_CHECK (ret[0] == "foo");
@@ -24,7 +24,7 @@ void TestLuaStateDoFileMultRet()
    BOOST_CHECK (ret[3] == "baz");
    BOOST_CHECK (ret[4] == 4.5);
 
-   const LuaValueList empty = ls.doFileMultRet(
+   const LuaValueList empty = ls.doFile(
       "Tests/TestLuaStateDoFileNoReturn.lua");
    BOOST_CHECK (empty.size() == 0);
 }
@@ -54,13 +54,13 @@ void TestLuaStateDoStringMultRet()
 
    LuaState ls;
 
-   const LuaValueList nothing = ls.doStringMultRet ("a = 1 + 1 - 1");
-   const LuaValueList one = ls.doStringMultRet ("return a");
-   const LuaValueList oneTwo = ls.doStringMultRet ("return a, a*2");
-   const LuaValueList oneTwoThree = ls.doStringMultRet ("return a, a+1, 'three'");
-   const LuaValueList oneTwoThreeFalse = ls.doStringMultRet(
+   const LuaValueList nothing = ls.doString ("a = 1 + 1 - 1");
+   const LuaValueList one = ls.doString ("return a");
+   const LuaValueList oneTwo = ls.doString ("return a, a*2");
+   const LuaValueList oneTwoThree = ls.doString ("return a, a+1, 'three'");
+   const LuaValueList oneTwoThreeFalse = ls.doString(
       "return a, a+a, 'three', a == 10");
-   const LuaValueList nestedTables = ls.doStringMultRet(
+   const LuaValueList nestedTables = ls.doString(
       "return { 'one', 2, { [1] = 'one', two = 2, [true] = 'foo' }, false }");
 
    // Check the size of the returned data
@@ -125,34 +125,18 @@ void TestLuaStateDoExceptions()
    LuaState ls;
 
    // Force a syntax error
-   BOOST_CHECK_THROW (ls.doStringMultRet ("@#$%#"), LuaSyntaxError);
    BOOST_CHECK_THROW (ls.doString ("@#$%#"), LuaSyntaxError);
-
-   BOOST_CHECK_THROW (ls.doFileMultRet ("Tests/SyntaxError.lua"),
-                      LuaSyntaxError);
    BOOST_CHECK_THROW (ls.doFile ("Tests/SyntaxError.lua"), LuaSyntaxError);
 
    // "Lua threads" (coroutines) are not supported by 'LuaValue'. Trying to
    // return one must generate an error.
-   BOOST_CHECK_THROW (ls.doStringMultRet(
-                         "return coroutine.create(function() end)"),
-                      LuaTypeError);
-
    BOOST_CHECK_THROW (ls.doString ("return coroutine.create(function() end)"),
                       LuaTypeError);
-
-   BOOST_CHECK_THROW (ls.doFileMultRet ("Tests/ReturnThread.lua"),
-                      LuaTypeError);
-
    BOOST_CHECK_THROW (ls.doFile ("Tests/ReturnThread.lua"), LuaTypeError);
 
    // We are expected to throw in "file not found" situations
-   BOOST_CHECK_THROW (ls.doFileMultRet ("__THiis_fi1e.doeSNt--exIst.lua"),
-                      LuaFileError);
-
    BOOST_CHECK_THROW (ls.doFile ("__THiis_fi1e.doeSNt--exIst.lua"),
                       LuaFileError);
-
 }
 
 
