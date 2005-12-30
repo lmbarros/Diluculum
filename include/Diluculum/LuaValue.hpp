@@ -194,10 +194,8 @@ namespace Diluculum
          /** "Equal" operator for <tt>LuaValue</tt>s.
           *  @return \c true if <tt>*this</tt> and \c rhs have the same value.
           *          \c false otherwise.
-          *  @todo A much more efficient implementation can be done.
           */
-         bool operator== (const LuaValue& rhs) const
-         { return !(*this > rhs) && !(*this < rhs); }
+         bool operator== (const LuaValue& rhs) const;
 
          /** "Different" operator for <tt>LuaValue</tt>s.
           *  @return \c true if <tt>*this</tt> and \c rhs don't have the same

@@ -298,6 +298,43 @@ namespace Diluculum
 
 
 
+   // - LuaValue::operator== ---------------------------------------------------
+   bool LuaValue::operator== (const LuaValue& rhs) const
+   {
+      std::string lhsTypeName = typeName();
+      std::string rhsTypeName = rhs.typeName();
+
+      if (typeName() != rhs.typeName())
+         return false;
+      else switch (type())
+      {
+         case LUA_TNIL:
+            return true;
+
+         case LUA_TBOOLEAN:
+            return asBoolean() == rhs.asBoolean();
+
+         case LUA_TNUMBER:
+            return asNumber() == rhs.asNumber();
+
+         case LUA_TSTRING:
+            return asString() == rhs.asString();
+
+         case LUA_TTABLE:
+            return asTable() == rhs.asTable();
+
+         case LUA_TFUNCTION:
+            return asFunction() == rhs.asFunction();
+
+         default:
+            assert(
+               false
+               && "Invalid type found in a call to 'LuaValue::operator==()'.");
+      }
+   }
+
+
+
    // - LuaValue::LuaValue -----------------------------------------------------
    LuaValue& LuaValue::operator[] (const LuaValue& key)
    {
