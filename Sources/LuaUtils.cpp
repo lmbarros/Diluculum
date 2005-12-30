@@ -51,7 +51,7 @@ namespace Diluculum
             else
             {
                throw LuaTypeError(
-                  "Lua functions not yet supported by 'ToLuaValue()'.");
+                  "Lua functions not supported by 'ToLuaValue()'.");
             }
          default:
             throw LuaTypeError(
