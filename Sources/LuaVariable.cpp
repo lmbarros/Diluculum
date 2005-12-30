@@ -43,10 +43,7 @@ namespace Diluculum
          PushLuaValue (state_, *p);
          lua_gettable (state_, -2);
          if (!lua_istable (state_, -1))
-         {
-            throw TypeMismatchError ("table",
-                                     ToLuaValue (state_, -1).typeName());
-         }
+            throw TypeMismatchError ("table", lua_typename (state_, -1));
 
          lua_remove (state_, -2);
       }
