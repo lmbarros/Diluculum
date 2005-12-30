@@ -7,6 +7,7 @@
 #include <Diluculum/LuaValue.hpp>
 #include <Diluculum/LuaExceptions.hpp>
 
+
 namespace Diluculum
 {
    // - LuaValue::type ---------------------------------------------------------

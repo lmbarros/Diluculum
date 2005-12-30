@@ -15,13 +15,13 @@ extern "C"
 #include <stdexcept>
 #include <string>
 #include <boost/variant.hpp>
+#include <Diluculum/Types.hpp>
 
 
 namespace Diluculum
 {
-   // Just a forward declaration.
+   // Some forward declarations.
    class LuaValue;
-
 
 
    /** Type mapping from <tt>LuaValue</tt>s to <tt>LuaValue</tt>s. Think of it
@@ -97,6 +97,20 @@ namespace Diluculum
          LuaValue (lua_CFunction f)
             : value_(f)
          { }
+
+         /** @todo Not tested.
+          *  @todo Problem if <tt>v.size() == 0</tt>. Set to \c Nil in this
+          *        case?
+          */
+         LuaValue (const LuaValueList& v)
+         { *this = v[0]; }
+
+         /** @todo Not tested.
+          *  @todo Problem if <tt>v.size() == 0</tt>. Set to \c Nil in this
+          *        case?
+          */
+         const LuaValueList& operator= (const LuaValueList& rhs)
+         { *this = rhs[0]; return rhs; }
 
          /** Returns one of the <tt>LUA_T*</tt> constants from <tt>lua.h</tt>,
           *  representing the type stored in this \c LuaValue.

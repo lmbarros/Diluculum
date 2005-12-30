@@ -8,6 +8,7 @@
 #define _DILUCULUM_LUA_EXCEPTIONS_HPP_
 
 #include <stdexcept>
+#include <Diluculum/Types.hpp>
 #include <Diluculum/LuaValue.hpp>
 
 

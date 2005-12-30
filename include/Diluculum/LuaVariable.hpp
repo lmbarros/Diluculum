@@ -62,6 +62,44 @@ namespace Diluculum
           */
          LuaVariable operator[] (const LuaValue& key) const;
 
+         /** @todo WIP!
+          */
+         LuaValueList operator()(const LuaValueList& params);
+
+         /** @todo WIP!
+          */
+         LuaValueList operator()();
+
+         /** @todo WIP!
+          */
+         LuaValueList operator() (const LuaValue& param);
+
+         /** @todo WIP!
+          */
+         LuaValueList operator() (const LuaValue& param1,
+                                  const LuaValue& param2);
+
+         /** @todo WIP!
+          */
+         LuaValueList operator() (const LuaValue& param1,
+                                  const LuaValue& param2,
+                                  const LuaValue& param3);
+
+         /** @todo WIP!
+          */
+         LuaValueList operator() (const LuaValue& param1,
+                                  const LuaValue& param2,
+                                  const LuaValue& param3,
+                                  const LuaValue& param4);
+
+         /** @todo WIP!
+          */
+         LuaValueList operator() (const LuaValue& param1,
+                                  const LuaValue& param2,
+                                  const LuaValue& param3,
+                                  const LuaValue& param4,
+                                  const LuaValue& param5);
+
          /** Checks whether the value stored in this variable is equal to the
           *  value at \c rhs.
           *  @param rhs The value against which the comparison will be done.

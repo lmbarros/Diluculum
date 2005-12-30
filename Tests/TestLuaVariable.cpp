@@ -32,6 +32,34 @@ int CLuaFunctionTimesTwo (lua_State* ls)
 
 
 
+// - CLuaFunctionTimesTwoThreeFour -----------------------------------
+int CLuaFunctionTimesTwoThreeFour (lua_State* ls)
+{
+   int numArgs = lua_gettop (ls);
+   if (numArgs != 1)
+   {
+      lua_pushstring (ls, "expected one parameter in call "
+                      "to 'TimesTwoThreeFour()'");
+      lua_error (ls);
+   }
+
+   if (!lua_isnumber (ls, 1))
+   {
+      lua_pushstring(ls, "argument to function 'TimesTwoThreeFour()' "
+                     "should be a number.");
+      lua_error(ls);
+   }
+
+   lua_Number num = lua_tonumber (ls, 1);
+
+   lua_pushnumber (ls, num * 2);
+   lua_pushnumber (ls, num * 3);
+   lua_pushnumber (ls, num * 4);
+   return 3;
+}
+
+
+
 // - TestLuaVariableSubscriptOperator ------------------------------------------
 void TestLuaVariableSubscriptOperator()
 {
@@ -386,10 +414,34 @@ void TestLuaVariableFunctionCall()
 
    LuaState ls;
 
-//    // <--- Just wondering... not real tests yet...
-//    LuaValue f = ls.doString ("return function (x) return x * x end");
+   // Call some C functions registered in Lua through a 'LuaVariable'
+   ls["TimesTwo"] = CLuaFunctionTimesTwo;
+   ls["TimesTwoThreeFour"] = CLuaFunctionTimesTwoThreeFour;
+   LuaVariable funcTimesTwo = ls["TimesTwo"];
+   LuaVariable funcTimesTwoThreeFour = ls["TimesTwoThreeFour"];
 
-//    BOOST_CHECK (1 == 2);
+   LuaValueList ret = funcTimesTwo (2);
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0] == 4);
+
+   ret = funcTimesTwoThreeFour (3);
+   BOOST_REQUIRE (ret.size() == 3);
+   BOOST_CHECK (ret[0] == 6);
+   BOOST_CHECK (ret[1] == 9);
+   BOOST_CHECK (ret[2] == 12);
+
+   // Now, store an "authentic" Lua function in a 'LuaVariable' and call it
+   ls.doString ("function Square (x) return x * x end");
+   LuaVariable f = ls["Square"];
+
+   ret = f (7);
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0] == 49);
+
+   // Check if the proper exceptions are thown
+   ls["noFunc"] = 123.456;
+   LuaVariable noFunc = ls["noFunc"];
+   BOOST_CHECK_THROW (noFunc(), TypeMismatchError);
 }
 
 

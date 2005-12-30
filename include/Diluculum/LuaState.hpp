@@ -20,17 +20,11 @@ extern "C"
 #include <Diluculum/LuaExceptions.hpp>
 #include <Diluculum/LuaValue.hpp>
 #include <Diluculum/LuaVariable.hpp>
+#include <Diluculum/Types.hpp>
 
 
 namespace Diluculum
 {
-   /** A type representing the return value of a Lua function call. The
-    *  first return value is stored at the 0th \c vector position, the second
-    *  return value at the 1st \c vector position and so on.
-    */
-   typedef std::vector<LuaValue> LuaRetVal;
-
-
 
    /** \c LuaState: The Next Generation. The pleasant way to do perform relevant
     *  operations on a Lua state.
@@ -64,7 +58,7 @@ namespace Diluculum
           *         In particular, \c LuaTypeError will be thrown if the
           *         execution returns a type not supported by \c LuaType.
           */
-         LuaRetVal doFileMultRet (const boost::filesystem::path& fileName);
+         LuaValueList doFileMultRet (const boost::filesystem::path& fileName);
 
          /** Executes the file passed as parameter and returns only the first
           *  value returned by this execution.
@@ -87,7 +81,7 @@ namespace Diluculum
           *         In particular, \c LuaTypeError will be thrown if the
           *         execution returns a type not supported by \c LuaType.
           */
-         LuaRetVal doStringMultRet (const std::string& what);
+         LuaValueList doStringMultRet (const std::string& what);
 
          /** Executes the string passed as parameter and returns only the first
           *  value returned by this execution.

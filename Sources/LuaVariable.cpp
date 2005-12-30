@@ -5,6 +5,7 @@
 \******************************************************************************/
 
 #include <cassert>
+#include <boost/lexical_cast.hpp>
 #include <Diluculum/LuaState.hpp>
 #include <Diluculum/LuaUtils.hpp>
 #include <Diluculum/LuaVariable.hpp>
@@ -96,5 +97,136 @@ namespace Diluculum
       return LuaVariable (state_, key, keys_);
    }
 
+
+
+   // - LuaVariable::operator() ------------------------------------------------
+   LuaValueList LuaVariable::operator() (const LuaValueList& params)
+   {
+      int topBefore = lua_gettop (state_);
+
+      // <--- code replicated with 'value()'! Factor...
+      int index = LUA_GLOBALSINDEX;
+
+      typedef std::vector<LuaValue>::const_iterator iter_t;
+      for (iter_t p = keys_.begin(); p != keys_.end(); ++p)
+      {
+         PushLuaValue (state_, *p);
+         lua_gettable (state_, index);
+
+         assert (keys_.size() > 0 && "There should be at least one key here.");
+
+         if (keys_.size() > 1 && p != keys_.end()-1 && !lua_istable(state_, -1))
+            throw TypeMismatchError ("table", p->typeName());
+
+         if (index != LUA_GLOBALSINDEX)
+            lua_remove (state_, -2);
+         else
+            index = -2;
+      }
+
+      if (lua_type (state_, -1) != LUA_TFUNCTION)
+         throw TypeMismatchError ("function", lua_typename (state_, -1));
+
+      // <--- at index '-1', the function
+      for (LuaValueList::const_iterator p = params.begin();
+           p != params.end();
+           ++p)
+      {
+         PushLuaValue (state_, *p);
+      }
+
+      int ret = lua_pcall (state_, params.size(), LUA_MULTRET, 0);
+
+      if (ret != 0)
+      {
+         switch (ret)
+         {
+            case LUA_ERRRUN:
+               throw LuaRunTimeError ("LUA_ERRRUN");
+
+            case LUA_ERRMEM:
+               throw LuaRunTimeError ("LUA_ERRMEM");
+
+            case LUA_ERRERR:
+               throw LuaRunTimeError ("LUA_ERRERR");
+
+            default:
+               throw LuaRunTimeError(
+                  ("Unknown error code: "
+                   + boost::lexical_cast<std::string>(ret)).c_str());
+         }
+      }
+
+      int numResults = lua_gettop (state_) - topBefore;
+
+      LuaValueList results;
+
+      for (int i = numResults; i > 0; --i)
+         results.push_back (ToLuaValue (state_, -i));
+
+      lua_pop (state_, numResults);
+
+      return results;
+   }
+
+   LuaValueList LuaVariable::operator()()
+   {
+      return (*this)(LuaValueList());
+   }
+
+   LuaValueList LuaVariable::operator() (const LuaValue& param)
+   {
+      LuaValueList params;
+      params.push_back (param);
+      return (*this)(params);
+   }
+
+   LuaValueList LuaVariable::operator() (const LuaValue& param1,
+                                         const LuaValue& param2)
+   {
+      LuaValueList params;
+      params.push_back (param1);
+      params.push_back (param2);
+      return (*this)(params);
+   }
+
+   LuaValueList LuaVariable::operator() (const LuaValue& param1,
+                                         const LuaValue& param2,
+                                         const LuaValue& param3)
+   {
+      LuaValueList params;
+      params.push_back (param1);
+      params.push_back (param2);
+      params.push_back (param3);
+      return (*this)(params);
+   }
+
+   LuaValueList LuaVariable::operator() (const LuaValue& param1,
+                                         const LuaValue& param2,
+                                         const LuaValue& param3,
+                                         const LuaValue& param4)
+   {
+      LuaValueList params;
+      params.push_back (param1);
+      params.push_back (param2);
+      params.push_back (param3);
+      params.push_back (param4);
+      return (*this)(params);
+   }
+
+   LuaValueList LuaVariable::operator() (const LuaValue& param1,
+                                         const LuaValue& param2,
+                                         const LuaValue& param3,
+                                         const LuaValue& param4,
+                                         const LuaValue& param5)
+   {
+      LuaValueList params;
+      params.push_back (param1);
+      params.push_back (param2);
+      params.push_back (param3);
+      params.push_back (param4);
+      params.push_back (param5);
+      return (*this)(params);
+   }
 
 } // namespace Diluculum

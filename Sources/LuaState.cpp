@@ -44,7 +44,7 @@ namespace Diluculum
 
 
    // - LuaState::doFileMultRet ------------------------------------------------
-   LuaRetVal LuaState::doFileMultRet (const boost::filesystem::path& fileName)
+   LuaValueList LuaState::doFileMultRet (const boost::filesystem::path& fileName)
    {
       const int stackSizeAtBeginning = lua_gettop (state_);
 
@@ -54,7 +54,7 @@ namespace Diluculum
 
       const int numResults = lua_gettop (state_) - stackSizeAtBeginning;
 
-      LuaRetVal ret;
+      LuaValueList ret;
 
       for (int i = 1; i <= numResults; ++i)
       {
@@ -72,7 +72,7 @@ namespace Diluculum
    // - LuaState::doFile -------------------------------------------------------
    LuaValue LuaState::doFile (const boost::filesystem::path& fileName)
    {
-      LuaRetVal rv = doFileMultRet (fileName);
+      LuaValueList rv = doFileMultRet (fileName);
       if (rv.size() > 0)
          return rv[0];
       else
@@ -82,7 +82,7 @@ namespace Diluculum
 
 
    // - LuaState::doStringMultRet ----------------------------------------------
-   LuaRetVal LuaState::doStringMultRet (const std::string& what)
+   LuaValueList LuaState::doStringMultRet (const std::string& what)
    {
       const int stackSizeAtBeginning = lua_gettop (state_);
 
@@ -93,7 +93,7 @@ namespace Diluculum
 
       const int numResults = lua_gettop (state_) - stackSizeAtBeginning;
 
-      LuaRetVal ret;
+      LuaValueList ret;
 
       for (int i = 1; i <= numResults; ++i)
       {
@@ -111,7 +111,7 @@ namespace Diluculum
    // - LuaState::doString -----------------------------------------------------
    LuaValue LuaState::doString (const std::string& what)
    {
-      LuaRetVal rv = doStringMultRet(what);
+      LuaValueList rv = doStringMultRet(what);
       if (rv.size() > 0)
          return rv[0];
       else

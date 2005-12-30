@@ -14,7 +14,7 @@ void TestLuaStateDoFileMultRet()
    using namespace Diluculum;
 
    LuaState ls;
-   const LuaRetVal ret = ls.doFileMultRet ("Tests/TestLuaStateDoFile.lua");
+   const LuaValueList ret = ls.doFileMultRet ("Tests/TestLuaStateDoFile.lua");
 
    BOOST_REQUIRE (ret.size() == 5);
    BOOST_CHECK (ret[0] == "foo");
@@ -24,7 +24,7 @@ void TestLuaStateDoFileMultRet()
    BOOST_CHECK (ret[3] == "baz");
    BOOST_CHECK (ret[4] == 4.5);
 
-   const LuaRetVal empty = ls.doFileMultRet(
+   const LuaValueList empty = ls.doFileMultRet(
       "Tests/TestLuaStateDoFileNoReturn.lua");
    BOOST_CHECK (empty.size() == 0);
 }
@@ -54,13 +54,13 @@ void TestLuaStateDoStringMultRet()
 
    LuaState ls;
 
-   const LuaRetVal nothing = ls.doStringMultRet ("a = 1 + 1 - 1");
-   const LuaRetVal one = ls.doStringMultRet ("return a");
-   const LuaRetVal oneTwo = ls.doStringMultRet ("return a, a*2");
-   const LuaRetVal oneTwoThree = ls.doStringMultRet ("return a, a+1, 'three'");
-   const LuaRetVal oneTwoThreeFalse = ls.doStringMultRet(
+   const LuaValueList nothing = ls.doStringMultRet ("a = 1 + 1 - 1");
+   const LuaValueList one = ls.doStringMultRet ("return a");
+   const LuaValueList oneTwo = ls.doStringMultRet ("return a, a*2");
+   const LuaValueList oneTwoThree = ls.doStringMultRet ("return a, a+1, 'three'");
+   const LuaValueList oneTwoThreeFalse = ls.doStringMultRet(
       "return a, a+a, 'three', a == 10");
-   const LuaRetVal nestedTables = ls.doStringMultRet(
+   const LuaValueList nestedTables = ls.doStringMultRet(
       "return { 'one', 2, { [1] = 'one', two = 2, [true] = 'foo' }, false }");
 
    // Check the size of the returned data
