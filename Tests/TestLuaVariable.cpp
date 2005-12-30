@@ -6,6 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaState.hpp>
+#include "CLuaFunctions.hpp"
 
 
 // - CLuaFunctionTimesTwo ------------------------------------------------------
@@ -430,15 +431,111 @@ void TestLuaVariableFunctionCall()
    BOOST_CHECK (ret[1] == 9);
    BOOST_CHECK (ret[2] == 12);
 
-   // Now, store an "authentic" Lua function in a 'LuaVariable' and call it
-   ls.doString ("function Square (x) return x * x end");
-   LuaVariable f = ls["Square"];
+   // Once those "pure Lua C functions" are tested, try all the
+   // Diluculum-wrapped functions defined in 'CLuaFunctions.hpp'.
+   ls["ZeroTheGlobal"] = ZeroTheGlobal;
+   TheGlobal = 171;
+   LuaVariable fZeroTheGlobal = ls["ZeroTheGlobal"];
+   ret = fZeroTheGlobal();
+   BOOST_REQUIRE (ret.size() == 0);
+   BOOST_CHECK (TheGlobal == 0);
 
-   ret = f (7);
+   ls["SetTheGlobalDirectly"] = SetTheGlobalDirectly;
+   LuaVariable fSetTheGlobalDirectly = ls["SetTheGlobalDirectly"];
+   ret = fSetTheGlobalDirectly (-55);
+   BOOST_REQUIRE (ret.size() == 0);
+   BOOST_CHECK (TheGlobal == -55);
+
+   ls["SetTheGlobalAddingAString"] = SetTheGlobalAddingAString;
+   LuaVariable fSetTheGlobalAddingAString = ls["SetTheGlobalAddingAString"];
+   ret = fSetTheGlobalAddingAString (77, "two");
+   BOOST_REQUIRE (ret.size() == 0);
+   BOOST_CHECK (TheGlobal == 79);
+
+   ls["SetTheGlobalMultiplying"] = SetTheGlobalMultiplying;
+   LuaVariable fSetTheGlobalMultiplying = ls["SetTheGlobalMultiplying"];
+   ret = fSetTheGlobalMultiplying (11, 2, -3);
+   BOOST_REQUIRE (ret.size() == 0);
+   BOOST_CHECK (TheGlobal == -66);
+
+   ls["SetTheGlobalFirstParamDefinesOperation"] =
+      SetTheGlobalFirstParamDefinesOperation;
+   LuaVariable fSetTheGlobalFirstParamDefinesOperation =
+      ls["SetTheGlobalFirstParamDefinesOperation"];
+   ret = fSetTheGlobalFirstParamDefinesOperation (true, 44, -1, -3);
+   BOOST_REQUIRE (ret.size() == 0);
+   BOOST_CHECK (TheGlobal == 40);
+
+
+   ls["SetTheGlobalLastParamSelectsValue"] = SetTheGlobalLastParamSelectsValue;
+   LuaVariable fSetTheGlobalLastParamSelectsValue =
+      ls["SetTheGlobalLastParamSelectsValue"];
+   ret = fSetTheGlobalLastParamSelectsValue (11, -22, 33, -44, 2);
+   BOOST_REQUIRE (ret.size() == 0);
+   BOOST_CHECK (TheGlobal == -22);
+
+   ls["WhatIsYourFavoriteColor"] = WhatIsYourFavoriteColor;
+   LuaVariable fWhatIsYourFavoriteColor =
+      ls["WhatIsYourFavoriteColor"];
+   ret = fWhatIsYourFavoriteColor();
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0] == "Blue");
+
+   ls["GetTableSize"] = GetTableSize;
+   LuaVariable fGetTableSize = ls["GetTableSize"];
+   ls.doString ("GetTableSize_TestTable = { 'abc', 4.2, true, { }, -7 }");
+   ret = fGetTableSize (ls["GetTableSize_TestTable"].value());
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0] == 5);
+
+   ls["Mod"] = Mod;
+   LuaVariable fMod = ls["Mod"];
+   ret = fMod (8, 6);
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0] == 2);
+
+   ls["Mean"] = Mean;
+   LuaVariable fMean = ls["Mean"];
+   ret = fMean (10, 3, 20);
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0] == 11);
+
+   ls["CalcEvenParityBit"] = CalcEvenParityBit;
+   LuaVariable fCalcEvenParityBit = ls["CalcEvenParityBit"];
+   ret = fCalcEvenParityBit (true, true, true, true);
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0] == false);
+
+   ls["Concatenate"] = Concatenate;
+   LuaVariable fConcatenate = ls["Concatenate"];
+   ret = fConcatenate ("As armas ", "e os barões ", "assinalados que ",
+                       "da ocidental ", "praia lusitana...");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0] == "As armas e os barões assinalados que "
+                "da ocidental praia lusitana...");
+
+
+   // Now, so the same with some "authentic" Lua functions
+   ls.doString ("function Square (x) return x*x end");
+   ret = ls["Square"](7);
    BOOST_REQUIRE (ret.size() == 1);
    BOOST_CHECK (ret[0] == 49);
 
-   // Check if the proper exceptions are thown
+   ls.doString ("function SumProd (x) return x+x, x*x end");
+   ret = ls["SumProd"](5);
+   BOOST_REQUIRE (ret.size() == 2);
+   BOOST_CHECK (ret[0] == 10);
+   BOOST_CHECK (ret[1] == 25);
+
+   ls.doString ("function PartialSums (x, y, z) return 0, x, x+y, x+y+z end");
+   ret = ls["PartialSums"](4, 10, 3);
+   BOOST_REQUIRE (ret.size() == 4);
+   BOOST_CHECK (ret[0] == 0);
+   BOOST_CHECK (ret[1] == 4);
+   BOOST_CHECK (ret[2] == 14);
+   BOOST_CHECK (ret[3] == 17);
+
+   // Finally, check if the proper exceptions are thrown
    ls["noFunc"] = 123.456;
    LuaVariable noFunc = ls["noFunc"];
    BOOST_CHECK_THROW (noFunc(), TypeMismatchError);
