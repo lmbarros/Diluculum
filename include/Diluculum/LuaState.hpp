@@ -16,7 +16,6 @@ extern "C"
 }
 #include <string>
 #include <vector>
-#include <boost/filesystem/path.hpp>
 #include <Diluculum/LuaExceptions.hpp>
 #include <Diluculum/LuaValue.hpp>
 #include <Diluculum/LuaVariable.hpp>
@@ -59,8 +58,8 @@ namespace Diluculum
           *         In particular, \c LuaTypeError will be thrown if the
           *         execution returns a type not supported by \c LuaType.
           */
-         LuaValueList doFile (const boost::filesystem::path& fileName)
-         { return doStringOrFile (false, fileName.native_file_string()); }
+         LuaValueList doFile (const std::string& fileName)
+         { return doStringOrFile (false, fileName); }
 
          /** Executes the string passed as parameter and returns all the values
           *  returned by this execution. Notice that when a \c LuaValueList is
