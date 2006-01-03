@@ -13,8 +13,8 @@
 
 # Inherit the environment from, well, from the environment.
 # TODO: I suppose that's not the best way to create a 'SConstruct'. But for a
-#       rootless GoboLinux user (with installed in his own $HOME), this
-#       simplifies the things quite a lot.
+#       rootless GoboLinux user (with installed libraries in his own $HOME),
+#       this simplifies the things quite a lot.
 import os
 envBase = Environment (ENV = os.environ,
                        CPPPATH = "#/include",
