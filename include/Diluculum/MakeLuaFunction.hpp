@@ -23,7 +23,7 @@ namespace Diluculum
        *  @param function The function name as available in Lua. This is used
        *         only to give some additional information to the error message.
        *  @param message An error message that will be associated with the
-       *         generated error
+       *         generated error.
        */
       void MLF_IssueLuaErrorIf (lua_State* ls, bool condition,
                                 const std::string& function,
