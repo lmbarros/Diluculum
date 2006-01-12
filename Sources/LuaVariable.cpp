@@ -43,10 +43,7 @@ namespace Diluculum
          PushLuaValue (state_, *p);
          lua_gettable (state_, -2);
          if (!lua_istable (state_, -1))
-         {
-            throw TypeMismatchError(
-               "table", lua_typename (state_, lua_type(state_, -1)));
-         }
+            throw TypeMismatchError ("table", luaL_typename (state_, -1));
          lua_remove (state_, -2);
       }
 
@@ -87,9 +84,8 @@ namespace Diluculum
 
       pushTheReferencedValue();
 
-      int type = lua_type (state_, -1);
-      if (type != LUA_TFUNCTION)
-         throw TypeMismatchError ("function", lua_typename (state_, type));
+      if (lua_type (state_, -1) != LUA_TFUNCTION)
+         throw TypeMismatchError ("function", luaL_typename (state_, -1));
 
       typedef LuaValueList::const_iterator iter_t;
       for (iter_t p = params.begin(); p != params.end(); ++p)
