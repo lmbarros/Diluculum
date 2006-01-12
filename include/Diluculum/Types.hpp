@@ -7,6 +7,7 @@
 #ifndef _DILUCULUM_TYPES_HPP_
 #define _DILUCULUM_TYPES_HPP_
 
+#include <map>
 #include <vector>
 
 
@@ -20,6 +21,11 @@ namespace Diluculum
     *  \c vector position and so on.
     */
    typedef std::vector<LuaValue> LuaValueList;
+
+   /** Type mapping from <tt>LuaValue</tt>s to <tt>LuaValue</tt>s. Think of it
+    *  as a C++ approximation of a Lua table.
+    */
+   typedef std::map<LuaValue, LuaValue> LuaValueMap;
 
 } // namespace Diluculum
 

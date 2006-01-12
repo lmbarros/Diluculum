@@ -21,13 +21,6 @@ namespace Diluculum
    class LuaValue;
 
 
-   /** Type mapping from <tt>LuaValue</tt>s to <tt>LuaValue</tt>s. Think of it
-    *  as a C++ approximation of a Lua table.
-    */
-   typedef std::map<LuaValue, LuaValue> LuaValueMap;
-
-
-
    /// A class that somewhat mimics a Lua value.
    class LuaValue
    {
