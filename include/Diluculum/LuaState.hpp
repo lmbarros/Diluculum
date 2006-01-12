@@ -82,6 +82,9 @@ namespace Diluculum
           */
          LuaVariable operator[] (const std::string& variable);
 
+         /// Returns the encapsulated <tt>lua_State*</tt>.
+         lua_State* getState() { return state_; }
+
       private:
          /** Since The implementation of \c doString and \c doFile() are quite
           *  similar, it looked like a good idea to use the same function to
