@@ -7,10 +7,7 @@
 #ifndef _DILUCULUM_LUA_VALUE_HPP_
 #define _DILUCULUM_LUA_VALUE_HPP_
 
-extern "C"
-{
-#  include <lua.h>
-}
+#include <lua.hpp>
 #include <map>
 #include <stdexcept>
 #include <string>

@@ -63,8 +63,8 @@ envLib = envBase.Copy()
 #  The tests building environment
 #  This is one is used to build the Diluculum unit tests.
 # ------------------------------------------------------------------------------
-envTests = envBase.Copy (LIBS = ["Diluculum", "lua", "lualib", "dl",
-                                 "boost_unit_test_framework-gcc-mt"])
+envTests = envBase.Copy (LIBS = [ "Diluculum", "lua", "dl",
+                                  "boost_unit_test_framework-gcc-mt" ])
 
 
 

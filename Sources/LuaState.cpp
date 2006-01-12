@@ -16,20 +16,12 @@ namespace Diluculum
    LuaState::LuaState (bool loadStdLib)
       : state_(0)
    {
-      state_ = lua_open();
+      state_ = luaL_newstate();
       if (state_ == 0)
          throw LuaError ("Error opening Lua state.");
 
       if (loadStdLib)
-      {
-         luaopen_base (state_);
-         luaopen_table (state_);
-         luaopen_io (state_);
-         luaopen_string (state_);
-         luaopen_math (state_);
-         luaopen_debug (state_);
-         luaopen_loadlib (state_);
-      }
+         luaL_openlibs (state_);
    }
 
 

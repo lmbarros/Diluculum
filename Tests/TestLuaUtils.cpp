@@ -21,7 +21,7 @@ void TestToLuaValue()
 {
    using namespace Diluculum;
 
-   lua_State* ls = lua_open();
+   lua_State* ls = luaL_newstate();
 
    lua_pushboolean (ls, true);
    lua_pushnumber (ls, 171.171);
@@ -73,7 +73,7 @@ void TestPushLuaValue()
 {
    using namespace Diluculum;
 
-   lua_State* ls = lua_open();
+   lua_State* ls = luaL_newstate();
 
    PushLuaValue (ls, Nil);
    PushLuaValue (ls, false);

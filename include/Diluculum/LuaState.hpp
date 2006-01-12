@@ -8,12 +8,7 @@
 #ifndef _DILUCULUM_LUA_STATE_HPP_
 #define _DILUCULUM_LUA_STATE_HPP_
 
-extern "C"
-{
-#  include <lua.h>
-#  include <lualib.h>
-#  include <lauxlib.h>
-}
+#include <lua.hpp>
 #include <string>
 #include <vector>
 #include <Diluculum/LuaExceptions.hpp>
