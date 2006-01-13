@@ -74,6 +74,7 @@ envTests = envBase.Copy (LIBS = [ "Diluculum", "lua", "dl",
 # ------------------------------------------------------------------------------
 envLib.Library ("lib/Diluculum", [ "Sources/LuaExceptions.cpp",
                                    "Sources/LuaState.cpp",
+                                   "Sources/LuaUserData.cpp",
                                    "Sources/LuaUtils.cpp",
                                    "Sources/LuaValue.cpp",
                                    "Sources/LuaVariable.cpp",
@@ -84,3 +85,4 @@ envTests.Program ("Tests/TestLuaVariable", "Tests/TestLuaVariable.cpp")
 envTests.Program ("Tests/TestLuaUtils", "Tests/TestLuaUtils.cpp")
 envTests.Program ("Tests/TestLuaState", "Tests/TestLuaState.cpp")
 envTests.Program ("Tests/TestMakeLuaFunction", "Tests/TestMakeLuaFunction.cpp")
+envTests.Program ("Tests/TestLuaUserData", "Tests/TestLuaUserData.cpp")

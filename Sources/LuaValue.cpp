@@ -49,6 +49,8 @@ namespace Diluculum
          return LUA_TTABLE;
       else if (value_.type() == typeid (lua_CFunction))
          return LUA_TFUNCTION;
+      else if (value_.type() == typeid (LuaUserData))
+         return LUA_TUSERDATA;
       else
       {
          assert (false
@@ -73,6 +75,8 @@ namespace Diluculum
          return "table";
       else if (value_.type() == typeid (lua_CFunction))
          return "function";
+      else if (value_.type() == typeid (LuaUserData))
+         return "userdata";
       else
       {
          assert (false
@@ -157,6 +161,21 @@ namespace Diluculum
 
 
 
+   // - LuaValue::asUserData ---------------------------------------------------
+   LuaUserData LuaValue::asUserData() const
+   {
+      try
+      {
+         return boost::get<LuaUserData>(value_);
+      }
+      catch (boost::bad_get& e)
+      {
+         throw TypeMismatchError ("userdata", typeName());
+      }
+   }
+
+
+
    // - LuaValue::operator< ----------------------------------------------------
    bool LuaValue::operator< (const LuaValue& rhs) const
    {
@@ -179,6 +198,8 @@ namespace Diluculum
             return asString() < rhs.asString();
          else if (lhsTypeName == "function")
             return asFunction() < rhs.asFunction();
+         else if (lhsTypeName == "userdata")
+            return asUserData() < rhs.asUserData();
          else if (lhsTypeName == "table")
          {
             const LuaValueMap lhsMap = asTable();
@@ -250,6 +271,8 @@ namespace Diluculum
             return asString() > rhs.asString();
          else if (lhsTypeName == "function")
             return asFunction() > rhs.asFunction();
+         else if (lhsTypeName == "userdata")
+            return asUserData() > rhs.asUserData();
          else if (lhsTypeName == "table")
          {
             const LuaValueMap lhsMap = asTable();
@@ -326,6 +349,9 @@ namespace Diluculum
 
          case LUA_TFUNCTION:
             return asFunction() == rhs.asFunction();
+
+         case LUA_TUSERDATA:
+            return asUserData() == rhs.asUserData();
 
          default:
          {

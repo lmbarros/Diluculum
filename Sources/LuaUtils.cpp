@@ -28,6 +28,16 @@ namespace Diluculum
 
          case LUA_TSTRING:
             return lua_tostring (state, index);
+
+         case LUA_TUSERDATA:
+         {
+            void* addr = lua_touserdata (state, index);
+            size_t size = lua_objlen (state, index);
+            LuaUserData ud (size);
+            memcpy (ud.getData(), addr, size);
+            return ud;
+         }
+
          case LUA_TTABLE:
          {
             // Make the index positive if necessary (using a negative index here
@@ -94,6 +104,14 @@ namespace Diluculum
          case LUA_TBOOLEAN:
             lua_pushboolean (state, value.asBoolean());
             break;
+
+         case LUA_TUSERDATA:
+         {
+            size_t size = value.asUserData().getSize();
+            void* addr = lua_newuserdata (state, size);
+            memcpy (addr, value.asUserData().getData(), size);
+            break;
+         }
 
          case LUA_TTABLE:
          {

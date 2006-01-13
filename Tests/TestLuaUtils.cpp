@@ -7,6 +7,7 @@
 #include <boost/test/unit_test.hpp>
 #include <cstring>
 #include <Diluculum/LuaExceptions.hpp>
+#include <Diluculum/LuaUserData.hpp>
 #include <Diluculum/LuaUtils.hpp>
 
 
@@ -28,11 +29,15 @@ void TestToLuaValue()
    lua_pushstring (ls, "The book is on the table.");
    lua_pushnil (ls);
    lua_pushcfunction (ls, CLuaFunctionExample);
+   void* mem = lua_newuserdata (ls, 555);
+   memset (mem, 0, 555);
 
    LuaValue lvTrue (true);
    LuaValue lv171 (171.171);
    LuaValue lvTBIOTT ("The book is on the table.");
    LuaValue lvCLua (CLuaFunctionExample);
+   LuaValue lvUserData555Zeros (LuaUserData (555));
+   memset (lvUserData555Zeros.asUserData().getData(), 0, 555);
 
    // Try reading using positive (absolute) indexes
    BOOST_CHECK (ToLuaValue (ls, 1) == lvTrue);
@@ -40,23 +45,25 @@ void TestToLuaValue()
    BOOST_CHECK (ToLuaValue (ls, 3) == lvTBIOTT);
    BOOST_CHECK (ToLuaValue (ls, 4) == Nil);
    BOOST_CHECK (ToLuaValue (ls, 5) == lvCLua);
+   BOOST_CHECK (ToLuaValue (ls, 6) == lvUserData555Zeros);
 
    // And now, try with negative indexes
-   BOOST_CHECK (ToLuaValue (ls, -1) == lvCLua);
-   BOOST_CHECK (ToLuaValue (ls, -2) == Nil);
-   BOOST_CHECK (ToLuaValue (ls, -3) == lvTBIOTT);
-   BOOST_CHECK (ToLuaValue (ls, -4) == lv171);
-   BOOST_CHECK (ToLuaValue (ls, -5) == lvTrue);
+   BOOST_CHECK (ToLuaValue (ls, -1) == lvUserData555Zeros);
+   BOOST_CHECK (ToLuaValue (ls, -2) == lvCLua);
+   BOOST_CHECK (ToLuaValue (ls, -3) == Nil);
+   BOOST_CHECK (ToLuaValue (ls, -4) == lvTBIOTT);
+   BOOST_CHECK (ToLuaValue (ls, -5) == lv171);
+   BOOST_CHECK (ToLuaValue (ls, -6) == lvTrue);
 
    // Just to be complete, do everything once more using "constants"
    BOOST_CHECK (ToLuaValue (ls, 1) == true);
    BOOST_CHECK (ToLuaValue (ls, 2) == 171.171);
    BOOST_CHECK (ToLuaValue (ls, 3) == "The book is on the table.");
    BOOST_CHECK (ToLuaValue (ls, 5) == CLuaFunctionExample);
-   BOOST_CHECK (ToLuaValue (ls, -1) == CLuaFunctionExample);
-   BOOST_CHECK (ToLuaValue (ls, -3) == "The book is on the table.");
-   BOOST_CHECK (ToLuaValue (ls, -4) == 171.171);
-   BOOST_CHECK (ToLuaValue (ls, -5) == true);
+   BOOST_CHECK (ToLuaValue (ls, -2) == CLuaFunctionExample);
+   BOOST_CHECK (ToLuaValue (ls, -4) == "The book is on the table.");
+   BOOST_CHECK (ToLuaValue (ls, -5) == 171.171);
+   BOOST_CHECK (ToLuaValue (ls, -6) == true);
 
    // Ensure that trying to convert unsupported types throws an exception
    lua_newthread (ls);
@@ -80,6 +87,9 @@ void TestPushLuaValue()
    PushLuaValue (ls, "The sky is blue.");
    PushLuaValue (ls, 2.7183);
    PushLuaValue (ls, CLuaFunctionExample);
+   LuaValue lvUserData555Zeros (LuaUserData (555));
+   memset (lvUserData555Zeros.asUserData().getData(), 0, 555); // <--- 'asUserData()' returns a copy! 'memset()'ing it doesn't modify the "real" object.
+   PushLuaValue (ls, lvUserData555Zeros);
 
    // Check if the values were properly pushed
    BOOST_CHECK (lua_isnil (ls, 1));
@@ -95,6 +105,10 @@ void TestPushLuaValue()
 
    BOOST_REQUIRE (lua_iscfunction (ls, 5));
    BOOST_CHECK (lua_tocfunction (ls, 5) == CLuaFunctionExample);
+
+   BOOST_REQUIRE (lua_type (ls, 6) == LUA_TUSERDATA);
+   unsigned char zeros[555] = { 0 };
+   BOOST_CHECK (memcmp (lua_touserdata (ls, 6), zeros, 555) == 0);
 
    // Close the Lua state used in this test
    lua_close (ls);

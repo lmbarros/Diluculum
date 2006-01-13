@@ -12,6 +12,7 @@
 #include <stdexcept>
 #include <string>
 #include <boost/variant.hpp>
+#include <Diluculum/LuaUserData.hpp>
 #include <Diluculum/Types.hpp>
 
 
@@ -21,7 +22,15 @@ namespace Diluculum
    class LuaValue;
 
 
-   /// A class that somewhat mimics a Lua value.
+   /** A class that somewhat mimics a Lua value. Notice that a \c LuaValue is
+    *  a C++-side thing. There is absolutely no relationship between a
+    *  \c LuaValue and a Lua state. This is particularly important for tables
+    *  and userdata: in Lua, these things are garbage-collectible objects, and
+    *  variables are just references to them. In Diluculum, a \c LuaValue
+    *  represents the value (hence the name!). So, if a \c LuaValue holds a
+    *  table, then it contains a collection of keys and values. Similarly, if it
+    *  holds a userdata, it actually contains a block of memory with some data.
+    */
    class LuaValue
    {
       public:
@@ -88,6 +97,11 @@ namespace Diluculum
             : value_(f)
          { }
 
+         /// Constructs a \c LuaValue with "user data" type and \c ud value.
+         LuaValue (const LuaUserData& ud)
+            : value_(ud)
+         { }
+
          /** Constructs a \c LuaValue from a \c LuaValueList. The first value on
           *  the list is used to initialize the \c LuaValue. If the
           *  \c LuaValueList is empty, initializes the constructed \c LuaValue
@@ -110,7 +124,7 @@ namespace Diluculum
           *  built-in function \c type().
           *  @return One of the following strings: <tt>"nil"</tt>,
           *          <tt>"boolean"</tt>, <tt>"number"</tt>, <tt>"string"</tt>,
-          *          <tt>"table"</tt>, <tt>"function"</tt>.
+          *          <tt>"table"</tt>, <tt>"function"</tt>, <tt>"userdata"</tt>.
           */
          std::string typeName() const;
 
@@ -147,6 +161,15 @@ namespace Diluculum
           *         strict check; no type conversion is performed).
           */
          lua_CFunction asFunction() const;
+
+         /** Return the value as a (full) user data.
+          *  @throw TypeMismatchError If the value is not a (full) user data
+          *         (this is a strict check; no type conversion is performed).
+          *  @todo Returning this by value doesn't sound like the best way to
+          *        go. Investigate if returning a \c const reference is
+          *        possible. The same goes with \c asTable().
+          */
+         LuaUserData asUserData() const;
 
          /** "Less than" operator for <tt>LuaValue</tt>s.
           *  @return The order relationship is quite arbitrary for
@@ -215,7 +238,7 @@ namespace Diluculum
 
          /// Stores the value (and the type) stored in this \c LuaValue.
          boost::variant <NilType, lua_Number, std::string, bool, LuaValueMap,
-                         lua_CFunction> value_;
+                         lua_CFunction, LuaUserData> value_;
    };
 
 

@@ -74,6 +74,9 @@ void TestLuaValueType()
 
    LuaValue aFunctionValue (CLuaFunctionExample);
    BOOST_CHECK (aFunctionValue.type() == LUA_TFUNCTION);
+
+   LuaValue anUserDataValue (LuaUserData (1024));
+   BOOST_CHECK (anUserDataValue.type() == LUA_TUSERDATA);
 }
 
 
@@ -110,6 +113,9 @@ void TestLuaValueTypeName()
 
    LuaValue aFunctionValue (CLuaFunctionExample);
    BOOST_CHECK (aFunctionValue.typeName() == "function");
+
+   LuaValue anUserDataValue (LuaUserData (1024));
+   BOOST_CHECK (anUserDataValue.typeName() == "userdata");
 }
 
 
@@ -118,6 +124,8 @@ void TestLuaValueTypeName()
 void TestLuaValueAsSomethingFunctions()
 {
    using namespace Diluculum;
+
+   lua_State* ls = luaL_newstate();
 
    LuaValue aNilValue;
    LuaValue anotherNilValue = Nil;
@@ -138,6 +146,11 @@ void TestLuaValueAsSomethingFunctions()
    lvm[true] = std::string("Ahhhh!");
    LuaValue tableValue (lvm);
 
+   int ints[] = { 12, 13, 14, 15, 16, 17, 18, 19 };
+   LuaUserData ud (sizeof(ints));
+   memcpy (ud.getData(), &ints, sizeof(ints));
+   LuaValue anUserDataValue (ud);
+
    // Try to get the proper values.
    BOOST_CHECK (aNumberValue1.asNumber() == 1.0);
    BOOST_CHECK (aNumberValue2.asNumber() == 2.0);
@@ -152,6 +165,8 @@ void TestLuaValueAsSomethingFunctions()
    BOOST_CHECK (tableValue.asTable()[5.4].asNumber() == 4);
    BOOST_CHECK (tableValue.asTable()[171].asString() == "Hey!");
    BOOST_CHECK (tableValue.asTable()[true].asString() == "Ahhhh!");
+   BOOST_CHECK (memcmp (anUserDataValue.asUserData().getData(), ints,
+                        sizeof(ints)) == 0);
 
    // Ensure that we get the proper exception when doing the Wrong Thing
    BOOST_CHECK_THROW (aNilValue.asBoolean(), TypeMismatchError);
@@ -159,32 +174,46 @@ void TestLuaValueAsSomethingFunctions()
    BOOST_CHECK_THROW (aNilValue.asString(), TypeMismatchError);
    BOOST_CHECK_THROW (aNilValue.asTable(), TypeMismatchError);
    BOOST_CHECK_THROW (aNilValue.asFunction(), TypeMismatchError);
+   BOOST_CHECK_THROW (aNilValue.asUserData(), TypeMismatchError);
 
    BOOST_CHECK_THROW (anotherNilValue.asBoolean(), TypeMismatchError);
    BOOST_CHECK_THROW (anotherNilValue.asNumber(), TypeMismatchError);
    BOOST_CHECK_THROW (anotherNilValue.asString(), TypeMismatchError);
    BOOST_CHECK_THROW (anotherNilValue.asTable(), TypeMismatchError);
    BOOST_CHECK_THROW (anotherNilValue.asFunction(), TypeMismatchError);
+   BOOST_CHECK_THROW (anotherNilValue.asUserData(), TypeMismatchError);
 
    BOOST_CHECK_THROW (aNumberValue1.asBoolean(), TypeMismatchError);
    BOOST_CHECK_THROW (aNumberValue1.asString(), TypeMismatchError);
    BOOST_CHECK_THROW (aNumberValue1.asTable(), TypeMismatchError);
    BOOST_CHECK_THROW (aNumberValue1.asFunction(), TypeMismatchError);
+   BOOST_CHECK_THROW (aNumberValue1.asUserData(), TypeMismatchError);
 
    BOOST_CHECK_THROW (aStringValueFoo.asBoolean(), TypeMismatchError);
    BOOST_CHECK_THROW (aStringValueFoo.asNumber(), TypeMismatchError);
    BOOST_CHECK_THROW (aStringValueFoo.asTable(), TypeMismatchError);
    BOOST_CHECK_THROW (aStringValueFoo.asFunction(), TypeMismatchError);
+   BOOST_CHECK_THROW (aStringValueFoo.asUserData(), TypeMismatchError);
 
    BOOST_CHECK_THROW (aBooleanValue.asNumber(), TypeMismatchError);
    BOOST_CHECK_THROW (aBooleanValue.asString(), TypeMismatchError);
    BOOST_CHECK_THROW (aBooleanValue.asTable(), TypeMismatchError);
    BOOST_CHECK_THROW (aBooleanValue.asFunction(), TypeMismatchError);
+   BOOST_CHECK_THROW (aBooleanValue.asUserData(), TypeMismatchError);
 
    BOOST_CHECK_THROW (aFunctionValue.asNumber(), TypeMismatchError);
    BOOST_CHECK_THROW (aFunctionValue.asString(), TypeMismatchError);
    BOOST_CHECK_THROW (aFunctionValue.asTable(), TypeMismatchError);
    BOOST_CHECK_THROW (aFunctionValue.asBoolean(), TypeMismatchError);
+   BOOST_CHECK_THROW (aFunctionValue.asUserData(), TypeMismatchError);
+
+   BOOST_CHECK_THROW (anUserDataValue.asNumber(), TypeMismatchError);
+   BOOST_CHECK_THROW (anUserDataValue.asString(), TypeMismatchError);
+   BOOST_CHECK_THROW (anUserDataValue.asTable(), TypeMismatchError);
+   BOOST_CHECK_THROW (anUserDataValue.asBoolean(), TypeMismatchError);
+   BOOST_CHECK_THROW (anUserDataValue.asFunction(), TypeMismatchError);
+
+   lua_close (ls);
 }
 
 
@@ -208,6 +237,21 @@ void TestLuaValueRelationalOperators()
    LuaValueMap aLuaValueMap;
    LuaValue aTableValue (aLuaValueMap);
 
+   int ints[] = { 12, 13, 14, 15, 16, 17, 18, 19 };
+   LuaUserData ud1 (sizeof(ints));
+   memcpy (ud1.getData(), ints, sizeof(ints));
+   LuaValue anUserDataValue (ud1);
+
+   int otherInts[] = { 12, 12, 14, 15, 16, 17, 18, 19 };
+   LuaUserData ud2 (sizeof(otherInts));
+   memcpy (ud2.getData(), otherInts, sizeof(otherInts));
+   LuaValue anotherUserDataValue (ud2);
+
+   int sameInts[] = { 12, 13, 14, 15, 16, 17, 18, 19 };
+   LuaUserData ud3 (sizeof(sameInts));
+   memcpy (ud3.getData(), sameInts, sizeof(sameInts));
+   LuaValue sameUserDataValue (ud3);
+
    // operator<
    BOOST_CHECK (aBooleanValue < aNilValue);
    BOOST_CHECK (aBooleanValue < aFunctionValue);
@@ -223,6 +267,11 @@ void TestLuaValueRelationalOperators()
    BOOST_CHECK (aBooleanValue < aTableValue);
    BOOST_CHECK (aNumberValue1 < aNumberValue2);
    BOOST_CHECK (aStringValueBar < aStringValueFoo);
+   BOOST_CHECK (aNilValue < anUserDataValue);
+   BOOST_CHECK (aNumberValue1 < anUserDataValue);
+   BOOST_CHECK (aStringValueFoo < anUserDataValue);
+   BOOST_CHECK (aBooleanValue < anUserDataValue);
+   BOOST_CHECK (aFunctionValue < anUserDataValue);
    BOOST_CHECK (aNumberValue1 < 1.01);
    BOOST_CHECK (aNumberValue2 < 2.5L);
    BOOST_CHECK (aStringValueFoo < "Zzz");
@@ -245,6 +294,11 @@ void TestLuaValueRelationalOperators()
    BOOST_CHECK (!(aTableValue > aTableValue));
    BOOST_CHECK (!(aNumberValue1 > aNumberValue2));
    BOOST_CHECK (!(aStringValueBar > aStringValueFoo));
+   BOOST_CHECK (!(aNilValue > anUserDataValue));
+   BOOST_CHECK (!(aNumberValue1 > anUserDataValue));
+   BOOST_CHECK (!(aStringValueFoo > anUserDataValue));
+   BOOST_CHECK (!(aBooleanValue > anUserDataValue));
+   BOOST_CHECK (!(aFunctionValue > anUserDataValue));
    BOOST_CHECK (!(aNumberValue1 > 1.01));
    BOOST_CHECK (!(aNumberValue2 > 2.5L));
    BOOST_CHECK (!(aStringValueFoo > "Zzz"));
@@ -265,6 +319,11 @@ void TestLuaValueRelationalOperators()
    BOOST_CHECK (aTableValue > aStringValueFoo);
    BOOST_CHECK (aNumberValue2 > aNumberValue1);
    BOOST_CHECK (aStringValueFoo > aStringValueBar);
+   BOOST_CHECK (anUserDataValue > aNilValue);
+   BOOST_CHECK (anUserDataValue > aNumberValue1);
+   BOOST_CHECK (anUserDataValue > aStringValueFoo);
+   BOOST_CHECK (anUserDataValue > aBooleanValue);
+   BOOST_CHECK (anUserDataValue > aFunctionValue);
    BOOST_CHECK (aNumberValue1 > -10);
    BOOST_CHECK (aNumberValue2 > 1e-10f);
    BOOST_CHECK (aStringValueFoo > "");
@@ -288,6 +347,11 @@ void TestLuaValueRelationalOperators()
    BOOST_CHECK (!(aTableValue < aTableValue));
    BOOST_CHECK (!(aNumberValue2 < aNumberValue1));
    BOOST_CHECK (!(aStringValueFoo < aStringValueBar));
+   BOOST_CHECK (!(anUserDataValue < aNilValue));
+   BOOST_CHECK (!(anUserDataValue < aNumberValue1));
+   BOOST_CHECK (!(anUserDataValue < aStringValueFoo));
+   BOOST_CHECK (!(anUserDataValue < aBooleanValue));
+   BOOST_CHECK (!(anUserDataValue < aFunctionValue));
    BOOST_CHECK (!(aNumberValue1 < -10));
    BOOST_CHECK (!(aNumberValue2 < 1e-10f));
    BOOST_CHECK (!(aStringValueFoo < ""));
@@ -304,6 +368,7 @@ void TestLuaValueRelationalOperators()
    BOOST_CHECK (aStringValueFoo == std::string("Foo"));
    BOOST_CHECK (aBooleanValue == true);
    BOOST_CHECK (aFunctionValue == CLuaFunctionExample);
+   BOOST_CHECK (anUserDataValue == sameUserDataValue);
 
    // ! operator!=
    BOOST_CHECK (!(aNumberValue1 != 1));
@@ -317,11 +382,13 @@ void TestLuaValueRelationalOperators()
    BOOST_CHECK (!(aStringValueFoo != std::string("Foo")));
    BOOST_CHECK (!(aBooleanValue != true));
    BOOST_CHECK (!(aFunctionValue != CLuaFunctionExample));
+   BOOST_CHECK (!(anUserDataValue != sameUserDataValue));
 
    // operator !=
    BOOST_CHECK (aFunctionValue != 0);
    BOOST_CHECK (anotherFunctionValue != 0);
    BOOST_CHECK (aFunctionValue != anotherFunctionValue);
+   BOOST_CHECK (anUserDataValue != anotherUserDataValue);
 
    // some tests with more complex tables
    LuaValueMap lvmEmpty;

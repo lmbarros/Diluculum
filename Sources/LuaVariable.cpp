@@ -7,6 +7,7 @@
 #include <cassert>
 #include <boost/lexical_cast.hpp>
 #include <Diluculum/LuaState.hpp>
+#include <Diluculum/LuaUserData.hpp>
 #include <Diluculum/LuaUtils.hpp>
 #include <Diluculum/LuaVariable.hpp>
 
