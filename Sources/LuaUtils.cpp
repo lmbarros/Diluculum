@@ -6,6 +6,7 @@
 
 #include <Diluculum/LuaUtils.hpp>
 #include <Diluculum/LuaExceptions.hpp>
+#include <boost/lexical_cast.hpp>
 
 
 namespace Diluculum
@@ -18,17 +19,20 @@ namespace Diluculum
       {
          case LUA_TNIL:
             return Nil;
+
          case LUA_TNUMBER:
             return lua_tonumber (state, index);
+
          case LUA_TBOOLEAN:
             return static_cast<bool>(lua_toboolean (state, index));
+
          case LUA_TSTRING:
             return lua_tostring (state, index);
          case LUA_TTABLE:
          {
             // Make the index positive if necessary (using a negative index here
             // will be *bad*, because the stack will be changed in the
-            // 'lua_next()' and a negative index will mess everything.
+            // 'lua_next()' and a negative index will mess everything).
             if (index < 0)
                index = lua_gettop(state) + index + 1;
 
@@ -45,7 +49,9 @@ namespace Diluculum
             // Alright, return the result
             return ret;
          }
+
          case LUA_TFUNCTION:
+         {
             if (lua_iscfunction (state, index))
                return lua_tocfunction (state, index);
             else
@@ -53,9 +59,16 @@ namespace Diluculum
                throw LuaTypeError(
                   "Lua functions not supported by 'ToLuaValue()'.");
             }
+         }
+
          default:
+         {
             throw LuaTypeError(
-               "Unsupported type found in call to 'ToLuaValue()'");
+               ("Unsupported type found in call to 'ToLuaValue()': "
+                + boost::lexical_cast<std::string>(lua_type (state, index))
+                + " (typename: \'" + luaL_typename (state, index)
+                + "')").c_str());
+         }
       }
    }
 
@@ -106,8 +119,12 @@ namespace Diluculum
             break;
 
          default:
+         {
             throw LuaTypeError(
-               "Unsupported type found in call to 'PushLuaValue()'");
+               ("Unsupported type found in call to 'PushLuaValue()': "
+                + boost::lexical_cast<std::string>(value.type())
+                + " (typename: \'" + value.typeName() + "')").c_str());
+         }
       }
    }
 

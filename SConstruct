@@ -77,7 +77,7 @@ envLib.Library ("lib/Diluculum", [ "Sources/LuaExceptions.cpp",
                                    "Sources/LuaUtils.cpp",
                                    "Sources/LuaValue.cpp",
                                    "Sources/LuaVariable.cpp",
-                                   "Sources/MakeLuaFunction.cpp"])
+                                   "Sources/MakeLuaFunction.cpp" ])
 
 envTests.Program ("Tests/TestLuaValue", "Tests/TestLuaValue.cpp")
 envTests.Program ("Tests/TestLuaVariable", "Tests/TestLuaVariable.cpp")

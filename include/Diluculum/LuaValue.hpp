@@ -157,9 +157,9 @@ namespace Diluculum
           *            <tt>LuaValue</tt>s and they are compared with the usual
           *            "less than" operator for strings.
           *          - If both type names are equal, but something different
-          *            than <tt>"nil"</tt> or <tt>"table"</tt>, then the values
+          *            than <tt>"nil"</tt> and <tt>"table"</tt>, then the values
           *            contained in the <tt>LuaValue</tt>s are compared using
-          *            the usual "less than" operator for that type.
+          *            the "less than" operator for that type.
           *          - If both type names are <tt>"nil"</tt>, the function
           *            returns \c false.
           *          - If both type names are <tt>"table"</tt>, then the number

@@ -141,6 +141,7 @@ namespace Diluculum
    }
 
 
+
    // - LuaValue::asFunction ---------------------------------------------------
    lua_CFunction LuaValue::asFunction() const
    {
@@ -187,7 +188,7 @@ namespace Diluculum
                return true;
             else if (lhsMap.size() > rhsMap.size())
                return false;
-            else
+            else // lhsMap.size() == rhsMap.size()
             {
                typedef LuaValueMap::const_iterator iter_t;
 
@@ -258,7 +259,7 @@ namespace Diluculum
                return true;
             else if (lhsMap.size() < rhsMap.size())
                return false;
-            else
+            else // lhsMap.size() == rhsMap.size()
             {
                typedef LuaValueMap::const_iterator iter_t;
 
@@ -327,9 +328,11 @@ namespace Diluculum
             return asFunction() == rhs.asFunction();
 
          default:
+         {
             assert(
                false
                && "Invalid type found in a call to 'LuaValue::operator==()'.");
+         }
       }
    }
 
