@@ -1,6 +1,16 @@
-Version ??? (?????-??-??)
-~~~~~~~~~~~
-- Removed dependency on Boost File System.
+Version 0.2.1 (02006-01-18)
+~~~~~~~~~~~~~
+The first not-private (but still not public) release. That is, it is
+released only for internal use at the lab. News in this release:
+ - Updated to Lua 5.1.
+ - Removed dependency on Boost File System.
+ - Added not-very-well-thought support for (full) userdata.
+ - Added an ad-hoc 'Install.sh' script that can be used to install
+   Diluculum in GoboLinux. This is mostly for testing purpuses before
+   I write a real 'install' target for the 'SConstruct'.
+I expect to do a really public release as soon as I can create a C++
+object (in the C++-side), register it in Lua, and call its methods
+from the Lua-side.
 
 Version 0.2 (02005-12-30)
 ~~~~~~~~~~~
