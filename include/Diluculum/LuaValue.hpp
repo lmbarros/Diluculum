@@ -168,6 +168,11 @@ namespace Diluculum
           *  @todo Returning this by value doesn't sound like the best way to
           *        go. Investigate if returning a \c const reference is
           *        possible. The same goes with \c asTable().
+          *        <br>The current return by value policy is particularly bad
+          *        because it makes the following correct-looking code to
+          *        perform nothing (because the operation is done on a
+          *        temporary copy):
+          *        <br><tt>memset (myLuaValue.asUserData().getData(), 0, size);</tt>
           */
          LuaUserData asUserData() const;
 

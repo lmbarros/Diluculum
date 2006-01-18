@@ -87,8 +87,11 @@ void TestPushLuaValue()
    PushLuaValue (ls, "The sky is blue.");
    PushLuaValue (ls, 2.7183);
    PushLuaValue (ls, CLuaFunctionExample);
-   LuaValue lvUserData555Zeros (LuaUserData (555));
-   memset (lvUserData555Zeros.asUserData().getData(), 0, 555); // <--- 'asUserData()' returns a copy! 'memset()'ing it doesn't modify the "real" object.
+
+   LuaUserData fiveFiveFiveZeros (555);
+   memset (fiveFiveFiveZeros.getData(), 0, 555);
+   LuaValue lvUserData555Zeros (fiveFiveFiveZeros);
+   memset (lvUserData555Zeros.asUserData().getData(), 0, 555);
    PushLuaValue (ls, lvUserData555Zeros);
 
    // Check if the values were properly pushed
