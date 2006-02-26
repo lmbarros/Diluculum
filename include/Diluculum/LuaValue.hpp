@@ -169,6 +169,9 @@ namespace Diluculum
          const LuaUserData& asUserData() const;
 
          /** Return the value as a (full) user data.
+          *  @note Since this is returned as a non-\c const reference, the
+          *        \c LuaUserData::getData() method can be used to get
+          *        read/write access to the raw user data.
           *  @throw TypeMismatchError If the value is not a (full) user data
           *         (this is a strict check; no type conversion is performed).
           */
