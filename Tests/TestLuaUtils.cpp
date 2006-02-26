@@ -30,14 +30,14 @@ void TestToLuaValue()
    lua_pushnil (ls);
    lua_pushcfunction (ls, CLuaFunctionExample);
    void* mem = lua_newuserdata (ls, 555);
-   memset (mem, 0, 555);
+   memset (mem, 2, 555);
 
    LuaValue lvTrue (true);
    LuaValue lv171 (171.171);
    LuaValue lvTBIOTT ("The book is on the table.");
    LuaValue lvCLua (CLuaFunctionExample);
-   LuaValue lvUserData555Zeros (LuaUserData (555));
-   memset (lvUserData555Zeros.asUserData().getData(), 0, 555);
+   LuaValue lvUserData555Twos (LuaUserData (555));
+   memset (lvUserData555Twos.asUserData().getData(), 2, 555); // <--- no-op!
 
    // Try reading using positive (absolute) indexes
    BOOST_CHECK (ToLuaValue (ls, 1) == lvTrue);
@@ -45,10 +45,10 @@ void TestToLuaValue()
    BOOST_CHECK (ToLuaValue (ls, 3) == lvTBIOTT);
    BOOST_CHECK (ToLuaValue (ls, 4) == Nil);
    BOOST_CHECK (ToLuaValue (ls, 5) == lvCLua);
-   BOOST_CHECK (ToLuaValue (ls, 6) == lvUserData555Zeros);
+   BOOST_CHECK (ToLuaValue (ls, 6) == lvUserData555Twos);
 
    // And now, try with negative indexes
-   BOOST_CHECK (ToLuaValue (ls, -1) == lvUserData555Zeros);
+   BOOST_CHECK (ToLuaValue (ls, -1) == lvUserData555Twos);
    BOOST_CHECK (ToLuaValue (ls, -2) == lvCLua);
    BOOST_CHECK (ToLuaValue (ls, -3) == Nil);
    BOOST_CHECK (ToLuaValue (ls, -4) == lvTBIOTT);
