@@ -102,11 +102,11 @@ namespace Diluculum
 
 
    // - LuaValue::asString -----------------------------------------------------
-   std::string LuaValue::asString() const
+   const std::string& LuaValue::asString() const
    {
       try
       {
-         return boost::get<std::string>(value_);
+         return boost::get<const std::string&>(value_);
       }
       catch (boost::bad_get& e)
       {

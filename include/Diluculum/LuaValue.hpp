@@ -138,7 +138,7 @@ namespace Diluculum
           *  @throw TypeMismatchError If the value is not a string (this is a
           *         strict check; no type conversion is performed).
           */
-         std::string asString() const;
+         const std::string& asString() const;
 
          /** Return the value as a boolean.
           *  @throw TypeMismatchError If the value is not a boolean (this is a
