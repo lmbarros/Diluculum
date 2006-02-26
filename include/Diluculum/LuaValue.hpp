@@ -162,19 +162,17 @@ namespace Diluculum
           */
          lua_CFunction asFunction() const;
 
+         /** Return the value as a \c const (full) user data.
+          *  @throw TypeMismatchError If the value is not a (full) user data
+          *         (this is a strict check; no type conversion is performed).
+          */
+         const LuaUserData& asUserData() const;
+
          /** Return the value as a (full) user data.
           *  @throw TypeMismatchError If the value is not a (full) user data
           *         (this is a strict check; no type conversion is performed).
-          *  @todo Returning this by value doesn't sound like the best way to
-          *        go. Investigate if returning a \c const reference is
-          *        possible. The same goes with \c asTable().
-          *        <br>The current return by value policy is particularly bad
-          *        because it makes the following correct-looking code to
-          *        perform nothing (because the operation is done on a
-          *        temporary copy):
-          *        <br><tt>memset (myLuaValue.asUserData().getData(), 0, size);</tt>
           */
-         LuaUserData asUserData() const;
+         LuaUserData& asUserData();
 
          /** "Less than" operator for <tt>LuaValue</tt>s.
           *  @return The order relationship is quite arbitrary for

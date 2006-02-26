@@ -162,11 +162,23 @@ namespace Diluculum
 
 
    // - LuaValue::asUserData ---------------------------------------------------
-   LuaUserData LuaValue::asUserData() const
+   const LuaUserData& LuaValue::asUserData() const
    {
       try
       {
-         return boost::get<LuaUserData>(value_);
+         return boost::get<const LuaUserData&>(value_);
+      }
+      catch (boost::bad_get& e)
+      {
+         throw TypeMismatchError ("userdata", typeName());
+      }
+   }
+
+   LuaUserData& LuaValue::asUserData()
+   {
+      try
+      {
+         return boost::get<LuaUserData&>(value_);
       }
       catch (boost::bad_get& e)
       {

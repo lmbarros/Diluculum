@@ -37,7 +37,7 @@ void TestToLuaValue()
    LuaValue lvTBIOTT ("The book is on the table.");
    LuaValue lvCLua (CLuaFunctionExample);
    LuaValue lvUserData555Twos (LuaUserData (555));
-   memset (lvUserData555Twos.asUserData().getData(), 2, 555); // <--- no-op!
+   memset (lvUserData555Twos.asUserData().getData(), 2, 555);
 
    // Try reading using positive (absolute) indexes
    BOOST_CHECK (ToLuaValue (ls, 1) == lvTrue);
