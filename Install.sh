@@ -1,6 +1,8 @@
 #!/bin/sh
 
 # If this script has any chance of working, it is under GoboLinux.
+source GoboPath &> /dev/null
+
 if [ ! $goboPrograms ]; then
     echo "Sorry, this ad hoc installation script will work only under GoboLinux"
     echo "(or, at least, Rootless GoboLinux). And, frankly, even under"
