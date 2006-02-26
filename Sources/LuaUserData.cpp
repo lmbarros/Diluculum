@@ -36,7 +36,7 @@ namespace Diluculum
 
 
    // - LuaUserData::operator> -------------------------------------------------
-   bool LuaUserData::operator> (const LuaUserData& rhs)
+   bool LuaUserData::operator> (const LuaUserData& rhs) const
    {
       if (getSize() > rhs.getSize())
          return true;
@@ -49,7 +49,7 @@ namespace Diluculum
 
 
    // - LuaUserData::operator< -------------------------------------------------
-   bool LuaUserData::operator< (const LuaUserData& rhs)
+   bool LuaUserData::operator< (const LuaUserData& rhs) const
    {
       if (getSize() < rhs.getSize())
          return true;
@@ -62,7 +62,7 @@ namespace Diluculum
 
 
    // - LuaUserData::operator== ------------------------------------------------
-   bool LuaUserData::operator== (const LuaUserData& rhs)
+   bool LuaUserData::operator== (const LuaUserData& rhs) const
    {
       return getSize() == rhs.getSize()
          && memcmp (getData(), rhs.getData(), getSize()) == 0;
@@ -71,7 +71,7 @@ namespace Diluculum
 
 
    // - LuaUserData::operator!= ------------------------------------------------
-   bool LuaUserData::operator!= (const LuaUserData& rhs)
+   bool LuaUserData::operator!= (const LuaUserData& rhs) const
    {
       return getSize() != rhs.getSize()
          || memcmp (getData(), rhs.getData(), getSize()) != 0;

@@ -67,7 +67,7 @@ namespace Diluculum
           *  @todo This is currently implemented using \c memcmp(). I think that
           *        this is not part of the C++ standard yet (just of C99).
           */
-         bool operator> (const LuaUserData& rhs);
+         bool operator> (const LuaUserData& rhs) const;
 
          /** The "less than" operator for \c LuaUserData.
           *  @note Given two <tt>LuaUserData</tt>s, the decision on which one is
@@ -76,7 +76,7 @@ namespace Diluculum
           *  @todo This is currently implemented using \c memcmp(). I think that
           *        this is not part of the C++ standard yet (just of C99).
           */
-         bool operator< (const LuaUserData& rhs);
+         bool operator< (const LuaUserData& rhs) const;
 
          /** The "equal to" operator for \c LuaUserData.
           *  @note Two <tt>LuaUserData</tt>s are considered equal if the data
@@ -85,10 +85,10 @@ namespace Diluculum
           *        are different here. Does this have a reason to not be like in
           *        Lua?
           */
-         bool operator== (const LuaUserData& rhs);
+         bool operator== (const LuaUserData& rhs) const;
 
          /// The "different than" operator for \c LuaUserData.
-         bool operator!= (const LuaUserData& rhs);
+         bool operator!= (const LuaUserData& rhs) const;
 
       private:
          /// The number of bytes stored "in" \c data_.
