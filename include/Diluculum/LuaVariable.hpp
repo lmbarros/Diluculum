@@ -243,8 +243,8 @@ namespace Diluculum
          LuaVariable (lua_State* state, const LuaValue& key,
                       const KeyList& predKeys = KeyList());
 
-         /** Pushes onto the Lua stack (of \c value_) the value referenced by
-          *  this \c LuaVariable.
+         /** Pushes onto the Lua stack the value referenced by this
+          *  \c LuaVariable.
           *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
           *         something that is not a table.
           */
