@@ -8,6 +8,39 @@
 #include <Diluculum/LuaState.hpp>
 
 
+// - TestLuaStateNotOwner ------------------------------------------------------
+void TestLuaStateNotOwner()
+{
+   using namespace Diluculum;
+
+   // Create a raw Lua state and store a global variable
+   lua_State* rls; // raw Lua state
+
+   rls = luaL_newstate();
+   lua_pushstring (rls, "x");
+   lua_pushnumber (rls, 171);
+   lua_settable (rls, LUA_GLOBALSINDEX);
+
+   // Construct a 'LuaState' and check if the variable defined above can be
+   // read. Also, store another variable, to see if it can be accessed
+   // afterwards.
+   {
+      LuaState ls (rls);
+
+      BOOST_REQUIRE (ls["x"] == 171);
+      ls.doString ("y = 555");
+   }
+
+   // At this point, 'ls' is destroyed. Ensure that 'rls' is still alive.
+   lua_pushstring (rls, "y");
+   lua_gettable (rls, LUA_GLOBALSINDEX);
+
+   BOOST_REQUIRE (lua_isnumber (rls, -1));
+   BOOST_CHECK (lua_tonumber(rls, -1) == 555);
+}
+
+
+
 // - TestLuaStateDoFileMultRet -------------------------------------------------
 void TestLuaStateDoFileMultRet()
 {
@@ -192,6 +225,7 @@ using boost::unit_test_framework::test_suite;
 test_suite* init_unit_test_suite (int, char*[])
 {
    test_suite* test = BOOST_TEST_SUITE ("'LuaState' tests");
+   test->add (BOOST_TEST_CASE (&TestLuaStateNotOwner));
    test->add (BOOST_TEST_CASE (&TestLuaStateDoFileMultRet));
    test->add (BOOST_TEST_CASE (&TestLuaStateDoFile));
    test->add (BOOST_TEST_CASE (&TestLuaStateDoStringMultRet));

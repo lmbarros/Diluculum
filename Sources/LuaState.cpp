@@ -14,7 +14,7 @@ namespace Diluculum
 {
    // - LuaState::LuaState -----------------------------------------------------
    LuaState::LuaState (bool loadStdLib)
-      : state_(0)
+      : state_(0), ownsState_(true)
    {
       state_ = luaL_newstate();
       if (state_ == 0)
@@ -25,11 +25,22 @@ namespace Diluculum
    }
 
 
+   LuaState::LuaState (lua_State* state, bool loadStdLib)
+      : state_(state), ownsState_(false)
+   {
+      if (state_ == 0)
+         throw LuaError ("Constructor of 'LuaState' got a NULL pointer.");
+
+      if (loadStdLib)
+         luaL_openlibs (state_);
+   }
+
+
 
    // - LuaState::~LuaState ----------------------------------------------------
    LuaState::~LuaState()
    {
-      if (state_ != 0)
+      if (ownsState_ && state_ != 0)
          lua_close (state_);
    }
 

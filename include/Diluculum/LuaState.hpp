@@ -30,12 +30,27 @@ namespace Diluculum
    class LuaState
    {
       public:
-         /** Constructs a \c LuaState.
+         /** Constructs a \c LuaState that owns a <tt>lua_State*</tt>. In other
+          *  words, this will create the underlying Lua state on construction
+          *  and destroy it when this \c LuaState is destroyed.
           *  @param loadStdLib If \c true (the default), makes all
           *         the Lua standard libraries available.
           *  @throw LuaError If something goes wrong.
           */
          explicit LuaState (bool loadStdLib = true);
+
+         /** Constructs a \c LuaState that doesn't own the underlying Lua state.
+          *  In other words, this \c LuaState will use a user-supplied
+          *  <tt>lua_State*</tt> and its destructor will not \c lua_close() it.
+          *  @param state The <tt>lua_State*</tt> that will be used by this
+          *         \c LuaState.
+          *  @param loadStdLib If \c true, makes all the Lua standard libraries
+          *         available (default is \c false, because it is very likely
+          *         that the libraries are already opened in the Lua state
+          *         passed as the first parameter).
+          *  @throw LuaError If something goes wrong.
+          */
+         explicit LuaState (lua_State* state, bool loadStdLib = false);
 
          /** Destructs a \c LuaState. This calls \c lua_close()
           *  on the underlying \c lua_State*.
@@ -103,6 +118,11 @@ namespace Diluculum
 
          /// The underlying \c lua_State*.
          lua_State* state_;
+
+         /** Does this \c LuaState owns \c state_? (This used by the destructor
+          *  to decide whether it has to \c lua_close() it or not.)
+          */
+         const bool ownsState_;
 
          /** Throws an exception if the number passed as parameter corresponds
           *  to an error code from a function from the Lua API.  The exception
