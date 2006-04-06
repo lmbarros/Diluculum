@@ -1,3 +1,19 @@
+Version 0.2.2 (02006-04-05)
+~~~~~~~~~~~~~
+A minor update. Most important changes are:
+ - Added some 'const's here and there.
+ - Changed 'LuaValue::asUserData()' so that it returns a reference
+   (This allows to change the data returned by 'asData()').
+ - Added a 'LuaState' constructor that takes a 'lua_State*' as
+   parameter. It is used by the 'LuaState', but not owned by it (in
+   other words, it will not be closed when the 'LuaState' is
+   destroyed). This is handy for cases in which a 'lua_State*' is
+   already hanging around.
+The public release? Well... perhaps I'll just say "support for
+userdata is work-in-progress and liekly to change" and release
+Diluculum as is. But this will depend on another project I'm starting
+now and that will probably use Diluculum.
+
 Version 0.2.1 (02006-01-18)
 ~~~~~~~~~~~~~
 The first not-private (but still not public) release. That is, it is
