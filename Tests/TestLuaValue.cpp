@@ -357,6 +357,8 @@ void TestLuaValueRelationalOperators()
    BOOST_CHECK (!(aStringValueFoo < ""));
 
    // operator==
+   short sOne = 1;
+   unsigned short usOne = 1;
    BOOST_CHECK (aNumberValue1 == 1);
    BOOST_CHECK (aNumberValue1 == 1.0f);
    BOOST_CHECK (aNumberValue1 == 1.0);
@@ -364,6 +366,9 @@ void TestLuaValueRelationalOperators()
    BOOST_CHECK (aNumberValue1 == 1U);
    BOOST_CHECK (aNumberValue1 == 1L);
    BOOST_CHECK (aNumberValue1 == 1UL);
+   BOOST_CHECK (aNumberValue1 == sOne);
+   BOOST_CHECK (aNumberValue1 == usOne);
+
    BOOST_CHECK (aStringValueFoo == "Foo");
    BOOST_CHECK (aStringValueFoo == std::string("Foo"));
    BOOST_CHECK (aBooleanValue == true);

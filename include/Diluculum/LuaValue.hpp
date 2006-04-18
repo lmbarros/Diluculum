@@ -43,17 +43,27 @@ namespace Diluculum
          { }
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (double n)
-            : value_(static_cast<lua_Number>(n))
-         { }
-
-         /// Constructs a \c LuaValue with number type and \c n value.
          LuaValue (float n)
             : value_(static_cast<lua_Number>(n))
          { }
 
          /// Constructs a \c LuaValue with number type and \c n value.
+         LuaValue (double n)
+            : value_(static_cast<lua_Number>(n))
+         { }
+
+         /// Constructs a \c LuaValue with number type and \c n value.
          LuaValue (long double n)
+            : value_(static_cast<lua_Number>(n))
+         { }
+
+         /// Constructs a \c LuaValue with number type and \c n value.
+         LuaValue (short n)
+            : value_(static_cast<lua_Number>(n))
+         { }
+
+         /// Constructs a \c LuaValue with number type and \c n value.
+         LuaValue (unsigned short n)
             : value_(static_cast<lua_Number>(n))
          { }
 
@@ -68,12 +78,12 @@ namespace Diluculum
          { }
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (unsigned long n)
+         LuaValue (long n)
             : value_(static_cast<lua_Number>(n))
          { }
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (long n)
+         LuaValue (unsigned long n)
             : value_(static_cast<lua_Number>(n))
          { }
 
