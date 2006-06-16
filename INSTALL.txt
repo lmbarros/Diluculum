@@ -1,0 +1,26 @@
+=====================================================
+ DILUCULUM COMPILATION AND INSTALLATION INSTRUCTIONS
+=====================================================
+
+
+ Dependencies
+~~~~~~~~~~~~~~
+Apart from Lua, Diluculum depends only on Boost
+(http://www.boost.org). I think so, at least.
+
+
+ Building
+~~~~~~~~~~
+Diluculum's build system is based on SCons (http://www.scons.org), so
+you'll need it. Once you have the dependencies and SCons installed,
+just type 'scons' to build Diluculum. You may wish to use the 'mode'
+option to set the build mode. For instance, using 'scons mode=opt'
+you'll make an optimized build. Use 'scons -h' for help.
+
+
+ Installing
+~~~~~~~~~~~~
+Use 'scons install'. You'll most likely like to use the 'prefix'
+option to configure the installation root directory. In this case, the
+installation command would be something like
+'scons prefix=/Foo/Bar/Diluculum install'.

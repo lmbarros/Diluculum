@@ -35,19 +35,25 @@ if envBase["CXX"] == "g++":
         envBase["CXXFLAGS"] += " -g -pg"
         envBase["LINKFLAGS"] += " -g -pg"
 
+    prefix = ARGUMENTS.get ("prefix", "/usr")
+
 # A friendly help message...
 envBase.Help("""
 Diluculum build system
 
-Just type 'scons' to build everything. Or, use the following option to
-select the compilation mode:
+Just type 'scons' to build everything. To install, you can use
+'scons install'.  The following options are available:
 
-   mode=<MODE>, where <MODE> is one of the following:
+   mode=<MODE>
+   Selects the compilation mode. <MODE> must be one the following:
       o 'profile', for compiling with profiling ('gprof') support
       o 'debug', for compiling with debug support
       o 'no-opt' (the default), for compiling without optimizations or
         debug support or anything else
       o 'opt', for compiling with optimizations enabled
+
+   prefix=<DIR>
+   Selects the prefix directory for installation. Default is '/usr'.
 """)
 
 
@@ -72,13 +78,13 @@ envTests = envBase.Copy (LIBS = [ "Diluculum", "lua", "dl",
 #  The build targets
 #  The things that are actually built.
 # ------------------------------------------------------------------------------
-envLib.Library ("lib/Diluculum", [ "Sources/LuaExceptions.cpp",
-                                   "Sources/LuaState.cpp",
-                                   "Sources/LuaUserData.cpp",
-                                   "Sources/LuaUtils.cpp",
-                                   "Sources/LuaValue.cpp",
-                                   "Sources/LuaVariable.cpp",
-                                   "Sources/MakeLuaFunction.cpp" ])
+theStaticLib = envLib.Library ("lib/Diluculum", [ "Sources/LuaExceptions.cpp",
+                                                  "Sources/LuaState.cpp",
+                                                  "Sources/LuaUserData.cpp",
+                                                  "Sources/LuaUtils.cpp",
+                                                  "Sources/LuaValue.cpp",
+                                                  "Sources/LuaVariable.cpp",
+                                                  "Sources/MakeLuaFunction.cpp" ])
 
 envTests.Program ("Tests/TestLuaValue", "Tests/TestLuaValue.cpp")
 envTests.Program ("Tests/TestLuaVariable", "Tests/TestLuaVariable.cpp")
@@ -86,3 +92,15 @@ envTests.Program ("Tests/TestLuaUtils", "Tests/TestLuaUtils.cpp")
 envTests.Program ("Tests/TestLuaState", "Tests/TestLuaState.cpp")
 envTests.Program ("Tests/TestMakeLuaFunction", "Tests/TestMakeLuaFunction.cpp")
 envTests.Program ("Tests/TestLuaUserData", "Tests/TestLuaUserData.cpp")
+
+
+# --------------------------------------------------------------------
+#  The 'install' target
+# --------------------------------------------------------------------
+import glob
+headerFiles = glob.glob ("include/Diluculum/*.hpp")
+shareFiles = [ "COPYING.txt", "HISTORY.txt", "README.txt" ]
+
+envBase.Alias ("install", envBase.Install (os.path.join (prefix, "lib"), theStaticLib))
+envBase.Alias ("install", envBase.Install (os.path.join (prefix, "include", "Diluculum"), headerFiles))
+envBase.Alias ("install", envBase.Install (os.path.join (prefix, "share", "Diluculum"), shareFiles))
