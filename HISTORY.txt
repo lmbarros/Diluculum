@@ -10,7 +10,7 @@ A minor update. Most important changes are:
    destroyed). This is handy for cases in which a 'lua_State*' is
    already hanging around.
 The public release? Well... perhaps I'll just say "support for
-userdata is work-in-progress and liekly to change" and release
+userdata is work-in-progress and likely to change" and release
 Diluculum as is. But this will depend on another project I'm starting
 now and that will probably use Diluculum.
 
