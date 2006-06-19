@@ -111,6 +111,7 @@ namespace Diluculum
           *         file with Lua code to be executed. The exact interpretation
           *         of this parameter depends on the first parameter,
           *         \c isString.
+          *  @throw LuaError \c LuaError or any of its subclasses can be thrown.
           *         In particular, \c LuaTypeError will be thrown if the
           *         execution returns a type not supported by \c LuaType.
           */
