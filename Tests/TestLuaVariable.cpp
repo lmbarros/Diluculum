@@ -6,7 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaState.hpp>
-#include "CLuaFunctions.hpp"
+#include "OldCLuaFunctions.hpp"
 
 
 // - CLuaFunctionTimesTwo ------------------------------------------------------

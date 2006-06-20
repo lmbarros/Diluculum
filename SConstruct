@@ -84,6 +84,7 @@ theStaticLib = envLib.Library ("lib/Diluculum", [ "Sources/LuaExceptions.cpp",
                                                   "Sources/LuaUtils.cpp",
                                                   "Sources/LuaValue.cpp",
                                                   "Sources/LuaVariable.cpp",
+                                                  "Sources/LuaWrappers.cpp",
                                                   "Sources/MakeLuaFunction.cpp" ])
 
 envTests.Program ("Tests/TestLuaValue", "Tests/TestLuaValue.cpp")
@@ -92,6 +93,7 @@ envTests.Program ("Tests/TestLuaUtils", "Tests/TestLuaUtils.cpp")
 envTests.Program ("Tests/TestLuaState", "Tests/TestLuaState.cpp")
 envTests.Program ("Tests/TestMakeLuaFunction", "Tests/TestMakeLuaFunction.cpp")
 envTests.Program ("Tests/TestLuaUserData", "Tests/TestLuaUserData.cpp")
+envTests.Program ("Tests/TestLuaWrappers", "Tests/TestLuaWrappers.cpp")
 
 
 # --------------------------------------------------------------------

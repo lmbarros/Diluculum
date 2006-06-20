@@ -46,6 +46,7 @@ namespace Diluculum
 
 /** Creates a wrapper \c lua_CFunction around a function taking no parameters
  *  and returning \c void.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
@@ -85,6 +86,7 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 /** Creates a wrapper \c lua_CFunction around a function taking no parameters
  *  and returning a \c LuaValue.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
@@ -121,6 +123,7 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 /** Creates a wrapper \c lua_CFunction around a function taking one \c LuaValue
  *  parameter and returning \c void.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
@@ -159,6 +162,7 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 /** Creates a wrapper \c lua_CFunction around a function taking one \c LuaValue
  *  parameter and returning another \c LuaValue.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
@@ -198,6 +202,7 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 /** Creates a wrapper \c lua_CFunction around a function taking two \c LuaValue
  *  parameters and returning \c void.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
@@ -236,6 +241,7 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 /** Creates a wrapper \c lua_CFunction around a function taking two \c LuaValue
  *  parameters and returning another \c LuaValue.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
@@ -275,6 +281,7 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 /** Creates a wrapper \c lua_CFunction around a function taking three
  *  \c LuaValue parameters and returning \c void.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
@@ -313,6 +320,7 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 /** Creates a wrapper \c lua_CFunction around a function taking three
  *  \c LuaValue parameters and returning another \c LuaValue.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
@@ -352,6 +360,7 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 /** Creates a wrapper \c lua_CFunction around a function taking four \c LuaValue
  *  parameters and returning \c void.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
@@ -390,6 +399,7 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 /** Creates a wrapper \c lua_CFunction around a function taking four \c LuaValue
  *  parameters and returning another \c LuaValue.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
@@ -430,6 +440,7 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 /** Creates a wrapper \c lua_CFunction around a function taking five \c LuaValue
  *  parameters and returning \c void.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
@@ -468,6 +479,7 @@ int NEW_FUNC (lua_State* ls)                                               \
 
 /** Creates a wrapper \c lua_CFunction around a function taking five \c LuaValue
  *  parameters and returning another \c LuaValue.
+ *  @deprecated Use \c DILUCULUM_WRAP_FUNCTION() instead.
  *  @param FUNC The function to be wrapped.
  *  @param NEW_FUNC The name to be given to the wrapper function that will be
  *         created.
