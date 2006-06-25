@@ -73,7 +73,7 @@ int Diluculum__ ## FUNC ## __Wrapper_Function (lua_State* ls)                 \
    }                                                                          \
    catch (Diluculum::LuaError& e)                                             \
    {                                                                          \
-      Diluculum::Impl::ReportErrorFromCFunction (ls, e.what());               \
+      ReportErrorFromCFunction (ls, e.what());                                \
       return 0;                                                               \
    }                                                                          \
    catch(...)                                                                 \
