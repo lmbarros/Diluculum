@@ -7,6 +7,7 @@
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaState.hpp>
 #include <Diluculum/LuaWrappers.hpp>
+#include "WrappedClasses.hpp"
 #include "CLuaFunctions.hpp"
 
 
@@ -100,6 +101,48 @@ void TestFunctionWrapping()
 
 
 
+// - TestClassWrapping ---------------------------------------------------------
+void TestClassWrapping()
+{
+   using namespace Diluculum;
+   LuaState ls;
+
+   DILUCULUM_REGISTER_CLASS (ls, Account);
+
+   ls.doString ("a1 = Account.new()");
+   ls.doString ("a2 = Account.new(123.45)");
+
+   Diluculum::LuaValueList ret = ls.doString ("return a1:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0].asNumber() == 0.0);
+
+   ret = ls.doString ("return a2:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0].asNumber() == 123.45);
+
+   ls.doString ("a1:deposit (55.66)");
+   ret = ls.doString ("return a1:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0].asNumber() == 55.66);
+
+   ls.doString ("a1:withdraw (15.66)");
+   ret = ls.doString ("return a1:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0].asNumber() == 40.0);
+
+   ls.doString ("a2:withdraw (0.45)");
+   ret = ls.doString ("return a2:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0].asNumber() == 123.0);
+}
+
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -107,6 +150,7 @@ test_suite* init_unit_test_suite (int, char*[])
 {
    test_suite* test = BOOST_TEST_SUITE ("'LuaWrappers' tests");
    test->add (BOOST_TEST_CASE (&TestFunctionWrapping));
+   test->add (BOOST_TEST_CASE (&TestClassWrapping));
 
    return test;
 }
