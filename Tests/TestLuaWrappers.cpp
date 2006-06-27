@@ -1,5 +1,5 @@
 /******************************************************************************\
-* TestMakeLuaClass.cpp                                                         *
+* TestLuaWrappers.cpp                                                          *
 * Unit tests for things declared in 'LuaWrappers.hpp'.                         *
 * Leandro Motta Barros                                                         *
 \******************************************************************************/
