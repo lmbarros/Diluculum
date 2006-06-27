@@ -8,7 +8,7 @@
 #include <Diluculum/LuaState.hpp>
 #include <Diluculum/LuaWrappers.hpp>
 #include "WrappedClasses.hpp"
-#include "CLuaFunctions.hpp"
+#include "WrappedFunctions.hpp"
 
 
 // - TestFunctionWrapping ------------------------------------------------------

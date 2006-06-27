@@ -1,11 +1,11 @@
 /******************************************************************************\
-* OldCLuaFunctions.hpp                                                         *
-* Some Lua functions implemented in C for use in unit tests.                   *
+* WrappedFunctions.hpp                                                         *
+* C++ functions wrapped for use with Lua for testing purposes.                 *
 * Leandro Motta Barros                                                         *
 \******************************************************************************/
 
-#ifndef _DILUCULUM_TESTS_CLUA_FUNCTIONS_HPP_
-#define _DILUCULUM_TESTS_CLUA_FUNCTIONS_HPP_
+#ifndef _DILUCULUM_TESTS_WRAPPED_FUNCTIONS_HPP_
+#define _DILUCULUM_TESTS_WRAPPED_FUNCTIONS_HPP_
 
 #include <Diluculum/LuaWrappers.hpp>
 
@@ -208,4 +208,4 @@ namespace
 
 } // (anonymous) namespace
 
-#endif // _DILUCULUM_TESTS_CLUA_FUNCTIONS_HPP_
+#endif // _DILUCULUM_TESTS_WRAPPED_FUNCTIONS_HPP_

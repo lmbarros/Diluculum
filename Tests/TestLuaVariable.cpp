@@ -6,7 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaState.hpp>
-#include "OldCLuaFunctions.hpp"
+#include "WrappedFunctions.hpp"
 
 
 // - CLuaFunctionTimesTwo ------------------------------------------------------
@@ -431,88 +431,58 @@ void TestLuaVariableFunctionCall()
    BOOST_CHECK (ret[2] == 12);
 
    // Once those "pure Lua C functions" are tested, try all the
-   // Diluculum-wrapped functions defined in 'CLuaFunctions.hpp'.
-   ls["ZeroTheGlobal"] = ZeroTheGlobal;
+   // Diluculum-wrapped functions defined in 'WrappedFunctions.hpp'.
+   ls["ZeroTheGlobal"] = DILUCULUM_WRAPPER_FUNCTION (ZeroTheGlobal);
    TheGlobal = 171;
    LuaVariable fZeroTheGlobal = ls["ZeroTheGlobal"];
    ret = fZeroTheGlobal();
    BOOST_REQUIRE (ret.size() == 0);
    BOOST_CHECK (TheGlobal == 0);
 
-   ls["SetTheGlobalDirectly"] = SetTheGlobalDirectly;
-   LuaVariable fSetTheGlobalDirectly = ls["SetTheGlobalDirectly"];
-   ret = fSetTheGlobalDirectly (-55);
+   ls["SetTheGlobal"] = DILUCULUM_WRAPPER_FUNCTION (SetTheGlobal);
+   LuaVariable fSetTheGlobal = ls["SetTheGlobal"];
+   ret = fSetTheGlobal (-55);
    BOOST_REQUIRE (ret.size() == 0);
    BOOST_CHECK (TheGlobal == -55);
 
-   ls["SetTheGlobalAddingAString"] = SetTheGlobalAddingAString;
-   LuaVariable fSetTheGlobalAddingAString = ls["SetTheGlobalAddingAString"];
-   ret = fSetTheGlobalAddingAString (77, "two");
+   ls["SetTheGlobalToSum"] = DILUCULUM_WRAPPER_FUNCTION (SetTheGlobalToSum);
+   LuaVariable fSetTheGlobalToSum = ls["SetTheGlobalToSum"];
+   ret = fSetTheGlobalToSum (77, 2, -9, 5);
    BOOST_REQUIRE (ret.size() == 0);
-   BOOST_CHECK (TheGlobal == 79);
+   BOOST_CHECK (TheGlobal == 75);
 
-   ls["SetTheGlobalMultiplying"] = SetTheGlobalMultiplying;
-   LuaVariable fSetTheGlobalMultiplying = ls["SetTheGlobalMultiplying"];
-   ret = fSetTheGlobalMultiplying (11, 2, -3);
+   ret = fSetTheGlobalToSum (0, 0, -1, 0);
    BOOST_REQUIRE (ret.size() == 0);
-   BOOST_CHECK (TheGlobal == -66);
-
-   ls["SetTheGlobalFirstParamDefinesOperation"] =
-      SetTheGlobalFirstParamDefinesOperation;
-   LuaVariable fSetTheGlobalFirstParamDefinesOperation =
-      ls["SetTheGlobalFirstParamDefinesOperation"];
-   ret = fSetTheGlobalFirstParamDefinesOperation (true, 44, -1, -3);
-   BOOST_REQUIRE (ret.size() == 0);
-   BOOST_CHECK (TheGlobal == 40);
+   BOOST_CHECK (TheGlobal == -1);
 
 
-   ls["SetTheGlobalLastParamSelectsValue"] = SetTheGlobalLastParamSelectsValue;
-   LuaVariable fSetTheGlobalLastParamSelectsValue =
-      ls["SetTheGlobalLastParamSelectsValue"];
-   ret = fSetTheGlobalLastParamSelectsValue (11, -22, 33, -44, 2);
-   BOOST_REQUIRE (ret.size() == 0);
-   BOOST_CHECK (TheGlobal == -22);
-
-   ls["WhatIsYourFavoriteColor"] = WhatIsYourFavoriteColor;
-   LuaVariable fWhatIsYourFavoriteColor =
-      ls["WhatIsYourFavoriteColor"];
-   ret = fWhatIsYourFavoriteColor();
-   BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0] == "Blue");
-
-   ls["GetTableSize"] = GetTableSize;
-   LuaVariable fGetTableSize = ls["GetTableSize"];
-   ls.doString ("GetTableSize_TestTable = { 'abc', 4.2, true, { }, -7 }");
-   ret = fGetTableSize (ls["GetTableSize_TestTable"].value());
-   BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0] == 5);
-
-   ls["Mod"] = Mod;
-   LuaVariable fMod = ls["Mod"];
-   ret = fMod (8, 6);
-   BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0] == 2);
-
-   ls["Mean"] = Mean;
-   LuaVariable fMean = ls["Mean"];
-   ret = fMean (10, 3, 20);
-   BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0] == 11);
-
-   ls["CalcEvenParityBit"] = CalcEvenParityBit;
-   LuaVariable fCalcEvenParityBit = ls["CalcEvenParityBit"];
-   ret = fCalcEvenParityBit (true, true, true, true);
-   BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0] == false);
-
-   ls["Concatenate"] = Concatenate;
-   LuaVariable fConcatenate = ls["Concatenate"];
-   ret = fConcatenate ("As armas ", "e os barões ", "assinalados que ",
-                       "da ocidental ", "praia lusitana...");
+   ls["ConcatenateThree"] = DILUCULUM_WRAPPER_FUNCTION (ConcatenateThree);
+   LuaVariable fConcatenateThree = ls["ConcatenateThree"];
+   ret = fConcatenateThree ("As armas e os barões ", "assinalados que da ",
+                            "ocidental praia lusitana...");
    BOOST_REQUIRE (ret.size() == 1);
    BOOST_CHECK (ret[0] == "As armas e os barões assinalados que "
                 "da ocidental praia lusitana...");
 
+   ls["FibonacciSequence"] = DILUCULUM_WRAPPER_FUNCTION (FibonacciSequence);
+   LuaVariable fFibonacciSequence = ls["FibonacciSequence"];
+   ret = fFibonacciSequence(5);
+   BOOST_REQUIRE (ret.size() == 5);
+   BOOST_CHECK (ret[0].asNumber() == 1);
+   BOOST_CHECK (ret[1].asNumber() == 1);
+   BOOST_CHECK (ret[2].asNumber() == 2);
+   BOOST_CHECK (ret[3].asNumber() == 3);
+   BOOST_CHECK (ret[4].asNumber() == 5);
+
+   ls["ToOrFromString"] = DILUCULUM_WRAPPER_FUNCTION (ToOrFromString);
+   LuaVariable fToOrFromString = ls["ToOrFromString"];
+   ret = fToOrFromString(3);
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0].asString() == "three");
+
+   ret = fToOrFromString("two");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0].asNumber() == 2);
 
    // Now, so the same with some "authentic" Lua functions
    ls.doString ("function Square (x) return x*x end");
@@ -537,12 +507,14 @@ void TestLuaVariableFunctionCall()
    // Just for the sake of completeness, call the overload of 'operator()' that
    // takes a 'LuaValueList' as parameter.
    LuaValueList params;
-   params.push_back (true);
-   params.push_back (false);
-   params.push_back (true);
-   params.push_back (true);
-   retValue = fCalcEvenParityBit (params);
-   BOOST_CHECK (retValue == true);
+   params.push_back ("En un lugar de la ");
+   params.push_back ("Mancha, de cuyo nombre no ");
+   params.push_back ("quiero acordarme...");
+   ret = fConcatenateThree (params);
+
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0].asString() == "En un lugar de la Mancha, de cuyo "
+                "nombre no quiero acordarme...");
 
    // Finally, check if the proper exceptions are thrown
    ls["noFunc"] = 123.456;
