@@ -58,9 +58,6 @@ namespace
          double balance_;
    };
 
-
-
-   // Call the macros necessary to create the wrappers.
    DILUCULUM_WRAP_METHOD (Account, deposit);
    DILUCULUM_WRAP_METHOD (Account, withdraw);
    DILUCULUM_WRAP_METHOD (Account, balance);
@@ -70,6 +67,31 @@ namespace
       DILUCULUM_CLASS_METHOD (Account, withdraw);
       DILUCULUM_CLASS_METHOD (Account, balance);
    DILUCULUM_END_CLASS (Account);
+
+
+
+   /** A simple class, created just to test if the destructor is really being
+    *  called when it is expected to be called.
+    */
+   class DestructorTester
+   {
+      public:
+         /** A flag that is set to \c true in the destructor. \c static, so that
+          *  it can be accessed after the object destruction.
+          */
+         static bool aFlag;
+
+         /// A constructor with this signature is always necessary...
+         DestructorTester (const LuaValueList&) { }
+
+         /// The destructor. Sets \c aFlag to \c true.
+         ~DestructorTester() { aFlag = true; }
+   };
+
+   bool DestructorTester::aFlag = false;
+
+   DILUCULUM_BEGIN_CLASS (DestructorTester);
+   DILUCULUM_END_CLASS (DestructorTester);
 
 } // (anonymous) namespace
 
