@@ -69,6 +69,51 @@ namespace
    DILUCULUM_END_CLASS (Account);
 
 
+   /// A quite ridiculous class, but OK for testing...
+   class NumberProperties
+   {
+      public:
+         NumberProperties (const LuaValueList& params)
+         {
+            number_ = static_cast<unsigned>(params[0].asNumber());
+         }
+
+         LuaValueList isEven (const LuaValueList& params)
+         {
+            LuaValueList ret;
+            ret.push_back (number_ % 2 == 0);
+            return ret;
+         }
+
+         LuaValueList isOdd (const LuaValueList& params)
+         {
+            LuaValueList ret;
+            ret.push_back (number_ % 2 != 0);
+            return ret;
+         }
+
+         LuaValueList isBig (const LuaValueList& params)
+         {
+            LuaValueList ret;
+            ret.push_back (number_ > 1000);
+            return ret;
+         }
+
+      private:
+         unsigned number_;
+   };
+
+   DILUCULUM_WRAP_METHOD (NumberProperties, isEven);
+   DILUCULUM_WRAP_METHOD (NumberProperties, isOdd);
+   DILUCULUM_WRAP_METHOD (NumberProperties, isBig);
+
+   DILUCULUM_BEGIN_CLASS (NumberProperties);
+      DILUCULUM_CLASS_METHOD (NumberProperties, isEven);
+      DILUCULUM_CLASS_METHOD (NumberProperties, isOdd);
+      DILUCULUM_CLASS_METHOD (NumberProperties, isBig);
+   DILUCULUM_END_CLASS (NumberProperties);
+
+
 
    /** A simple class, created just to test if the destructor is really being
     *  called when it is expected to be called.

@@ -166,6 +166,47 @@ void TestClassDestructor()
 
 
 
+// - TestTwoClasses ------------------------------------------------------------
+void TestTwoClasses()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+
+   // Register two classes here, to ensure that no conflicts arise
+   DILUCULUM_REGISTER_CLASS (ls, Account);
+   DILUCULUM_REGISTER_CLASS (ls, NumberProperties);
+
+   ls.doString ("a = Account.new (1000.01)");
+   ls.doString ("n = NumberProperties.new (1234)");
+
+   // Try calling some 'Account' methods
+   LuaValueList ret = ls.doString ("return a:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0].asNumber() == 1000.01);
+
+   ls.doString ("a:deposit (0.09)");
+   ls.doString ("a:withdraw (500.0)");
+   ret = ls.doString ("return a:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0].asNumber() == 500.10);
+
+   // And now, some 'NumberProperties' methods
+   ret = ls.doString ("return n:isEven()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0].asBoolean() == true);
+
+   ret = ls.doString ("return n:isOdd()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0].asBoolean() == false);
+
+   ret = ls.doString ("return n:isBig()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0].asBoolean() == true);
+}
+
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -175,6 +216,7 @@ test_suite* init_unit_test_suite (int, char*[])
    test->add (BOOST_TEST_CASE (&TestFunctionWrapping));
    test->add (BOOST_TEST_CASE (&TestClassWrapping));
    test->add (BOOST_TEST_CASE (&TestClassDestructor));
+   test->add (BOOST_TEST_CASE (&TestTwoClasses));
 
    return test;
 }
