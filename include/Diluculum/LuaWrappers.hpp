@@ -94,17 +94,19 @@ Diluculum__ ## FUNC ## __Wrapper_Function
 
 
 
-////////////// CLASS ////////////
-
-
-// /** @todo Document!
-//  */
-// #define DILUCULUM_WRAPPER_METHOD(CLASS,METHOD)
-// Diluculum__ ## CLASS ## __ ## METHOD ## __Method_Wrapper_Function
-
-/** @todo Hummm... what if \c CLASS is in a namespace? Call the macro from
- *        inside the namespace? This also applies to functions, doesn't it?
- *        So, think about it and document!
+/** Creates a \c lua_CFunction that wraps a method with the signature like the
+ *  following one:
+ *  <p><tt>Diluculum::LuaValueList Class::Method(
+ *  const Diluculum::LuaValueList& params)</tt>
+ *  <p>Notice that, thanks to the use of <tt>Diluculum::LuaValueList</tt>s, the
+ *  wrapped method can effectively take and return an arbitrary number of
+ *  values.
+ *  @note The name of the wrapper function is created from the \c CLASS and
+ *        \c METHOD parameters. The rule used to generate this name can be quite
+ *        complicated and is subject to change in future releases of Diluculum,
+ *        so don't try to use it directly. Actually, you don't need it.
+ *  @param CLASS The class with a method being wrapped.
+ *  @param METHOD The method being wrapped.
  */
 #define DILUCULUM_WRAP_METHOD(CLASS, METHOD)                                  \
 int Diluculum__ ## CLASS ## __ ## METHOD ## __Method_Wrapper_Function(        \
@@ -150,15 +152,18 @@ int Diluculum__ ## CLASS ## __ ## METHOD ## __Method_Wrapper_Function(        \
 
 
 
-
-/** @todo Document!
+/** Returns the name of the table that represent the class \c CLASS.
+ *  @note This is used internally. Users can ignore this macro.
  */
 #define DILUCULUM_CLASS_TABLE(CLASS) \
 Diluculum__Class_Table__ ## CLASS
 
 
 
-/** @todo Document!
+/** Starts a block of class wrapping macro calls. This must be followed by calls
+ *  to \c DILUCULUM_CLASS_METHOD() for each method to be exported to Lua and a
+ *  final call to \c DILUCULUM_END_CLASS().
+ *  @param CLASS The class being exported.
  */
 #define DILUCULUM_BEGIN_CLASS(CLASS)                                          \
 /* The table representing the class */                                        \
@@ -219,7 +224,11 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)            \
 
 
 
-/** @todo Document!
+/** Exports a given class' method. This macro must be called between calls to
+ *  \c DILUCULUM_BEGIN_CLASS() and \c DILUCULUM_END_CLASS(). Also, the method
+ *  must have been previously wrapped by a call to \c DILUCULUM_WRAP_METHOD().
+ *  @param CLASS The class whose method is being exported.
+ *  @param METHOD The method being exported.
  */
 #define DILUCULUM_CLASS_METHOD(CLASS, METHOD)                              \
    Diluculum__Class_Table__ ## CLASS[#METHOD] =                            \
@@ -227,7 +236,9 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)            \
 
 
 
-/** @todo Document!
+/** Ends a block of class wrapping macro calls (which was opened by a call to
+ *  \c DILUCULUM_BEGIN_CLASS()).
+ *  @param CLASS The class being exported.
  */
 #define DILUCULUM_END_CLASS(CLASS)                             \
    Diluculum__Class_Table__ ## CLASS["new"] =                  \
@@ -244,7 +255,12 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)            \
 
 
 
-/** @todo Document!
+/** Registers a class in a given \c LuaState. The class must have been
+ *  previously exported by calls to \c DILUCULUM_BEGIN_CLASS,
+ *  \c DILUCULUM_END_CLASS() and probably \c DILUCULUM_CLASS_METHOD().
+ *  @param LUA_STATE The \c LuaState in which the class will be available after
+ *         this call.
+ *  @param CLASS The class being registered.
  */
 #define DILUCULUM_REGISTER_CLASS(LUA_STATE, CLASS)  \
    Diluculum_Register_Class__ ## CLASS (LUA_STATE);
