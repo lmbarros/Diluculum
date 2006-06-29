@@ -143,29 +143,6 @@ void TestClassWrapping()
 
 
 
-// - TestClassDestructor -------------------------------------------------------
-void TestClassDestructor()
-{
-   using namespace Diluculum;
-
-   DestructorTester::aFlag = false;
-
-   {
-      LuaState ls;
-      DILUCULUM_REGISTER_CLASS (ls, DestructorTester);
-      ls.doString ("foo = DestructorTester.new()");
-
-      // Just to be paranoid, ensure that 'aFlag' is still false
-      BOOST_REQUIRE (DestructorTester::aFlag == false);
-   }
-
-   // Here, 'ls' no longer exists. The Lua variable 'foo' should have been
-   // garbage collected, and its C++ destructor called.
-   BOOST_CHECK (DestructorTester::aFlag == true);
-}
-
-
-
 // - TestTwoClasses ------------------------------------------------------------
 void TestTwoClasses()
 {
@@ -207,6 +184,29 @@ void TestTwoClasses()
 
 
 
+// - TestClassDestructor -------------------------------------------------------
+void TestClassDestructor()
+{
+   using namespace Diluculum;
+
+   DestructorTester::aFlag = false;
+
+   {
+      LuaState ls;
+      DILUCULUM_REGISTER_CLASS (ls, DestructorTester);
+      ls.doString ("foo = DestructorTester.new()");
+
+      // Just to be paranoid, ensure that 'aFlag' is still false
+      BOOST_REQUIRE (DestructorTester::aFlag == false);
+   }
+
+   // Here, 'ls' no longer exists. The Lua variable 'foo' should have been
+   // garbage collected, and its C++ destructor called.
+   BOOST_CHECK (DestructorTester::aFlag == true);
+}
+
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -215,8 +215,8 @@ test_suite* init_unit_test_suite (int, char*[])
    test_suite* test = BOOST_TEST_SUITE ("'LuaWrappers' tests");
    test->add (BOOST_TEST_CASE (&TestFunctionWrapping));
    test->add (BOOST_TEST_CASE (&TestClassWrapping));
-   test->add (BOOST_TEST_CASE (&TestClassDestructor));
    test->add (BOOST_TEST_CASE (&TestTwoClasses));
+   test->add (BOOST_TEST_CASE (&TestClassDestructor));
 
    return test;
 }
