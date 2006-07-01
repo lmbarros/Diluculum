@@ -21,7 +21,6 @@ namespace Diluculum
     *  @note A \c LuaUserData has no counterpart in a Lua state. It is simply a
     *        block of memory that can be (via a \c LuaValue and a \c LuaState)
     *        stored in or read from a userdata in Lua state.
-    *  @todo What about metatables?
     */
    class LuaUserData
    {
