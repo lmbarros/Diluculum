@@ -61,6 +61,10 @@ namespace Diluculum
  *        is subject to change in future releases of Diluculum, so don't try to
  *        use it directly. Use the \c DILUCULUM_WRAPPER_FUNCTION() macro to
  *        obtain it instead.
+ *  @note The proper way to report errors from the function being wrapped is by
+ *        <tt>throw</tt>ing a \c Diluculum::LuaError. The created wrapper
+ *        function will handle these exceptions and "translate" them to a call
+ *        to \c lua_error().
  *  @see DILUCULUM_WRAPPER_FUNCTION() To find out the name of the created
  *       wrapper function.
  *  @param FUNC The function to be wrapped.
@@ -124,6 +128,10 @@ Diluculum__ ## FUNC ## __Wrapper_Function
  *        \c METHOD parameters. The rule used to generate this name can be quite
  *        complicated and is subject to change in future releases of Diluculum,
  *        so don't try to use it directly. Actually, you don't need it.
+ *  @note The proper way to report errors from the method being wrapped is by
+ *        <tt>throw</tt>ing a \c Diluculum::LuaError. The created wrapper
+ *        function will handle these exceptions and "translate" them to a call
+ *        to \c lua_error().
  *  @param CLASS The class with a method being wrapped.
  *  @param METHOD The method being wrapped.
  */
