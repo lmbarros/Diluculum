@@ -228,6 +228,12 @@ namespace Diluculum
           */
          const KeyList& getKeys() const { return keys_; }
 
+         /** Returns the LuaState in which this \c LuaVariable lives.
+          *  @note This method exists mostly to allow a nicer implementation of
+          *        other Diluculum features. Users aren't expected to call this.
+          */
+         lua_State* getState() { return state_; }
+
       private:
 
          /** Constructs a \c LuaVariable.
