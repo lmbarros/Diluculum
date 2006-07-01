@@ -32,7 +32,7 @@ namespace Diluculum
       lua_gettable (state_, LUA_GLOBALSINDEX);
 
       // Reach the "final" table (and leave it at the stack top)
-      typedef std::vector<LuaValue>::const_iterator iter_t;
+      typedef KeyList::const_iterator iter_t;
 
       assert (keys_.size() > 0 && "At least one key should be present here.");
 

@@ -219,9 +219,16 @@ namespace Diluculum
          bool operator!= (const LuaVariable& rhs) const
          { return state_ != rhs.state_ || keys_ != rhs.keys_; }
 
-      private:
          /// A sequence of keys, used to access nested tables.
          typedef std::vector<LuaValue> KeyList;
+
+         /** Returns the sequence of keys used to reach this variable.
+          *  @note This method exists mostly to allow a nicer implementation of
+          *        other Diluculum features. Users aren't expected to call this.
+          */
+         const KeyList& getKeys() const { return keys_; }
+
+      private:
 
          /** Constructs a \c LuaVariable.
           *   @note This is private because no one is expected to construct a
@@ -260,7 +267,7 @@ namespace Diluculum
           *  constructor: this sequence equals to \c predKeys parameter, with
           *  the \c key parameter appended to it.
           */
-         std::vector<LuaValue> keys_;
+         KeyList keys_;
    };
 
 } // namespace Diluculum
