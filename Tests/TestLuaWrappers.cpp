@@ -107,8 +107,10 @@ void TestClassWrapping()
    using namespace Diluculum;
    LuaState ls;
 
+   // First, make the desired class available in our 'LuaState'
    DILUCULUM_REGISTER_CLASS (ls, Account);
 
+   // In Lua, create two instances of the class and call some methods
    ls.doString ("a1 = Account.new()");
    ls.doString ("a2 = Account.new(123.45)");
 
@@ -139,6 +141,25 @@ void TestClassWrapping()
    BOOST_REQUIRE (ret.size() == 1);
    BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
    BOOST_CHECK (ret[0].asNumber() == 123.0);
+
+   // Now, create an instance in C++, make it available in our 'LuaState', call
+   // its methods in Lua and C++, and check if the things really change on the
+   // other side
+   LuaValueList params;
+   params.push_back (50.0);
+   Account aCppAccount (params);
+
+   DILUCULUM_REGISTER_OBJECT (ls["a3"], Account, aCppAccount);
+
+   ls.doString ("a3:deposit (50.0)");
+   BOOST_CHECK (aCppAccount.balance (LuaValueList())[0] == 100.0);
+
+   params.clear();
+   params.push_back (110.0);
+   aCppAccount.withdraw (params);
+   ret = ls.doString ("return a3:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0].asNumber() == -10.0);
 }
 
 
@@ -189,6 +210,9 @@ void TestClassDestructor()
 {
    using namespace Diluculum;
 
+   // First case: an object is instantiated from Lua. After the 'LuaState' in
+   // which it lives is destroyed, the object is expected to have been
+   // garbage-collected and its destructor called.
    DestructorTester::aFlag = false;
 
    {
@@ -200,9 +224,32 @@ void TestClassDestructor()
       BOOST_REQUIRE (DestructorTester::aFlag == false);
    }
 
-   // Here, 'ls' no longer exists. The Lua variable 'foo' should have been
-   // garbage collected, and its C++ destructor called.
    BOOST_CHECK (DestructorTester::aFlag == true);
+
+   // Second case: the object is instantiated in C++ and exported to a
+   // 'LuaState'. In this case, the object's destruction is responsibility of
+   // the programmer on the C++ side. So, the destructor should not be called
+   // after the object is garbage-collected in Lua.
+   DestructorTester::aFlag = false;
+   LuaValueList params;
+   DestructorTester dt (params);
+
+   {
+      LuaState ls;
+      DILUCULUM_REGISTER_CLASS (ls, DestructorTester);
+
+      DILUCULUM_REGISTER_OBJECT (ls["dt"], DestructorTester, dt);
+
+      // Do something to assert that the object is there
+      LuaValueList ret = ls.doString ("return type (dt)");
+      BOOST_REQUIRE (ret.size() == 1);
+      BOOST_REQUIRE (ret[0].asString() == "userdata");
+
+      // Just to be paranoid, ensure that 'aFlag' is still false
+      BOOST_REQUIRE (DestructorTester::aFlag == false);
+   }
+
+   BOOST_CHECK (DestructorTester::aFlag == false);
 }
 
 

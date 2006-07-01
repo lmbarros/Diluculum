@@ -26,6 +26,25 @@ namespace Diluculum
        *  @note This is not intended to be called by Diluculum users.
        */
       void ReportErrorFromCFunction (lua_State* ls, const::std::string& what);
+
+
+
+      /** The data that is stored as userdata when a C++ object is exported to
+       *  or instantiated in Lua.
+       */
+      struct CppObject
+      {
+         public:
+            /// Pointer to the actual object.
+            void* ptr;
+
+            /** Should the \c ptr be <tt>delete</tt>d when the userdata is
+             *  garbage-collected in Lua? Essentially, if the object is
+             *  instantiated in Lua, it should be; if it is instantiated in C++,
+             *  it doesn't.
+             */
+            bool deleteMe;
+      };
    }
 }
 
@@ -115,6 +134,7 @@ int Diluculum__ ## CLASS ## __ ## METHOD ## __Method_Wrapper_Function(        \
    using std::for_each;                                                       \
    using boost::bind;                                                         \
    using Diluculum::PushLuaValue;                                             \
+   using Diluculum::Impl::CppObject;                                          \
    using Diluculum::Impl::ReportErrorFromCFunction;                           \
                                                                               \
    try                                                                        \
@@ -128,10 +148,11 @@ int Diluculum__ ## CLASS ## __ ## METHOD ## __Method_Wrapper_Function(        \
       lua_pop (ls, numParams);                                                \
                                                                               \
       /* Get the object pointer and call the method */                        \
-      CLASS** ppObj =                                                         \
-         reinterpret_cast<CLASS**>(ud.asUserData().getData());                \
+      CppObject* cppObj =                                                     \
+         reinterpret_cast<CppObject*>(ud.asUserData().getData());             \
+      CLASS* pObj = reinterpret_cast<CLASS*>(cppObj->ptr);                    \
                                                                               \
-      Diluculum::LuaValueList ret = (*ppObj)->METHOD (params);                \
+      Diluculum::LuaValueList ret = pObj->METHOD (params);                    \
                                                                               \
       /* Push the return values and return */                                 \
       for_each (ret.begin(), ret.end(), bind (PushLuaValue, ls, _1));         \
@@ -173,6 +194,7 @@ Diluculum::LuaValueMap Diluculum__Class_Table__ ## CLASS;                     \
 int Diluculum__ ## CLASS ## __Constructor_Wrapper_Function (lua_State* ls)    \
 {                                                                             \
    using Diluculum::PushLuaValue;                                             \
+   using Diluculum::Impl::CppObject;                                          \
    using Diluculum::Impl::ReportErrorFromCFunction;                           \
                                                                               \
    try                                                                        \
@@ -185,12 +207,10 @@ int Diluculum__ ## CLASS ## __Constructor_Wrapper_Function (lua_State* ls)    \
       lua_pop (ls, numParams);                                                \
                                                                               \
       /* Construct the object, wrap it in a userdata, and return */           \
-      CLASS* pObj = new CLASS (params);                                       \
-                                                                              \
-      CLASS** ud =                                                            \
-         reinterpret_cast<CLASS**>(lua_newuserdata (ls, sizeof(CLASS*)));     \
-                                                                              \
-      *ud = pObj;                                                             \
+      void* ud = lua_newuserdata (ls, sizeof(CppObject));                     \
+      CppObject* cppObj = reinterpret_cast<CppObject*>(ud);                   \
+      cppObj->ptr = new CLASS (params);                                       \
+      cppObj->deleteMe = true;                                                \
                                                                               \
       lua_getglobal (ls, #CLASS);                                             \
       lua_setmetatable (ls, -2);                                              \
@@ -199,7 +219,7 @@ int Diluculum__ ## CLASS ## __Constructor_Wrapper_Function (lua_State* ls)    \
    }                                                                          \
    catch (Diluculum::LuaError& e)                                             \
    {                                                                          \
-      Diluculum::Impl::ReportErrorFromCFunction (ls, e.what());               \
+      ReportErrorFromCFunction (ls, e.what());                                \
       return 0;                                                               \
    }                                                                          \
    catch(...)                                                                 \
@@ -212,8 +232,18 @@ int Diluculum__ ## CLASS ## __Constructor_Wrapper_Function (lua_State* ls)    \
 /* Destructor */                                                              \
 int Diluculum__ ## CLASS ## __Destructor_Wrapper_Function (lua_State* ls)     \
 {                                                                             \
-   CLASS** ppObj = reinterpret_cast<CLASS**>(lua_touserdata (ls, -1));        \
-   delete *ppObj;                                                             \
+   using Diluculum::Impl::CppObject;                                          \
+                                                                              \
+   Diluculum::LuaValue lv = Diluculum::ToLuaValue (ls, -1);                   \
+   CppObject* cppObj =                                                        \
+      reinterpret_cast<CppObject*>(lv.asUserData().getData());                \
+                                                                              \
+   if (cppObj->deleteMe)                                                      \
+   {                                                                          \
+      CLASS* pObj = reinterpret_cast<CLASS*>(cppObj->ptr);                    \
+      delete pObj;                                                            \
+   }                                                                          \
+                                                                              \
    return 0;                                                                  \
 }                                                                             \
                                                                               \
@@ -265,6 +295,70 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)            \
 #define DILUCULUM_REGISTER_CLASS(LUA_STATE, CLASS)  \
    Diluculum_Register_Class__ ## CLASS (LUA_STATE);
 
+
+
+/** Registers an object instantiated in C++ into a Lua state. This way, this
+ *  object's methods can be called from Lua. The registered C++ object will
+ *  \e not be destroyed when the corresponding Lua object is garbage-collected.
+ *  Destroying it is responsibility of the programmer on the C++ side.
+ *  @param LUA_VARIABLE The \c Diluculum::LuaVariable where the object will be
+ *         stored. Notice that a \c Diluculum::LuaVariable contains a reference
+ *         to a <tt>lua_State*</tt>, so the Lua state in which the object will
+ *         be stored is passed here, too, albeit indirectly.
+ *  @param CLASS The class of the object being registered. This class must have
+ *         been previously registered in the target Lua state with a call to the
+ *         \c DILUCULUM_REGISTER_CLASS() macro.
+ *  @param OBJECT The object to be registered to the Lua state.
+ *  @note Part of this macro's implementation is identical to the implementation
+ *        of <tt>LuaVariable::operator=()</tt>. If someday the implementation
+ *        here is replaced with something better, remember to change there, too.
+ */
+#define DILUCULUM_REGISTER_OBJECT(LUA_VARIABLE, CLASS, OBJECT)                 \
+{                                                                              \
+   /* leave the table where 'OBJECT' is to be stored at the stack top */       \
+   lua_pushstring (LUA_VARIABLE.getState(), "_G");                             \
+   lua_gettable (LUA_VARIABLE.getState(), LUA_GLOBALSINDEX);                   \
+                                                                               \
+   typedef Diluculum::LuaVariable::KeyList::const_iterator iter_t;             \
+                                                                               \
+   const Diluculum::LuaVariable::KeyList& keys = LUA_VARIABLE.getKeys();       \
+                                                                               \
+   assert (keys.size() > 0 && "At least one key should be present here.");     \
+                                                                               \
+   iter_t end = keys.end();                                                    \
+      --end;                                                                   \
+                                                                               \
+   for (iter_t p = keys.begin(); p != end; ++p)                                \
+   {                                                                           \
+      PushLuaValue (LUA_VARIABLE.getState(), *p);                              \
+      lua_gettable (LUA_VARIABLE.getState(), -2);                              \
+      if (!lua_istable (LUA_VARIABLE.getState(), -1))                          \
+      {                                                                        \
+         throw TypeMismatchError(                                              \
+            "table", luaL_typename (LUA_VARIABLE.getState(), -1));             \
+      }                                                                        \
+      lua_remove (LUA_VARIABLE.getState(), -2);                                \
+   }                                                                           \
+                                                                               \
+   /* push the field where the object will be stored */                        \
+   Diluculum::PushLuaValue (LUA_VARIABLE.getState(), keys.back());             \
+                                                                               \
+   /* create the userdata, set its metatable */                                \
+   void* ud = lua_newuserdata (LUA_VARIABLE.getState(),                        \
+                               sizeof(Diluculum::Impl::CppObject));            \
+                                                                               \
+   Diluculum::Impl::CppObject* cppObj =                                        \
+      reinterpret_cast<Diluculum::Impl::CppObject*>(ud);                       \
+                                                                               \
+   cppObj->ptr = &OBJECT;                                                      \
+   cppObj->deleteMe = false;                                                   \
+                                                                               \
+   lua_getglobal (LUA_VARIABLE.getState(), #CLASS);                            \
+   lua_setmetatable (LUA_VARIABLE.getState(), -2);                             \
+                                                                               \
+   /* store the userdata */                                                    \
+   lua_settable (LUA_VARIABLE.getState(), -3);                                 \
+}
 
 
 #endif // _DILUCULUM_LUA_WRAPPERS_HPP_

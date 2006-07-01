@@ -41,6 +41,10 @@ namespace Diluculum
           *          that perhaps make more sense.
           *  @throw TypeMismatchError If this \c LuaVariable tries to subscript
           *         something that is not a table.
+          *  @note Part of this method's implementation is identical to the
+          *        implementation of the \c DILUCULUM_REGISTER_OBJECT() macro.
+          *        If someday the implementation here is replaced with something
+          *        better, remember to change there, too.
           */
          const LuaValue& operator= (const LuaValue& rhs);
 
