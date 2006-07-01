@@ -468,21 +468,21 @@ void TestLuaVariableFunctionCall()
    LuaVariable fFibonacciSequence = ls["FibonacciSequence"];
    ret = fFibonacciSequence(5);
    BOOST_REQUIRE (ret.size() == 5);
-   BOOST_CHECK (ret[0].asNumber() == 1);
-   BOOST_CHECK (ret[1].asNumber() == 1);
-   BOOST_CHECK (ret[2].asNumber() == 2);
-   BOOST_CHECK (ret[3].asNumber() == 3);
-   BOOST_CHECK (ret[4].asNumber() == 5);
+   BOOST_CHECK (ret[0] == 1);
+   BOOST_CHECK (ret[1] == 1);
+   BOOST_CHECK (ret[2] == 2);
+   BOOST_CHECK (ret[3] == 3);
+   BOOST_CHECK (ret[4] == 5);
 
    ls["ToOrFromString"] = DILUCULUM_WRAPPER_FUNCTION (ToOrFromString);
    LuaVariable fToOrFromString = ls["ToOrFromString"];
    ret = fToOrFromString(3);
    BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0].asString() == "three");
+   BOOST_CHECK (ret[0] == "three");
 
    ret = fToOrFromString("two");
    BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0].asNumber() == 2);
+   BOOST_CHECK (ret[0] == 2);
 
    // Now, so the same with some "authentic" Lua functions
    ls.doString ("function Square (x) return x*x end");
@@ -513,7 +513,7 @@ void TestLuaVariableFunctionCall()
    ret = fConcatenateThree (params);
 
    BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0].asString() == "En un lugar de la Mancha, de cuyo "
+   BOOST_CHECK (ret[0] == "En un lugar de la Mancha, de cuyo "
                 "nombre no quiero acordarme...");
 
    // Finally, check if the proper exceptions are thrown

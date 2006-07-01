@@ -53,50 +53,50 @@ void TestFunctionWrapping()
 
    res = ls.doString ("return ConcatenateThree ('one ', 'um ', 'eins')");
    BOOST_REQUIRE (res.size() == 1);
-   BOOST_CHECK (res[0].asString() == "one um eins");
+   BOOST_CHECK (res[0] == "one um eins");
 
    res = ls.doString ("return FibonacciSequence (2)");
    BOOST_REQUIRE (res.size() == 2);
-   BOOST_CHECK (res[0].asNumber() == 1);
-   BOOST_CHECK (res[1].asNumber() == 1);
+   BOOST_CHECK (res[0] == 1);
+   BOOST_CHECK (res[1] == 1);
 
    res = ls.doString ("return FibonacciSequence (10)");
    BOOST_REQUIRE (res.size() == 10);
-   BOOST_CHECK (res[0].asNumber() == 1);
-   BOOST_CHECK (res[1].asNumber() == 1);
-   BOOST_CHECK (res[2].asNumber() == 2);
-   BOOST_CHECK (res[3].asNumber() == 3);
-   BOOST_CHECK (res[4].asNumber() == 5);
-   BOOST_CHECK (res[5].asNumber() == 8);
-   BOOST_CHECK (res[6].asNumber() == 13);
-   BOOST_CHECK (res[7].asNumber() == 21);
-   BOOST_CHECK (res[8].asNumber() == 34);
-   BOOST_CHECK (res[9].asNumber() == 55);
+   BOOST_CHECK (res[0] == 1);
+   BOOST_CHECK (res[1] == 1);
+   BOOST_CHECK (res[2] == 2);
+   BOOST_CHECK (res[3] == 3);
+   BOOST_CHECK (res[4] == 5);
+   BOOST_CHECK (res[5] == 8);
+   BOOST_CHECK (res[6] == 13);
+   BOOST_CHECK (res[7] == 21);
+   BOOST_CHECK (res[8] == 34);
+   BOOST_CHECK (res[9] == 55);
 
    res = ls.doString ("return FibonacciSequence (6)");
    BOOST_REQUIRE (res.size() == 6);
-   BOOST_CHECK (res[0].asNumber() == 1);
-   BOOST_CHECK (res[1].asNumber() == 1);
-   BOOST_CHECK (res[2].asNumber() == 2);
-   BOOST_CHECK (res[3].asNumber() == 3);
-   BOOST_CHECK (res[4].asNumber() == 5);
-   BOOST_CHECK (res[5].asNumber() == 8);
+   BOOST_CHECK (res[0] == 1);
+   BOOST_CHECK (res[1] == 1);
+   BOOST_CHECK (res[2] == 2);
+   BOOST_CHECK (res[3] == 3);
+   BOOST_CHECK (res[4] == 5);
+   BOOST_CHECK (res[5] == 8);
 
    res = ls.doString ("return ToOrFromString (1)");
    BOOST_REQUIRE (res.size() == 1);
-   BOOST_CHECK (res[0].asString() == "one");
+   BOOST_CHECK (res[0] == "one");
 
    res = ls.doString ("return ToOrFromString (3)");
    BOOST_REQUIRE (res.size() == 1);
-   BOOST_CHECK (res[0].asString() == "three");
+   BOOST_CHECK (res[0] == "three");
 
    res = ls.doString ("return ToOrFromString ('one')");
    BOOST_REQUIRE (res.size() == 1);
-   BOOST_CHECK (res[0].asNumber() == 1);
+   BOOST_CHECK (res[0] == 1);
 
    res = ls.doString ("return ToOrFromString ('two')");
    BOOST_REQUIRE (res.size() == 1);
-   BOOST_CHECK (res[0].asNumber() == 2);
+   BOOST_CHECK (res[0] == 2);
 }
 
 
@@ -117,30 +117,30 @@ void TestClassWrapping()
    Diluculum::LuaValueList ret = ls.doString ("return a1:balance()");
    BOOST_REQUIRE (ret.size() == 1);
    BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
-   BOOST_CHECK (ret[0].asNumber() == 0.0);
+   BOOST_CHECK (ret[0] == 0.0);
 
    ret = ls.doString ("return a2:balance()");
    BOOST_REQUIRE (ret.size() == 1);
    BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
-   BOOST_CHECK (ret[0].asNumber() == 123.45);
+   BOOST_CHECK (ret[0] == 123.45);
 
    ls.doString ("a1:deposit (55.66)");
    ret = ls.doString ("return a1:balance()");
    BOOST_REQUIRE (ret.size() == 1);
    BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
-   BOOST_CHECK (ret[0].asNumber() == 55.66);
+   BOOST_CHECK (ret[0] == 55.66);
 
    ls.doString ("a1:withdraw (15.66)");
    ret = ls.doString ("return a1:balance()");
    BOOST_REQUIRE (ret.size() == 1);
    BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
-   BOOST_CHECK (ret[0].asNumber() == 40.0);
+   BOOST_CHECK (ret[0] == 40.0);
 
    ls.doString ("a2:withdraw (0.45)");
    ret = ls.doString ("return a2:balance()");
    BOOST_REQUIRE (ret.size() == 1);
    BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
-   BOOST_CHECK (ret[0].asNumber() == 123.0);
+   BOOST_CHECK (ret[0] == 123.0);
 
    // Now, create an instance in C++, make it available in our 'LuaState', call
    // its methods in Lua and C++, and check if the things really change on the
@@ -159,7 +159,7 @@ void TestClassWrapping()
    aCppAccount.withdraw (params);
    ret = ls.doString ("return a3:balance()");
    BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0].asNumber() == -10.0);
+   BOOST_CHECK (ret[0] == -10.0);
 }
 
 
@@ -181,26 +181,26 @@ void TestTwoClasses()
    // Try calling some 'Account' methods
    LuaValueList ret = ls.doString ("return a:balance()");
    BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0].asNumber() == 1000.01);
+   BOOST_CHECK (ret[0] == 1000.01);
 
    ls.doString ("a:deposit (0.09)");
    ls.doString ("a:withdraw (500.0)");
    ret = ls.doString ("return a:balance()");
    BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0].asNumber() == 500.10);
+   BOOST_CHECK (ret[0] == 500.10);
 
    // And now, some 'NumberProperties' methods
    ret = ls.doString ("return n:isEven()");
    BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0].asBoolean() == true);
+   BOOST_CHECK (ret[0] == true);
 
    ret = ls.doString ("return n:isOdd()");
    BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0].asBoolean() == false);
+   BOOST_CHECK (ret[0] == false);
 
    ret = ls.doString ("return n:isBig()");
    BOOST_REQUIRE (ret.size() == 1);
-   BOOST_CHECK (ret[0].asBoolean() == true);
+   BOOST_CHECK (ret[0] == true);
 }
 
 
