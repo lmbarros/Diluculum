@@ -1,3 +1,13 @@
+Version 0.3 (02006-07-03)
+~~~~~~~~~~~~~
+The first public release. At least! Most important changes since last
+version:
+ - Replaced the old function wrapping facilities with something
+   better.
+ - Added class wrapping facilities.
+ - Made the whole thing actually releasable to everyone, adding things
+   like an 'install' target to 'SConstruct', documentation, license...
+
 Version 0.2.2 (02006-04-05)
 ~~~~~~~~~~~~~
 A minor update. Most important changes are:
