@@ -22,7 +22,7 @@ released only for internal use at the lab. News in this release:
  - Removed dependency on Boost File System.
  - Added not-very-well-thought support for (full) userdata.
  - Added an ad-hoc 'Install.sh' script that can be used to install
-   Diluculum in GoboLinux. This is mostly for testing purpuses before
+   Diluculum in GoboLinux. This is mostly for testing purposes before
    I write a real 'install' target for the 'SConstruct'.
 I expect to do a really public release as soon as I can create a C++
 object (in the C++-side), register it in Lua, and call its methods
