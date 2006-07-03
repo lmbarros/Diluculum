@@ -242,12 +242,12 @@ int Diluculum__ ## CLASS ## __Destructor_Wrapper_Function (lua_State* ls)     \
 {                                                                             \
    using Diluculum::Impl::CppObject;                                          \
                                                                               \
-   Diluculum::LuaValue lv = Diluculum::ToLuaValue (ls, -1);                   \
    CppObject* cppObj =                                                        \
-      reinterpret_cast<CppObject*>(lv.asUserData().getData());                \
+      reinterpret_cast<CppObject*>(lua_touserdata (ls, -1));                  \
                                                                               \
    if (cppObj->deleteMe)                                                      \
    {                                                                          \
+      cppObj->deleteMe = false; /* don't delete again when gc'ed! */          \
       CLASS* pObj = reinterpret_cast<CLASS*>(cppObj->ptr);                    \
       delete pObj;                                                            \
    }                                                                          \
@@ -281,6 +281,9 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)            \
 #define DILUCULUM_END_CLASS(CLASS)                             \
    Diluculum__Class_Table__ ## CLASS["new"] =                  \
       Diluculum__ ## CLASS ## __Constructor_Wrapper_Function;  \
+                                                               \
+   Diluculum__Class_Table__ ## CLASS["delete"] =               \
+      Diluculum__ ## CLASS ## __Destructor_Wrapper_Function;   \
                                                                \
    Diluculum__Class_Table__ ## CLASS["__gc"] =                 \
       Diluculum__ ## CLASS ## __Destructor_Wrapper_Function;   \

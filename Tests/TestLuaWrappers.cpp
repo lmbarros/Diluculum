@@ -250,6 +250,25 @@ void TestClassDestructor()
    }
 
    BOOST_CHECK (DestructorTester::aFlag == false);
+
+   // Third case: the object is instantiated in Lua, and its destructor is
+   // explicitly called.
+   DestructorTester::aFlag = false;
+
+   {
+      LuaState ls;
+      DILUCULUM_REGISTER_CLASS (ls, DestructorTester);
+      ls.doString ("foo = DestructorTester.new()");
+
+      // Just to be paranoid, ensure that 'aFlag' is still false
+      BOOST_REQUIRE (DestructorTester::aFlag == false);
+
+      // Call the destructor explicitly
+      ls.doString ("foo:delete()");
+
+      // Check if the destructor really called
+      BOOST_CHECK (DestructorTester::aFlag == true);
+   }
 }
 
 
