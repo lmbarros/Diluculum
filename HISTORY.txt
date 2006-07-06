@@ -1,6 +1,6 @@
 Version 0.3 (02006-07-03)
-~~~~~~~~~~~~~
-The first public release. At least! Most important changes since last
+~~~~~~~~~~~
+The first public release. At last! Most important changes since last
 version:
  - Replaced the old function wrapping facilities with something
    better.
