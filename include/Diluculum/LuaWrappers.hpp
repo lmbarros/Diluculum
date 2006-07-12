@@ -365,7 +365,7 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)            \
       lua_gettable (LUA_VARIABLE.getState(), -2);                              \
       if (!lua_istable (LUA_VARIABLE.getState(), -1))                          \
       {                                                                        \
-         throw TypeMismatchError(                                              \
+         throw Diluculum::TypeMismatchError(                                   \
             "table", luaL_typename (LUA_VARIABLE.getState(), -1));             \
       }                                                                        \
       lua_remove (LUA_VARIABLE.getState(), -2);                                \
