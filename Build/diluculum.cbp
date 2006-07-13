@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="4" />
+	<Project>
+		<Option title="diluculum" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="dgc">
+				<Option output="..\lib\libdiluculumd.a" />
+				<Option working_dir="" />
+				<Option object_output=".odgc" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-fexceptions" />
+					<Add option="-mthreads" />
+					<Add option="-fno-pcc-struct-return" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+			</Target>
+			<Target title="dbc">
+				<Option output="..\lib\diluculumd_bcc.lib" />
+				<Option working_dir="" />
+				<Option object_output=".odbc" />
+				<Option type="2" />
+				<Option compiler="bcc" />
+				<Option includeInTargetAll="1" />
+				<Option createDefFile="1" />
+				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add option="-Od" />
+					<Add option="-a8" />
+					<Add option="-k" />
+					<Add option="-y" />
+					<Add option="-v" />
+					<Add option="-vi" />
+					<Add option="-tWM" />
+					<Add option="-D_NO_VCL" />
+					<Add option="-DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="/P128" />
+				</Linker>
+			</Target>
+			<Target title="ddm">
+				<Option output="..\lib\diluculumd_dmc.lib" />
+				<Option working_dir="" />
+				<Option object_output=".oddm" />
+				<Option type="2" />
+				<Option compiler="dmc" />
+				<Option includeInTargetAll="1" />
+				<Option createDefFile="1" />
+				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add option="-Jm" />
+					<Add option="-Ar" />
+					<Add option="-Ae" />
+					<Add option="-g" />
+					<Add option="-o+none" />
+					<Add option="-a8" />
+					<Add option="-HP99" />
+					<Add option="-DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="-c" />
+					<Add option="/PAGESIZE:64" />
+				</Linker>
+			</Target>
+			<Target title="dvc">
+				<Option output="..\lib\diluculumd_vc.lib" />
+				<Option working_dir="" />
+				<Option object_output=".odvc" />
+				<Option type="2" />
+				<Option compiler="msvc8" />
+				<Option includeInTargetAll="1" />
+				<Option createDefFile="1" />
+				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add option="/MTd" />
+					<Add option="/GR" />
+					<Add option="/Od" />
+					<Add option="/W4" />
+					<Add option="/Zi /D_DEBUG" />
+					<Add option="/EHsc" />
+					<Add option="/DNOPCH" />
+					<Add option="/D__NO_VC_CRTDBG__" />
+					<Add option="/DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="/DEBUG" />
+				</Linker>
+			</Target>
+			<Target title="rgc">
+				<Option output="..\lib\libdiluculum.a" />
+				<Option working_dir="" />
+				<Option object_output=".orgc" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-fexceptions" />
+					<Add option="-mthreads" />
+					<Add option="-fno-pcc-struct-return" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+			</Target>
+			<Target title="rbc">
+				<Option output="..\lib\diluculum_bcc.lib" />
+				<Option working_dir="" />
+				<Option object_output=".orbc" />
+				<Option type="2" />
+				<Option compiler="bcc" />
+				<Option includeInTargetAll="1" />
+				<Option createDefFile="1" />
+				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add option="-O1" />
+					<Add option="-a8" />
+					<Add option="-k-" />
+					<Add option="-vi" />
+					<Add option="-tWM" />
+					<Add option="-D_NO_VCL" />
+					<Add option="-DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="/P128" />
+				</Linker>
+			</Target>
+			<Target title="rdm">
+				<Option output="..\lib\diluculum_dmc.lib" />
+				<Option working_dir="" />
+				<Option object_output=".ordm" />
+				<Option type="2" />
+				<Option compiler="dmc" />
+				<Option includeInTargetAll="1" />
+				<Option createDefFile="1" />
+				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add option="-o" />
+					<Add option="-Jm" />
+					<Add option="-Ar" />
+					<Add option="-Ae" />
+					<Add option="-a8" />
+					<Add option="-HP99" />
+					<Add option="-DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="-c" />
+					<Add option="/PAGESIZE:64" />
+				</Linker>
+			</Target>
+			<Target title="rvc">
+				<Option output="..\lib\diluculum_vc.lib" />
+				<Option working_dir="" />
+				<Option object_output=".orvc" />
+				<Option type="2" />
+				<Option compiler="msvc8" />
+				<Option includeInTargetAll="1" />
+				<Option createDefFile="1" />
+				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add option="/MT" />
+					<Add option="/GR" />
+					<Add option="/O2" />
+					<Add option="/W4" />
+					<Add option="/EHsc" />
+					<Add option="/DNOPCH" />
+					<Add option="/DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+			</Target>
+			<Target title="TestLuaState">
+				<Option output="..\TestLuaState.exe" />
+				<Option working_dir=".." />
+				<Option object_output=".orgc" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-fexceptions" />
+					<Add option="-mthreads" />
+					<Add option="-fno-pcc-struct-return" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+				<Linker>
+					<Add library="diluculum" />
+					<Add library="lua51" />
+					<Add library="boost_test_exec_monitor-mgw-mt-s" />
+					<Add directory="$(#LUA.lib)" />
+					<Add directory="$(#DILICULUM.lib)" />
+					<Add directory="$(#BOOST.lib)" />
+				</Linker>
+			</Target>
+			<Target title="TestLuaUserData">
+				<Option output="..\TestLuaUserData.exe" />
+				<Option working_dir=".." />
+				<Option object_output=".orgc" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-fexceptions" />
+					<Add option="-mthreads" />
+					<Add option="-fno-pcc-struct-return" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+				<Linker>
+					<Add library="diluculum" />
+					<Add library="lua51" />
+					<Add library="boost_test_exec_monitor-mgw-mt-s" />
+					<Add directory="$(#LUA.lib)" />
+					<Add directory="$(#DILICULUM.lib)" />
+					<Add directory="$(#BOOST.lib)" />
+				</Linker>
+			</Target>
+			<Target title="TestLuaValue">
+				<Option output="..\TestLuaValue.exe" />
+				<Option working_dir=".." />
+				<Option object_output=".orgc" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-fexceptions" />
+					<Add option="-mthreads" />
+					<Add option="-fno-pcc-struct-return" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+				<Linker>
+					<Add library="diluculum" />
+					<Add library="lua51" />
+					<Add library="boost_test_exec_monitor-mgw-mt-s" />
+					<Add directory="$(#LUA.lib)" />
+					<Add directory="$(#DILICULUM.lib)" />
+					<Add directory="$(#BOOST.lib)" />
+				</Linker>
+			</Target>
+			<Target title="TestLuaWrappers">
+				<Option output="..\TestLuaWrappers.exe" />
+				<Option working_dir=".." />
+				<Option object_output=".orgc" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-fexceptions" />
+					<Add option="-mthreads" />
+					<Add option="-fno-pcc-struct-return" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-DWIN32" />
+					<Add directory="$(#LUA.include)" />
+					<Add directory="$(#BOOST)" />
+					<Add directory="$(#DILICULUM.include)" />
+				</Compiler>
+				<Linker>
+					<Add library="diluculum" />
+					<Add library="lua51" />
+					<Add library="boost_test_exec_monitor-mgw-mt-s" />
+					<Add directory="$(#LUA.lib)" />
+					<Add directory="$(#DILICULUM.lib)" />
+					<Add directory="$(#BOOST.lib)" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="..\sources\LuaExceptions.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="dgc" />
+			<Option target="dbc" />
+			<Option target="ddm" />
+			<Option target="dvc" />
+			<Option target="rgc" />
+			<Option target="rbc" />
+			<Option target="rdm" />
+			<Option target="rvc" />
+		</Unit>
+		<Unit filename="..\Sources\LuaState.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="dgc" />
+			<Option target="dbc" />
+			<Option target="ddm" />
+			<Option target="dvc" />
+			<Option target="rgc" />
+			<Option target="rbc" />
+			<Option target="rdm" />
+			<Option target="rvc" />
+		</Unit>
+		<Unit filename="..\Sources\LuaUserData.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="dgc" />
+			<Option target="dbc" />
+			<Option target="ddm" />
+			<Option target="dvc" />
+			<Option target="rgc" />
+			<Option target="rbc" />
+			<Option target="rdm" />
+			<Option target="rvc" />
+		</Unit>
+		<Unit filename="..\Sources\LuaUtils.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="dgc" />
+			<Option target="dbc" />
+			<Option target="ddm" />
+			<Option target="dvc" />
+			<Option target="rgc" />
+			<Option target="rbc" />
+			<Option target="rdm" />
+			<Option target="rvc" />
+		</Unit>
+		<Unit filename="..\Sources\LuaValue.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="dgc" />
+			<Option target="dbc" />
+			<Option target="ddm" />
+			<Option target="dvc" />
+			<Option target="rgc" />
+			<Option target="rbc" />
+			<Option target="rdm" />
+			<Option target="rvc" />
+		</Unit>
+		<Unit filename="..\Sources\LuaVariable.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="dgc" />
+			<Option target="dbc" />
+			<Option target="ddm" />
+			<Option target="dvc" />
+			<Option target="rgc" />
+			<Option target="rbc" />
+			<Option target="rdm" />
+			<Option target="rvc" />
+		</Unit>
+		<Unit filename="..\Sources\LuaWrappers.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="dgc" />
+			<Option target="dbc" />
+			<Option target="ddm" />
+			<Option target="dvc" />
+			<Option target="rgc" />
+			<Option target="rbc" />
+			<Option target="rdm" />
+			<Option target="rvc" />
+		</Unit>
+		<Unit filename="..\Tests\TestLuaState.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="TestLuaState" />
+		</Unit>
+		<Unit filename="..\Tests\TestLuaUserData.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="TestLuaUserData" />
+		</Unit>
+		<Unit filename="..\Tests\TestLuaValue.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="TestLuaValue" />
+		</Unit>
+		<Unit filename="..\Tests\TestLuaWrappers.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="TestLuaWrappers" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

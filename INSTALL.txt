@@ -11,11 +11,13 @@ Apart from Lua, Diluculum depends only on Boost
 
  Building
 ~~~~~~~~~~
-Diluculum's build system is based on SCons (http://www.scons.org), so
-you'll need it. Once you have the dependencies and SCons installed,
-just type 'scons' to build Diluculum. You may wish to use the 'mode'
-option to set the build mode. For instance, using 'scons mode=opt'
-you'll make an optimized build. Use 'scons -h' for help.
+Diluculum's official build system is based on SCons
+(http://www.scons.org), so, ideally, you should have it (see "I Don't
+Have SCons" below if you want alternatives). So, Once you have the
+dependencies and SCons installed, just type 'scons' to build
+Diluculum. You may wish to use the 'mode' option to set the build
+mode. For instance, using 'scons mode=opt' you'll make an optimized
+build. Use 'scons -h' for help.
 
 
  Installing
@@ -24,3 +26,15 @@ Use 'scons install'. You'll most likely like to use the 'prefix'
 option to configure the installation root directory. In this case, the
 installation command would be something like
 'scons prefix=/Foo/Bar/Diluculum install'.
+
+
+ I Don't Have SCons
+~~~~~~~~~~~~~~~~~~~~
+Well, you should :-)
+
+Anyway, I'll try to be nice and will provide alternatives as long as I
+feel they worth the trouble to be created and maintained. Or, as
+people contribute with project files for their favorite IDE or build
+system.
+
+So, check the 'Build' directory for some alternatives.

@@ -1,0 +1,30 @@
+# -*- Makefile -*-
+#
+# Quick and Dirty Makefile for Diluculum
+# Diluculum's official build system is based on SCons. This is provided just to
+# simplify the life of users that don't have SCons on their systems (this won't
+# build the unit tests, for example).
+#
+# Leandro Motta Barros
+#
+
+TARGET = lib/libDiluculum.a
+CPPFILES = $(wildcard Sources/*.cpp)
+OBJECTS = $(CPPFILES:.cpp=.o)
+CXXFLAGS = -Iinclude -Wall -O3
+PREFIX=/usr
+
+$(TARGET): $(OBJECTS)
+	$(AR) rvu $@ $(OBJECTS)
+	ranlib $@
+
+clean:
+	rm -f $(TARGET) $(OBJECTS)
+
+install:
+	mkdir -p $(PREFIX)/lib
+	mkdir -p $(PREFIX)/include/Diluculum
+	mkdir -p $(PREFIX)/share/Diluculum
+	cp -rf $(TARGET) $(PREFIX)/lib
+	cp -rf include/Diluculum/*.hpp $(PREFIX)/include/Diluculum
+	cp AUTHORS.txt COPYING.txt HISTORY.txt README.txt $(PREFIX)/share/Diluculum

@@ -1,0 +1,11 @@
+ Makefile.linux.gcc
+~~~~~~~~~~~~~~~~~~~~
+Makefile for GNU/Linux with g++ compiler.
+
+
+ diluculum.cbp
+~~~~~~~~~~~~~~~
+Project for the Code Blocks IDE. Contributed by Hakki Dogusan. (When
+he sent me the file, it was in a .zip file, buried in some directory
+structure. I'm distributing only the .cbp file. I hope this file can
+be easily used as I'm distributing it -- I don't know this IDE.)

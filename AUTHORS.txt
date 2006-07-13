@@ -1,0 +1,8 @@
+
+Diluculum was designed, implemented and is maintained by Leandro Motta
+Barros.
+
+ List of Contributors
+~~~~~~~~~~~~~~~~~~~~~~
+Hakki Dogusan <dogusanh _at_ tr.net> contributed the Code Blocks
+project file.

@@ -99,7 +99,8 @@ envTests.Program ("Tests/TestLuaWrappers", "Tests/TestLuaWrappers.cpp")
 # --------------------------------------------------------------------
 import glob
 headerFiles = glob.glob ("include/Diluculum/*.hpp")
-shareFiles = [ "COPYING.txt", "HISTORY.txt", "README.txt" ]
+shareFiles = [ "AUTHORS.txt", "COPYING.txt", "HISTORY.txt",
+               "README.txt" ]
 
 envBase.Alias ("install", envBase.Install (os.path.join (prefix, "lib"), theStaticLib))
 envBase.Alias ("install", envBase.Install (os.path.join (prefix, "include", "Diluculum"), headerFiles))
