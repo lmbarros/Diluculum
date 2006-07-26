@@ -15,6 +15,7 @@ CXXFLAGS = -Iinclude -Wall -O3
 PREFIX=/usr
 
 $(TARGET): $(OBJECTS)
+	mkdir -p lib
 	$(AR) rvu $@ $(OBJECTS)
 	ranlib $@
 
