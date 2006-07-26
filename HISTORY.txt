@@ -1,3 +1,11 @@
+Version 0.3.1 (02006-07-26)
+~~~~~~~~~~~~~
+Minor changes:
+ - Using a fully qualified 'Diluculum::TypeMismatchError' in the
+   definition of 'DILUCULUM_REGISTER_OBJECT()'. Yes, this was a bug...
+ - Added a Makefile for GCC/Linux and a Code Blocks project
+   (contributed by Hakki Dogusan).
+
 Version 0.3 (02006-07-03)
 ~~~~~~~~~~~
 The first public release. At last! Most important changes since last
