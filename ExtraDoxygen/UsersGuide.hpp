@@ -220,15 +220,15 @@ handled and "translated" to a call to \c lua_error().
 And that's it. Not exactly a proper and "generic" wrapper like
 <A href="http://www.tecgraf.puc-rio.br/~celes/tolua/">toLua</A>,
 <A href="http://www.codenix.com/~tolua/">toLua++</A> or
-<A href="http://www.rasterbar.com/products/luabind.html">Luabind++</A>,
+<A href="http://www.rasterbar.com/products/luabind.html">Luabind</A>,
 but may be useful for someone (it is for me!)
 
 
 
 \section sec-WrappingClasses Wrapping C++ Classes and Objects
 
-Finally, Diluculum can has limited support for wrapping C++ classes and objects
-to Lua and registering them in a Lua state. I call it "limited" because it
+Finally, Diluculum has limited support for wrapping C++ classes and objects to
+Lua and registering them in a Lua state. I call it "limited" because it
 doesn't support real object orientation (most notably, it lacks inheritance). It
 is also somewhat cumbersome to use. But, again, it may be useful for someone
 other than me.
@@ -292,9 +292,9 @@ DILUCULUM_BEGIN_CLASS (ValueBox);
 DILUCULUM_END_CLASS (ValueBox);
 \endcode
 
-Notice that it was necessary to make another macro call for every exported
-method. Ugly, isn't it? Anyway, now we are ready to register this class in a
-Lua state, so that it can actually be use. This requires one more macro call.
+Notice that it was necessary to make a second macro call for every exported
+method. Ugly, isn't it? Anyway, now we are ready to register this class in a Lua
+state, so that it can actually be used. This requires one more macro call.
 After this final macro call, objects of this class can be instantiated from Lua.
 The code snippet below shows how to do this.
 
@@ -341,8 +341,8 @@ a loop, perhaps), you better delete each of them manually.
 
 \subsection sec-RegisteringObjects Registering Objects
 
-Sometimes one may have an object constructed in the C++, and want to make it
-available to a Lua state. In other words, one may want to create an object in
+Sometimes one may have an object constructed in the C++ side, and want to make
+it available to a Lua state. In other words, one may want to create an object in
 C++ and call its methods from Lua. This can be done with Diluculum, using yet
 another macro, as shown below.
 
