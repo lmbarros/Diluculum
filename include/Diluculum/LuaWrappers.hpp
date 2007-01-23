@@ -216,7 +216,7 @@ Diluculum__Class_Table__ ## CLASS
  */
 #define DILUCULUM_BEGIN_CLASS(CLASS)                                          \
 /* The table representing the class */                                        \
-Diluculum::LuaValueMap Diluculum__Class_Table__ ## CLASS;                     \
+Diluculum::LuaValueMap DILUCULUM_CLASS_TABLE(CLASS);                          \
                                                                               \
 /* The Constructor */                                                         \
 int Diluculum__ ## CLASS ## __Constructor_Wrapper_Function (lua_State* ls)    \
@@ -278,7 +278,7 @@ int Diluculum__ ## CLASS ## __Destructor_Wrapper_Function (lua_State* ls)     \
 /* The function used to register the class in a 'LuaState' (first part) */    \
 void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)            \
 {                                                                             \
-   Diluculum__Class_Table__ ## CLASS["classname"] = #CLASS;
+   DILUCULUM_CLASS_TABLE(CLASS)["classname"] = #CLASS;
 
 
 
@@ -289,7 +289,7 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)            \
  *  @param METHOD The method being exported.
  */
 #define DILUCULUM_CLASS_METHOD(CLASS, METHOD)                              \
-   Diluculum__Class_Table__ ## CLASS[#METHOD] =                            \
+   DILUCULUM_CLASS_TABLE(CLASS)[#METHOD] =                                 \
       Diluculum__ ## CLASS ## __ ## METHOD ## __Method_Wrapper_Function;
 
 
@@ -299,19 +299,19 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)            \
  *  @param CLASS The class being exported.
  */
 #define DILUCULUM_END_CLASS(CLASS)                             \
-   Diluculum__Class_Table__ ## CLASS["new"] =                  \
+   DILUCULUM_CLASS_TABLE(CLASS)["new"] =                       \
       Diluculum__ ## CLASS ## __Constructor_Wrapper_Function;  \
                                                                \
-   Diluculum__Class_Table__ ## CLASS["delete"] =               \
+   DILUCULUM_CLASS_TABLE(CLASS)["delete"] =                    \
       Diluculum__ ## CLASS ## __Destructor_Wrapper_Function;   \
                                                                \
-   Diluculum__Class_Table__ ## CLASS["__gc"] =                 \
+   DILUCULUM_CLASS_TABLE(CLASS)["__gc"] =                      \
       Diluculum__ ## CLASS ## __Destructor_Wrapper_Function;   \
                                                                \
    DILUCULUM_CLASS_TABLE(CLASS)["__index"] =                   \
-      Diluculum__Class_Table__ ## CLASS;                       \
+      DILUCULUM_CLASS_TABLE(CLASS);                            \
                                                                \
-   ls[#CLASS] = Diluculum__Class_Table__ ## CLASS;             \
+   ls[#CLASS] = DILUCULUM_CLASS_TABLE(CLASS);                  \
 } /* end of Diluculum_Register_Class__CLASS */
 
 
