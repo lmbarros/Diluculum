@@ -70,6 +70,15 @@ namespace Diluculum
 
 
 
+/** Returns the name of the wrapper function that is created by
+ *  \c DILUCULUM_WRAP_FUNCTION() for a given function name.
+ *  @param FUNC The function whose wrapper name is desired.
+ */
+#define DILUCULUM_WRAPPER_FUNCTION(FUNC) \
+Diluculum__ ## FUNC ## __Wrapper_Function
+
+
+
 /** Creates a \c lua_CFunction that wraps a function with the signature like the
  *  following one:
  *  <p><tt>Diluculum::LuaValueList Func (const Diluculum::LuaValueList& params)</tt>
@@ -90,7 +99,7 @@ namespace Diluculum
  *  @param FUNC The function to be wrapped.
  */
 #define DILUCULUM_WRAP_FUNCTION(FUNC)                                         \
-int Diluculum__ ## FUNC ## __Wrapper_Function (lua_State* ls)                 \
+int DILUCULUM_WRAPPER_FUNCTION(FUNC) (lua_State* ls)                          \
 {                                                                             \
    using std::for_each;                                                       \
    using boost::bind;                                                         \
@@ -125,15 +134,6 @@ int Diluculum__ ## FUNC ## __Wrapper_Function (lua_State* ls)                 \
       return 0;                                                               \
    }                                                                          \
 }
-
-
-
-/** Returns the name of the wrapper function that is created by
- *  \c DILUCULUM_WRAP_FUNCTION() for a given function name.
- *  @param FUNC The function whose wrapper name is desired.
- */
-#define DILUCULUM_WRAPPER_FUNCTION(FUNC) \
-Diluculum__ ## FUNC ## __Wrapper_Function
 
 
 
