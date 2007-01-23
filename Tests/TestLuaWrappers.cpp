@@ -289,6 +289,9 @@ void TestClassDestructor()
       // Check if the destructor was really called
       BOOST_CHECK (DestructorTester::aFlag == true);
    }
+
+   // Just to be even more paranoid, ensure that 'aFlag' is still true
+   BOOST_REQUIRE (DestructorTester::aFlag == true);
 }
 
 
