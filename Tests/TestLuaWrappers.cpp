@@ -296,6 +296,29 @@ void TestClassDestructor()
 
 
 
+// - TestDynamicModule ---------------------------------------------------------
+void TestDynamicModule()
+{
+   using namespace Diluculum;
+   LuaState ls;
+
+   LuaValueList ret;
+
+   BOOST_REQUIRE_NO_THROW (ls.doString ("require 'ATestModule'"));
+
+   BOOST_REQUIRE_NO_THROW (ls.doString ("obj = ATestModule.AClass.new (123)"));
+
+   BOOST_REQUIRE_NO_THROW (ret = ls.doString ("obj:aMethod()"));
+   BOOST_CHECK (ret.size() == 1);
+   BOOST_CHECK (ret[0] == 123);
+
+   BOOST_REQUIRE_NO_THROW (ret = ls.doString ("ATestModule.AFunction()"));
+   BOOST_CHECK (ret.size() == 2);
+   BOOST_CHECK (ret[0] == true);
+   BOOST_CHECK (ret[1] == "Ahey!");
+}
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -306,6 +329,7 @@ test_suite* init_unit_test_suite (int, char*[])
    test->add (BOOST_TEST_CASE (&TestClassWrapping));
    test->add (BOOST_TEST_CASE (&TestTwoClasses));
    test->add (BOOST_TEST_CASE (&TestClassDestructor));
+   test->add (BOOST_TEST_CASE (&TestDynamicModule));
 
    return test;
 }

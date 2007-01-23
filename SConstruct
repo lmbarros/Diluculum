@@ -75,6 +75,14 @@ envTests = envBase.Copy (LIBS = [ "Diluculum", "lua", "dl",
 
 
 # ------------------------------------------------------------------------------
+#  The module building environment
+#  This is one is used to build the Lua module created in one of the tests.
+# ------------------------------------------------------------------------------
+envModule = envBase.Copy (LIBS = [ "Diluculum", "lua", "dl" ], SHLIBPREFIX="")
+
+
+
+# ------------------------------------------------------------------------------
 #  The build targets
 #  The things that are actually built.
 # ------------------------------------------------------------------------------
@@ -85,6 +93,8 @@ theStaticLib = envLib.Library ("lib/Diluculum", [ "Sources/LuaExceptions.cpp",
                                                   "Sources/LuaValue.cpp",
                                                   "Sources/LuaVariable.cpp",
                                                   "Sources/LuaWrappers.cpp" ])
+
+envModule.SharedLibrary ("Tests/ATestModule", [ "Tests/ATestModule.cpp" ] )
 
 envTests.Program ("Tests/TestLuaValue", "Tests/TestLuaValue.cpp")
 envTests.Program ("Tests/TestLuaVariable", "Tests/TestLuaVariable.cpp")

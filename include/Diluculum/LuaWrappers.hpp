@@ -394,4 +394,33 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)            \
 }
 
 
+
+/** @todo Implement...
+ */
+#define DILUCULUM_BEGIN_MODULE(MODNAME)                  \
+extern "C" int luaopen_ ## MODNAME (lua_State *luaState) \
+{                                                        \
+   using Diluculum::LuaState;                            \
+   LuaState ls (luaState);
+
+
+
+/** @todo Implement...
+ */
+#define DILUCULUM_MODULE_ADD_CLASS(CLASS)
+
+
+
+/** @todo Implement...
+ */
+#define DILUCULUM_MODULE_ADD_FUNCTION(CFUNC, LUAFUNC)
+
+
+
+/** @todo Implement...
+ */
+#define DILUCULUM_END_MODULE() \
+   return 1;                   \
+}
+
 #endif // _DILUCULUM_LUA_WRAPPERS_HPP_

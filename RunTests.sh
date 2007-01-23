@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Path for finding the test module
+export LUA_CPATH=./Tests/?.so
+
 # Runs all tests in the 'Tests' directory and displays a list with all
 # failed tests. Returns 0 if all tests suceeded, 1 otherwise.
 
