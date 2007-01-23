@@ -30,6 +30,8 @@
 #include <algorithm>
 #include <string>
 #include <boost/bind.hpp>
+#include <Diluculum/LuaExceptions.hpp>
+#include <Diluculum/LuaState.hpp>
 #include <Diluculum/LuaUtils.hpp>
 
 
