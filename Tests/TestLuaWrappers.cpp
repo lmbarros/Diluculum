@@ -286,7 +286,7 @@ void TestClassDestructor()
       // Call the destructor explicitly
       ls.doString ("foo:delete()");
 
-      // Check if the destructor really called
+      // Check if the destructor was really called
       BOOST_CHECK (DestructorTester::aFlag == true);
    }
 }
