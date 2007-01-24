@@ -78,10 +78,6 @@ namespace
          double balance_;
    };
 
-   DILUCULUM_WRAP_METHOD (Account, deposit);
-   DILUCULUM_WRAP_METHOD (Account, withdraw);
-   DILUCULUM_WRAP_METHOD (Account, balance);
-
    DILUCULUM_BEGIN_CLASS (Account);
       DILUCULUM_CLASS_METHOD (Account, deposit);
       DILUCULUM_CLASS_METHOD (Account, withdraw);
@@ -122,10 +118,6 @@ namespace
       private:
          unsigned number_;
    };
-
-   DILUCULUM_WRAP_METHOD (NumberProperties, isEven);
-   DILUCULUM_WRAP_METHOD (NumberProperties, isOdd);
-   DILUCULUM_WRAP_METHOD (NumberProperties, isBig);
 
    DILUCULUM_BEGIN_CLASS (NumberProperties);
       DILUCULUM_CLASS_METHOD (NumberProperties, isEven);

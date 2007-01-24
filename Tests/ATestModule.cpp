@@ -72,8 +72,6 @@ Diluculum::LuaValueList AFunction (const Diluculum::LuaValueList& params)
    return ret;
 }
 
-DILUCULUM_WRAP_METHOD (AClass, aMethod);
-
 DILUCULUM_BEGIN_CLASS (AClass);
    DILUCULUM_CLASS_METHOD (AClass, aMethod);
 DILUCULUM_END_CLASS (AClass);
