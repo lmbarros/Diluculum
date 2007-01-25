@@ -155,81 +155,6 @@ int DILUCULUM_WRAPPER_FUNCTION(FUNC) (lua_State* ls)                          \
 
 
 
-/** Returns the name of the function used to wrap a method \c METHOD of the
- *  class \c CLASS.
- *  @note This is used internally. Users can ignore this macro.
- */
-#define DILUCULUM_METHOD_WRAPPER(CLASS, METHOD)                      \
-   Diluculum__ ## CLASS ## __ ## METHOD ## __Method_Wrapper_Function
-
-
-
-/** Creates a \c lua_CFunction that wraps a method with the signature like the
- *  following one:
- *  <p><tt>Diluculum::LuaValueList Class::Method(
- *  const Diluculum::LuaValueList& params)</tt>
- *  <p>Notice that, thanks to the use of <tt>Diluculum::LuaValueList</tt>s, the
- *  wrapped method can effectively take and return an arbitrary number of
- *  values.
- *  @note The name of the wrapper function is created from the \c CLASS and
- *        \c METHOD parameters. The rule used to generate this name can be quite
- *        complicated and is subject to change in future releases of Diluculum,
- *        so don't try to use it directly. Actually, you don't need it.
- *  @note The proper way to report errors from the method being wrapped is by
- *        <tt>throw</tt>ing a \c Diluculum::LuaError. The created wrapper
- *        function will handle these exceptions and "translate" them to a call
- *        to \c lua_error().
- *  @bug This is no longer to be called by users. So, include it inline where
- *       it is called. Or, at least, rename it, because there may be people
- *       calling this, and the errors will be cryptic.
- *  @param CLASS The class with a method being wrapped.
- *  @param METHOD The method being wrapped.
- */
-#define DILUCULUM_WRAP_METHOD(CLASS, METHOD)                                  \
-int DILUCULUM_METHOD_WRAPPER(CLASS, METHOD) (lua_State* ls)                   \
-{                                                                             \
-   using std::for_each;                                                       \
-   using boost::bind;                                                         \
-   using Diluculum::PushLuaValue;                                             \
-   using Diluculum::Impl::CppObject;                                          \
-   using Diluculum::Impl::ReportErrorFromCFunction;                           \
-                                                                              \
-   try                                                                        \
-   {                                                                          \
-      /* Read parameters and empty the stack */                               \
-      const int numParams = lua_gettop (ls);                                  \
-      Diluculum::LuaValue ud = Diluculum::ToLuaValue (ls, 1);                 \
-      Diluculum::LuaValueList params;                                         \
-      for (int i = 2; i <= numParams; ++i)                                    \
-         params.push_back (Diluculum::ToLuaValue (ls, i));                    \
-      lua_pop (ls, numParams);                                                \
-                                                                              \
-      /* Get the object pointer and call the method */                        \
-      CppObject* cppObj =                                                     \
-         reinterpret_cast<CppObject*>(ud.asUserData().getData());             \
-      CLASS* pObj = reinterpret_cast<CLASS*>(cppObj->ptr);                    \
-                                                                              \
-      Diluculum::LuaValueList ret = pObj->METHOD (params);                    \
-                                                                              \
-      /* Push the return values and return */                                 \
-      for_each (ret.begin(), ret.end(), bind (PushLuaValue, ls, _1));         \
-                                                                              \
-      return ret.size();                                                      \
-   }                                                                          \
-   catch (Diluculum::LuaError& e)                                             \
-   {                                                                          \
-      ReportErrorFromCFunction (ls, e.what());                                \
-      return 0;                                                               \
-   }                                                                          \
-   catch(...)                                                                 \
-   {                                                                          \
-      ReportErrorFromCFunction (ls, "Unknown exception caught by wrapper.");  \
-      return 0;                                                               \
-   }                                                                          \
-}
-
-
-
 /** Returns the name of the table that represent the class \c CLASS.
  *  @note This is used internally. Users can ignore this macro.
  */
@@ -309,23 +234,71 @@ int Diluculum__ ## CLASS ## __Destructor_Wrapper_Function (lua_State* ls)     \
 
 
 
+/** Returns the name of the function used to wrap a method \c METHOD of the
+ *  class \c CLASS.
+ *  @note This is used internally. Users can ignore this macro.
+ */
+#define DILUCULUM_METHOD_WRAPPER(CLASS, METHOD)                      \
+   Diluculum__ ## CLASS ## __ ## METHOD ## __Method_Wrapper_Function
+
+
+
 /** Exports a given class' method. This macro must be called between calls to
- *  \c DILUCULUM_BEGIN_CLASS() and \c DILUCULUM_END_CLASS(). Also, the method
- *  must have been previously wrapped by a call to \c DILUCULUM_WRAP_METHOD().
+ *  \c DILUCULUM_BEGIN_CLASS() and \c DILUCULUM_END_CLASS().
  *  @param CLASS The class whose method is being exported.
  *  @param METHOD The method being exported.
  */
-#define DILUCULUM_CLASS_METHOD(CLASS, METHOD)                  \
-   DILUCULUM_WRAP_METHOD(CLASS, METHOD);                       \
-                                                               \
-   namespace                                                   \
-   {                                                           \
-      Diluculum::Impl::ClassTableFiller                        \
-         Diluculum__ ## CLASS ## _ ## METHOD ## __ ## Filler(  \
-            DILUCULUM_CLASS_TABLE(CLASS),                      \
-            #METHOD,                                           \
-            DILUCULUM_METHOD_WRAPPER(CLASS, METHOD));          \
-   }
+#define DILUCULUM_CLASS_METHOD(CLASS, METHOD)                                 \
+int DILUCULUM_METHOD_WRAPPER(CLASS, METHOD) (lua_State* ls)                   \
+{                                                                             \
+   using std::for_each;                                                       \
+   using boost::bind;                                                         \
+   using Diluculum::PushLuaValue;                                             \
+   using Diluculum::Impl::CppObject;                                          \
+   using Diluculum::Impl::ReportErrorFromCFunction;                           \
+                                                                              \
+   try                                                                        \
+   {                                                                          \
+      /* Read parameters and empty the stack */                               \
+      const int numParams = lua_gettop (ls);                                  \
+      Diluculum::LuaValue ud = Diluculum::ToLuaValue (ls, 1);                 \
+      Diluculum::LuaValueList params;                                         \
+      for (int i = 2; i <= numParams; ++i)                                    \
+         params.push_back (Diluculum::ToLuaValue (ls, i));                    \
+      lua_pop (ls, numParams);                                                \
+                                                                              \
+      /* Get the object pointer and call the method */                        \
+      CppObject* cppObj =                                                     \
+         reinterpret_cast<CppObject*>(ud.asUserData().getData());             \
+      CLASS* pObj = reinterpret_cast<CLASS*>(cppObj->ptr);                    \
+                                                                              \
+      Diluculum::LuaValueList ret = pObj->METHOD (params);                    \
+                                                                              \
+      /* Push the return values and return */                                 \
+      for_each (ret.begin(), ret.end(), bind (PushLuaValue, ls, _1));         \
+                                                                              \
+      return ret.size();                                                      \
+   }                                                                          \
+   catch (Diluculum::LuaError& e)                                             \
+   {                                                                          \
+      ReportErrorFromCFunction (ls, e.what());                                \
+      return 0;                                                               \
+   }                                                                          \
+   catch(...)                                                                 \
+   {                                                                          \
+      ReportErrorFromCFunction (ls, "Unknown exception caught by wrapper.");  \
+      return 0;                                                               \
+   }                                                                          \
+}                                                                             \
+                                                                              \
+namespace                                                                     \
+{                                                                             \
+   Diluculum::Impl::ClassTableFiller                                          \
+      Diluculum__ ## CLASS ## _ ## METHOD ## __ ## Filler(                    \
+         DILUCULUM_CLASS_TABLE(CLASS),                                        \
+         #METHOD,                                                             \
+         DILUCULUM_METHOD_WRAPPER(CLASS, METHOD));                            \
+}
 
 
 
