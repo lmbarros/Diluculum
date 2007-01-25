@@ -155,6 +155,15 @@ int DILUCULUM_WRAPPER_FUNCTION(FUNC) (lua_State* ls)                          \
 
 
 
+/** Returns the name of the function used to wrap a method \c METHOD of the
+ *  class \c CLASS.
+ *  @note This is used internally. Users can ignore this macro.
+ */
+#define DILUCULUM_METHOD_WRAPPER(CLASS, METHOD)                      \
+   Diluculum__ ## CLASS ## __ ## METHOD ## __Method_Wrapper_Function
+
+
+
 /** Creates a \c lua_CFunction that wraps a method with the signature like the
  *  following one:
  *  <p><tt>Diluculum::LuaValueList Class::Method(
@@ -177,8 +186,7 @@ int DILUCULUM_WRAPPER_FUNCTION(FUNC) (lua_State* ls)                          \
  *  @param METHOD The method being wrapped.
  */
 #define DILUCULUM_WRAP_METHOD(CLASS, METHOD)                                  \
-int Diluculum__ ## CLASS ## __ ## METHOD ## __Method_Wrapper_Function(        \
-   lua_State* ls)                                                             \
+int DILUCULUM_METHOD_WRAPPER(CLASS, METHOD) (lua_State* ls)                   \
 {                                                                             \
    using std::for_each;                                                       \
    using boost::bind;                                                         \
@@ -307,16 +315,16 @@ int Diluculum__ ## CLASS ## __Destructor_Wrapper_Function (lua_State* ls)     \
  *  @param CLASS The class whose method is being exported.
  *  @param METHOD The method being exported.
  */
-#define DILUCULUM_CLASS_METHOD(CLASS, METHOD)                                    \
-   DILUCULUM_WRAP_METHOD(CLASS, METHOD);                                         \
-                                                                                 \
-   namespace                                                                     \
-   {                                                                             \
-      Diluculum::Impl::ClassTableFiller                                          \
-         Diluculum__ ## CLASS ## _ ## METHOD ## __ ## Filler(                    \
-            DILUCULUM_CLASS_TABLE(CLASS),                                        \
-            #METHOD,                                                             \
-            Diluculum__ ## CLASS ## __ ## METHOD ## __Method_Wrapper_Function);  \
+#define DILUCULUM_CLASS_METHOD(CLASS, METHOD)                  \
+   DILUCULUM_WRAP_METHOD(CLASS, METHOD);                       \
+                                                               \
+   namespace                                                   \
+   {                                                           \
+      Diluculum::Impl::ClassTableFiller                        \
+         Diluculum__ ## CLASS ## _ ## METHOD ## __ ## Filler(  \
+            DILUCULUM_CLASS_TABLE(CLASS),                      \
+            #METHOD,                                           \
+            DILUCULUM_METHOD_WRAPPER(CLASS, METHOD));          \
    }
 
 
