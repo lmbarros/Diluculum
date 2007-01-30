@@ -375,7 +375,7 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)      \
                                                                                \
    for (iter_t p = keys.begin(); p != end; ++p)                                \
    {                                                                           \
-      PushLuaValue (LUA_VARIABLE.getState(), *p);                              \
+      Diluculum::PushLuaValue (LUA_VARIABLE.getState(), *p);                   \
       lua_gettable (LUA_VARIABLE.getState(), -2);                              \
       if (!lua_istable (LUA_VARIABLE.getState(), -1))                          \
       {                                                                        \
