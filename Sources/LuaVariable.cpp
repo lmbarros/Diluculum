@@ -47,28 +47,7 @@ namespace Diluculum
    // - LuaVariable::operator= -------------------------------------------------
    const LuaValue& LuaVariable::operator= (const LuaValue& rhs)
    {
-      // Push the globals table onto the stack
-      lua_pushstring (state_, "_G");
-      lua_gettable (state_, LUA_GLOBALSINDEX);
-
-      // Reach the "final" table (and leave it at the stack top)
-      typedef KeyList::const_iterator iter_t;
-
-      assert (keys_.size() > 0 && "At least one key should be present here.");
-
-      iter_t end = keys_.end();
-      --end;
-
-      for (iter_t p = keys_.begin(); p != end; ++p)
-      {
-         PushLuaValue (state_, *p);
-         lua_gettable (state_, -2);
-         if (!lua_istable (state_, -1))
-            throw TypeMismatchError ("table", luaL_typename (state_, -1));
-         lua_remove (state_, -2);
-      }
-
-      // Write the new value
+      pushLastTable();
       PushLuaValue (state_, keys_.back());
       PushLuaValue (state_, rhs);
       lua_settable (state_, -3);
@@ -216,6 +195,33 @@ namespace Diluculum
       params.push_back (param4);
       params.push_back (param5);
       return (*this)(params);
+   }
+
+
+
+   // - LuaVariable::pushLastTable ---------------------------------------------
+   void LuaVariable::pushLastTable()
+   {
+      // Push the globals table onto the stack
+      lua_pushstring (state_, "_G");
+      lua_gettable (state_, LUA_GLOBALSINDEX);
+
+      // Reach the "final" table (and leave it at the stack top)
+      typedef KeyList::const_iterator iter_t;
+
+      assert (keys_.size() > 0 && "At least one key should be present here.");
+
+      iter_t end = keys_.end();
+      --end;
+
+      for (iter_t p = keys_.begin(); p != end; ++p)
+      {
+         PushLuaValue (state_, *p);
+         lua_gettable (state_, -2);
+         if (!lua_istable (state_, -1))
+            throw TypeMismatchError ("table", luaL_typename (state_, -1));
+         lua_remove (state_, -2);
+      }
    }
 
 

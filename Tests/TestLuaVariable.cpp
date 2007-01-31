@@ -562,6 +562,52 @@ void TestLuaVariableCFunction()
 }
 
 
+
+// - TestLuaVariablePushLastTable ----------------------------------------------
+void TestLuaVariablePushLastTable()
+{
+   using namespace Diluculum;
+   LuaState ls;
+   lua_State* rawState = ls.getState();
+
+   ls.doString ("a = { }");
+   ls.doString ("a.b = { }");
+   ls.doString ("a.b.c = { }");
+   ls.doString ("a.b.c.d = 'At last!'");
+
+   LuaVariable v = ls["a"]["b"]["c"]["d"];
+   v.pushLastTable();
+
+   // First of all, we should have just the pushed thing in the stack
+   BOOST_REQUIRE (lua_gettop (rawState) == 1);
+
+   // Is the thing on the stack really a table?
+   BOOST_REQUIRE (lua_istable (rawState, 1));
+
+   // Get the "d" value stored there, and ensure that it is what we expected
+   lua_pushstring (rawState, "d");
+   lua_gettable (rawState, 1);
+   BOOST_REQUIRE (lua_isstring (rawState, -1));
+   BOOST_CHECK (std::string (lua_tostring (rawState, -1)) == "At last!");
+
+   // Now, a second case: using 'pushLastTable()' with a global variable
+   lua_pop (rawState, lua_gettop (rawState));
+
+   ls.doString ("g = 171");
+
+   v = ls["g"];
+   v.pushLastTable();
+
+   BOOST_REQUIRE (lua_gettop (rawState) == 1);
+   BOOST_REQUIRE (lua_istable (rawState, 1));
+   lua_pushstring (rawState, "g");
+   lua_gettable (rawState, 1);
+   BOOST_REQUIRE (lua_isnumber (rawState, -1));
+   BOOST_CHECK (lua_tonumber (rawState, -1) == 171);
+}
+
+
+
 using boost::unit_test_framework::test_suite;
 
 // - init_unit_test_suite ------------------------------------------------------
@@ -576,6 +622,7 @@ test_suite* init_unit_test_suite (int, char*[])
    test->add (BOOST_TEST_CASE (&TestLuaVariableExceptions));
    test->add (BOOST_TEST_CASE (&TestLuaVariableFunctionCall));
    test->add (BOOST_TEST_CASE (&TestLuaVariableCFunction));
+   test->add (BOOST_TEST_CASE (&TestLuaVariablePushLastTable));
 
    return test;
 }

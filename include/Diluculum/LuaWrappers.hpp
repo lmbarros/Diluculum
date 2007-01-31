@@ -354,55 +354,31 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)      \
  *         been previously registered in the target Lua state with a call to the
  *         \c DILUCULUM_REGISTER_CLASS() macro.
  *  @param OBJECT The object to be registered to the Lua state.
- *  @note Part of this macro's implementation is identical to the implementation
- *        of <tt>LuaVariable::operator=()</tt>. If someday the implementation
- *        here is replaced with something better, remember to change there, too.
  */
-#define DILUCULUM_REGISTER_OBJECT(LUA_VARIABLE, CLASS, OBJECT)                 \
-{                                                                              \
-   /* leave the table where 'OBJECT' is to be stored at the stack top */       \
-   lua_pushstring (LUA_VARIABLE.getState(), "_G");                             \
-   lua_gettable (LUA_VARIABLE.getState(), LUA_GLOBALSINDEX);                   \
-                                                                               \
-   typedef Diluculum::LuaVariable::KeyList::const_iterator iter_t;             \
-                                                                               \
-   const Diluculum::LuaVariable::KeyList& keys = LUA_VARIABLE.getKeys();       \
-                                                                               \
-   assert (keys.size() > 0 && "At least one key should be present here.");     \
-                                                                               \
-   iter_t end = keys.end();                                                    \
-      --end;                                                                   \
-                                                                               \
-   for (iter_t p = keys.begin(); p != end; ++p)                                \
-   {                                                                           \
-      Diluculum::PushLuaValue (LUA_VARIABLE.getState(), *p);                   \
-      lua_gettable (LUA_VARIABLE.getState(), -2);                              \
-      if (!lua_istable (LUA_VARIABLE.getState(), -1))                          \
-      {                                                                        \
-         throw Diluculum::TypeMismatchError(                                   \
-            "table", luaL_typename (LUA_VARIABLE.getState(), -1));             \
-      }                                                                        \
-      lua_remove (LUA_VARIABLE.getState(), -2);                                \
-   }                                                                           \
-                                                                               \
-   /* push the field where the object will be stored */                        \
-   Diluculum::PushLuaValue (LUA_VARIABLE.getState(), keys.back());             \
-                                                                               \
-   /* create the userdata, set its metatable */                                \
-   void* ud = lua_newuserdata (LUA_VARIABLE.getState(),                        \
-                               sizeof(Diluculum::Impl::CppObject));            \
-                                                                               \
-   Diluculum::Impl::CppObject* cppObj =                                        \
-      reinterpret_cast<Diluculum::Impl::CppObject*>(ud);                       \
-                                                                               \
-   cppObj->ptr = &OBJECT;                                                      \
-   cppObj->deleteMe = false;                                                   \
-                                                                               \
-   lua_getglobal (LUA_VARIABLE.getState(), #CLASS);                            \
-   lua_setmetatable (LUA_VARIABLE.getState(), -2);                             \
-                                                                               \
-   /* store the userdata */                                                    \
-   lua_settable (LUA_VARIABLE.getState(), -3);                                 \
+#define DILUCULUM_REGISTER_OBJECT(LUA_VARIABLE, CLASS, OBJECT)             \
+{                                                                          \
+   /* leave the table where 'OBJECT' is to be stored at the stack top */   \
+   LUA_VARIABLE.pushLastTable();                                           \
+                                                                           \
+   /* push the field where the object will be stored */                    \
+   Diluculum::PushLuaValue (LUA_VARIABLE.getState(),                       \
+                            LUA_VARIABLE.getKeys().back());                \
+                                                                           \
+   /* create the userdata, set its metatable */                            \
+   void* ud = lua_newuserdata (LUA_VARIABLE.getState(),                    \
+                               sizeof(Diluculum::Impl::CppObject));        \
+                                                                           \
+   Diluculum::Impl::CppObject* cppObj =                                    \
+      reinterpret_cast<Diluculum::Impl::CppObject*>(ud);                   \
+                                                                           \
+   cppObj->ptr = &OBJECT;                                                  \
+   cppObj->deleteMe = false;                                               \
+                                                                           \
+   lua_getglobal (LUA_VARIABLE.getState(), #CLASS);                        \
+   lua_setmetatable (LUA_VARIABLE.getState(), -2);                         \
+                                                                           \
+   /* store the userdata */                                                \
+   lua_settable (LUA_VARIABLE.getState(), -3);                             \
 }
 
 

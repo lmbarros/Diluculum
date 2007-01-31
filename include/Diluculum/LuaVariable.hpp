@@ -252,6 +252,18 @@ namespace Diluculum
           */
          const KeyList& getKeys() const { return keys_; }
 
+         /** Pushes into the Lua stack the table storing this variable. Now,
+          *  let's try to make this clearer... First, every Lua variable is
+          *  stored in a table (even global variables, because Lua stores them
+          *  in a "table of globals"). So, this method will find the table where
+          *  this variable is stored (traversing a sequence of nested tables, if
+          *  necessary), and push it onto the Lua stack (of the \c state_ Lua
+          *  state).
+          *  @note This method exists mostly to allow a nicer implementation of
+          *        other Diluculum features. Users aren't expected to call this.
+          */
+         void pushLastTable();
+
          /** Returns the LuaState in which this \c LuaVariable lives.
           *  @note This method exists mostly to allow a nicer implementation of
           *        other Diluculum features. Users aren't expected to call this.
