@@ -70,12 +70,23 @@ namespace Diluculum
 
 
 
-      /** @todo Document this. The idea is that it helps to fill the table
-       *        (\c LuaValueMap) representing a class.
+      /** Helper class, used by the \c DILUCULUM_CLASS_METHOD() macro, as a
+       *  means register a method in the table that represents a class being
+       *  exported to Lua. Everything is done in the constructor. This is just
+       *  a way to get some code executed in a macro call that happens at the
+       *  global scope, outside of a function definition.
        */
       class ClassTableFiller
       {
          public:
+            /** Adds the function \c func to the table \c classTable, with a key
+             *  \c name.
+             *  @param classTable The table representing the class being
+             *         exported to Lua.
+             *  @param name The name by which the method will be known in the
+             *         Lua side.
+             *  @param func The C function wrapping the method.
+             */
             ClassTableFiller (Diluculum::LuaValueMap& classTable,
                               const std::string& name,
                               lua_CFunction func)
