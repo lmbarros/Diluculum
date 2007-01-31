@@ -331,7 +331,7 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)      \
 
 
 /** Registers a class in a given \c Diluculum::LuaState. The class must have
- *  been previously exported by calls to \c DILUCULUM_BEGIN_CLASS,
+ *  been previously exported by calls to \c DILUCULUM_BEGIN_CLASS(),
  *  \c DILUCULUM_END_CLASS() and probably \c DILUCULUM_CLASS_METHOD().
  *  @param LUA_STATE The \c Diluculum::LuaState in which the class will be
  *         available after this call.
