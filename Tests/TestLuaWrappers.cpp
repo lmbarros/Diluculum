@@ -128,7 +128,7 @@ void TestClassWrapping()
    LuaState ls;
 
    // First, make the desired class available in our 'LuaState'
-   DILUCULUM_REGISTER_CLASS (ls, Account);
+   DILUCULUM_REGISTER_CLASS (ls["Account"], Account);
 
    // In Lua, create two instances of the class and call some methods
    ls.doString ("a1 = Account.new()");
@@ -192,8 +192,8 @@ void TestTwoClasses()
    LuaState ls;
 
    // Register two classes here, to ensure that no conflicts arise
-   DILUCULUM_REGISTER_CLASS (ls, Account);
-   DILUCULUM_REGISTER_CLASS (ls, NumberProperties);
+   DILUCULUM_REGISTER_CLASS (ls["Account"], Account);
+   DILUCULUM_REGISTER_CLASS (ls["NumberProperties"], NumberProperties);
 
    ls.doString ("a = Account.new (1000.01)");
    ls.doString ("n = NumberProperties.new (1234)");
@@ -225,6 +225,70 @@ void TestTwoClasses()
 
 
 
+// - TestClassWrappingInTable --------------------------------------------------
+void TestClassWrappingInTable()
+{
+   using namespace Diluculum;
+   LuaState ls;
+
+   // First, make the desired class available in our 'LuaState'
+   ls.doString ("Banking = { }");
+   DILUCULUM_REGISTER_CLASS (ls["Banking"]["Account"], Account);
+
+   // In Lua, create two instances of the class and call some methods
+   ls.doString ("a1 = Banking.Account.new()");
+   ls.doString ("a2 = Banking.Account.new(123.45)");
+
+   Diluculum::LuaValueList ret = ls.doString ("return a1:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0] == 0.0);
+
+   ret = ls.doString ("return a2:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0] == 123.45);
+
+   ls.doString ("a1:deposit (55.66)");
+   ret = ls.doString ("return a1:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0] == 55.66);
+
+   ls.doString ("a1:withdraw (15.66)");
+   ret = ls.doString ("return a1:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0] == 40.0);
+
+   ls.doString ("a2:withdraw (0.45)");
+   ret = ls.doString ("return a2:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0] == 123.0);
+
+   // Now, create an instance in C++, make it available in our 'LuaState', call
+   // its methods in Lua and C++, and check if the things really change on the
+   // other side
+   LuaValueList params;
+   params.push_back (50.0);
+   Account aCppAccount (params);
+
+   DILUCULUM_REGISTER_OBJECT (ls["a3"], Account, aCppAccount);
+
+   ls.doString ("a3:deposit (50.0)");
+   BOOST_CHECK (aCppAccount.balance (LuaValueList())[0] == 100.0);
+
+   params.clear();
+   params.push_back (110.0);
+   aCppAccount.withdraw (params);
+   ret = ls.doString ("return a3:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0] == -10.0);
+}
+
+
+
 // - TestClassDestructor -------------------------------------------------------
 void TestClassDestructor()
 {
@@ -237,7 +301,7 @@ void TestClassDestructor()
 
    {
       LuaState ls;
-      DILUCULUM_REGISTER_CLASS (ls, DestructorTester);
+      DILUCULUM_REGISTER_CLASS (ls["DestructorTester"], DestructorTester);
       ls.doString ("foo = DestructorTester.new()");
 
       // Just to be paranoid, ensure that 'aFlag' is still false
@@ -256,7 +320,7 @@ void TestClassDestructor()
 
    {
       LuaState ls;
-      DILUCULUM_REGISTER_CLASS (ls, DestructorTester);
+      DILUCULUM_REGISTER_CLASS (ls["DestructorTester"], DestructorTester);
 
       DILUCULUM_REGISTER_OBJECT (ls["dt"], DestructorTester, dt);
 
@@ -277,7 +341,7 @@ void TestClassDestructor()
 
    {
       LuaState ls;
-      DILUCULUM_REGISTER_CLASS (ls, DestructorTester);
+      DILUCULUM_REGISTER_CLASS (ls["DestructorTester"], DestructorTester);
       ls.doString ("foo = DestructorTester.new()");
 
       // Just to be paranoid, ensure that 'aFlag' is still false
@@ -328,6 +392,7 @@ test_suite* init_unit_test_suite (int, char*[])
    test->add (BOOST_TEST_CASE (&TestFunctionWrapping));
    test->add (BOOST_TEST_CASE (&TestClassWrapping));
    test->add (BOOST_TEST_CASE (&TestTwoClasses));
+   test->add (BOOST_TEST_CASE (&TestClassWrappingInTable));
    test->add (BOOST_TEST_CASE (&TestClassDestructor));
    test->add (BOOST_TEST_CASE (&TestDynamicModule));
 

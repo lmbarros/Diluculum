@@ -208,8 +208,10 @@ int Diluculum__ ## CLASS ## __Constructor_Wrapper_Function (lua_State* ls)    \
       cppObj->ptr = new CLASS (params);                                       \
       cppObj->deleteMe = true;                                                \
                                                                               \
-      lua_getglobal (ls, #CLASS);                                             \
-      lua_setmetatable (ls, -2);                                              \
+      lua_getglobal (ls, "__Diluculum__Class_Metatables");                    \
+      lua_getfield (ls, -1, #CLASS);                                          \
+      lua_setmetatable (ls, -3);                                              \
+      lua_pop (ls, 1); /* pop the table of metatables */                      \
                                                                               \
       return 1;                                                               \
    }                                                                          \
@@ -317,26 +319,33 @@ namespace                                                                     \
  *  \c DILUCULUM_BEGIN_CLASS()).
  *  @param CLASS The class being exported.
  */
-#define DILUCULUM_END_CLASS(CLASS)                                      \
-                                                                        \
-/* The function used to register the class in a 'LuaState' */           \
-void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)      \
-{                                                                       \
-   DILUCULUM_CLASS_TABLE(CLASS)["classname"] = #CLASS;                  \
-                                                                        \
-   DILUCULUM_CLASS_TABLE(CLASS)["new"] =                                \
-      Diluculum__ ## CLASS ## __Constructor_Wrapper_Function;           \
-                                                                        \
-   DILUCULUM_CLASS_TABLE(CLASS)["delete"] =                             \
-      Diluculum__ ## CLASS ## __Destructor_Wrapper_Function;            \
-                                                                        \
-   DILUCULUM_CLASS_TABLE(CLASS)["__gc"] =                               \
-      Diluculum__ ## CLASS ## __Destructor_Wrapper_Function;            \
-                                                                        \
-   DILUCULUM_CLASS_TABLE(CLASS)["__index"] =                            \
-      DILUCULUM_CLASS_TABLE(CLASS);                                     \
-                                                                        \
-   ls[#CLASS] = DILUCULUM_CLASS_TABLE(CLASS);                           \
+#define DILUCULUM_END_CLASS(CLASS)                                            \
+                                                                              \
+/* The function used to register the class in a 'LuaState' */                 \
+void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaVariable className)   \
+{                                                                             \
+   Diluculum::LuaState ls (className.getState());                             \
+                                                                              \
+   if (ls["__Diluculum__Class_Metatables"].value().type() == LUA_TNIL)        \
+     ls["__Diluculum__Class_Metatables"] = Diluculum::EmptyLuaValueMap;       \
+                                                                              \
+   DILUCULUM_CLASS_TABLE(CLASS)["classname"] = #CLASS;                        \
+                                                                              \
+   DILUCULUM_CLASS_TABLE(CLASS)["new"] =                                      \
+      Diluculum__ ## CLASS ## __Constructor_Wrapper_Function;                 \
+                                                                              \
+   DILUCULUM_CLASS_TABLE(CLASS)["delete"] =                                   \
+      Diluculum__ ## CLASS ## __Destructor_Wrapper_Function;                  \
+                                                                              \
+   DILUCULUM_CLASS_TABLE(CLASS)["__gc"] =                                     \
+      Diluculum__ ## CLASS ## __Destructor_Wrapper_Function;                  \
+                                                                              \
+   DILUCULUM_CLASS_TABLE(CLASS)["__index"] = DILUCULUM_CLASS_TABLE(CLASS);    \
+                                                                              \
+   className = DILUCULUM_CLASS_TABLE(CLASS);                                  \
+                                                                              \
+   ls["__Diluculum__Class_Metatables"][#CLASS] =                              \
+      DILUCULUM_CLASS_TABLE(CLASS);                                           \
 } /* end of Diluculum_Register_Class__CLASS */
 
 
@@ -344,12 +353,12 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)      \
 /** Registers a class in a given \c Diluculum::LuaState. The class must have
  *  been previously exported by calls to \c DILUCULUM_BEGIN_CLASS(),
  *  \c DILUCULUM_END_CLASS() and probably \c DILUCULUM_CLASS_METHOD().
- *  @param LUA_STATE The \c Diluculum::LuaState in which the class will be
- *         available after this call.
+ *  @param LUA_VARIABLE The \c Diluculum::LuaVariable that will store the class
+ *         after this call.
  *  @param CLASS The class being registered.
  */
-#define DILUCULUM_REGISTER_CLASS(LUA_STATE, CLASS)  \
-   Diluculum_Register_Class__ ## CLASS (LUA_STATE);
+#define DILUCULUM_REGISTER_CLASS(LUA_VARIABLE, CLASS)  \
+   Diluculum_Register_Class__ ## CLASS (LUA_VARIABLE);
 
 
 
@@ -366,30 +375,33 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaState& ls)      \
  *         \c DILUCULUM_REGISTER_CLASS() macro.
  *  @param OBJECT The object to be registered to the Lua state.
  */
-#define DILUCULUM_REGISTER_OBJECT(LUA_VARIABLE, CLASS, OBJECT)             \
-{                                                                          \
-   /* leave the table where 'OBJECT' is to be stored at the stack top */   \
-   LUA_VARIABLE.pushLastTable();                                           \
-                                                                           \
-   /* push the field where the object will be stored */                    \
-   Diluculum::PushLuaValue (LUA_VARIABLE.getState(),                       \
-                            LUA_VARIABLE.getKeys().back());                \
-                                                                           \
-   /* create the userdata, set its metatable */                            \
-   void* ud = lua_newuserdata (LUA_VARIABLE.getState(),                    \
-                               sizeof(Diluculum::Impl::CppObject));        \
-                                                                           \
-   Diluculum::Impl::CppObject* cppObj =                                    \
-      reinterpret_cast<Diluculum::Impl::CppObject*>(ud);                   \
-                                                                           \
-   cppObj->ptr = &OBJECT;                                                  \
-   cppObj->deleteMe = false;                                               \
-                                                                           \
-   lua_getglobal (LUA_VARIABLE.getState(), #CLASS);                        \
-   lua_setmetatable (LUA_VARIABLE.getState(), -2);                         \
-                                                                           \
-   /* store the userdata */                                                \
-   lua_settable (LUA_VARIABLE.getState(), -3);                             \
+#define DILUCULUM_REGISTER_OBJECT(LUA_VARIABLE, CLASS, OBJECT)                \
+{                                                                             \
+   /* leave the table where 'OBJECT' is to be stored at the stack top */      \
+   LUA_VARIABLE.pushLastTable();                                              \
+                                                                              \
+   /* push the field where the object will be stored */                       \
+   Diluculum::PushLuaValue (LUA_VARIABLE.getState(),                          \
+                            LUA_VARIABLE.getKeys().back());                   \
+                                                                              \
+   /* create the userdata, set its metatable */                               \
+   void* ud = lua_newuserdata (LUA_VARIABLE.getState(),                       \
+                               sizeof(Diluculum::Impl::CppObject));           \
+                                                                              \
+   Diluculum::Impl::CppObject* cppObj =                                       \
+      reinterpret_cast<Diluculum::Impl::CppObject*>(ud);                      \
+                                                                              \
+   cppObj->ptr = &OBJECT;                                                     \
+   cppObj->deleteMe = false;                                                  \
+                                                                              \
+   lua_getglobal (LUA_VARIABLE.getState(), "__Diluculum__Class_Metatables");  \
+   lua_getfield (LUA_VARIABLE.getState(), -1, #CLASS);                        \
+   lua_setmetatable (LUA_VARIABLE.getState(), -3);                            \
+                                                                              \
+   lua_pop (LUA_VARIABLE.getState(), 1); /* pop the table of metatables */    \
+                                                                              \
+   /* store the userdata */                                                   \
+   lua_settable (LUA_VARIABLE.getState(), -3);                                \
 }
 
 
