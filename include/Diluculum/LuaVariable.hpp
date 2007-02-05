@@ -3,7 +3,7 @@
 * A variable living in a Lua interpreter.                                      *
 *                                                                              *
 *                                                                              *
-* Copyright (C) 2005-2006 by Leandro Motta Barros.                             *
+* Copyright (C) 2005-2007 by Leandro Motta Barros.                             *
 *                                                                              *
 * Permission is hereby granted, free of charge, to any person obtaining a copy *
 * of this software and associated documentation files (the "Software"), to     *
