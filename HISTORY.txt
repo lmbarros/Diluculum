@@ -1,3 +1,16 @@
+Version 0.4 (02007-02-?????????????????????????????????)
+~~~~~~~~~~~
+This version added some changes to 'Diluculum/LuaWrappers.hpp' that
+are not backward compatible. But the necessary changes are small and I
+guess your compiler will tell you that something is wrong, instead of
+generating poisoned code. New in this release:
+ - When exporting class methods', it is no longer necessary to make
+   two macro calls for each exported method. ('DILUCULUM_WRAP_METHOD()'
+   is gone!)
+ - Diluculum now has easier support to create dynamically loadable Lua
+   modules, that is, those modules stored in a dynamic link library
+   that are loaded with a 'require()' call in Lua.
+
 Version 0.3.1 (02006-07-26)
 ~~~~~~~~~~~~~
 Minor changes:
