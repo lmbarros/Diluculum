@@ -103,8 +103,8 @@ namespace Diluculum
  *  \c DILUCULUM_WRAP_FUNCTION() for a given function name.
  *  @param FUNC The function whose wrapper name is desired.
  */
-#define DILUCULUM_WRAPPER_FUNCTION(FUNC) \
-Diluculum__ ## FUNC ## __Wrapper_Function
+#define DILUCULUM_WRAPPER_FUNCTION(FUNC)        \
+   Diluculum__ ## FUNC ## __Wrapper_Function
 
 
 
@@ -406,29 +406,58 @@ void Diluculum_Register_Class__ ## CLASS (Diluculum::LuaVariable className)   \
 
 
 
-/** @todo Implement...
+/** Starts a block declaring a dynamically loadable module, that is, a module
+ *  that is expected to be compiled as a shared library. The block must be
+ *  closed by a call to \c DILUCULUM_END_MODULE() and contain some calls to
+ *  macros like \c DILUCULUM_MODULE_ADD_CLASS() and
+ *  \c DILUCULUM_MODULE_ADD_FUNCTION() in its body.
+ *  <p>For those who know the way things happen in Lua, this block will provide
+ *  a \c luaopen_MyModule() function, which initializes the module when loaded.
+ *  @param MODNAME The module name. This is how the module will be called in
+ *         Lua. Also, the dynamic library to which the model will be compiled
+ *         should be named like this (plus an extension like <tt>.so</tt> or
+ *         <tt>.dll</tt>). Well, actually the rules for naming the module file
+ *         are more complex than this. Check the
+ *         <a href="http://www.lua.org/docs.html">Lua manual</a> for the dirty
+ *         details.
  */
 #define DILUCULUM_BEGIN_MODULE(MODNAME)                  \
 extern "C" int luaopen_ ## MODNAME (lua_State *luaState) \
 {                                                        \
    using Diluculum::LuaState;                            \
-   LuaState ls (luaState);
+   using Diluculum::LuaVariable;                         \
+   using Diluculum::EmptyLuaValueMap;                    \
+   LuaState ls (luaState);                               \
+                                                         \
+   ls[#MODNAME] = EmptyLuaValueMap;                      \
+   LuaVariable theModule = ls[#MODNAME];
 
 
 
-/** @todo Implement...
+/** Adds a class to the module. Must be called between calls to
+ *  \c DILUCULUM_BEGIN_MODULE() and \c DILUCULUM_END_MODULE().
+ *  @param CLASS The name of the class being added, as it is known in the
+ *         C++ side.
+ *  @param LUACLASS The name by which the class will be known in the Lua side.
  */
-#define DILUCULUM_MODULE_ADD_CLASS(CLASS)
+#define DILUCULUM_MODULE_ADD_CLASS(CLASS, LUACLASS)      \
+   DILUCULUM_REGISTER_CLASS(theModule[LUACLASS], CLASS);
 
 
 
-/** @todo Implement...
+/** Adds a function to the module. Must be called between calls to
+ *  \c DILUCULUM_BEGIN_MODULE() and \c DILUCULUM_END_MODULE().
+ *  @param CFUNC The name of the function being added, as it is known in the
+ *         C++ side.
+ *  @param LUAFUNC The name by which the function will be known in the Lua side.
  */
-#define DILUCULUM_MODULE_ADD_FUNCTION(CFUNC, LUAFUNC)
+#define DILUCULUM_MODULE_ADD_FUNCTION(CFUNC, LUAFUNC) \
+   theModule[LUAFUNC] = CFUNC;
 
 
 
-/** @todo Implement...
+/** Closes a block (started by \c DILUCULUM_BEGIN_MODULE()) that defines a
+ *  dynamically loadable Lua module.
  */
 #define DILUCULUM_END_MODULE() \
    return 1;                   \

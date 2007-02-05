@@ -372,11 +372,12 @@ void TestDynamicModule()
 
    BOOST_REQUIRE_NO_THROW (ls.doString ("obj = ATestModule.AClass.new (123)"));
 
-   BOOST_REQUIRE_NO_THROW (ret = ls.doString ("obj:aMethod()"));
+   BOOST_REQUIRE_NO_THROW (ret = ls.doString ("return obj:aMethod()"));
+
    BOOST_REQUIRE (ret.size() == 1);
    BOOST_CHECK (ret[0] == 123);
 
-   BOOST_REQUIRE_NO_THROW (ret = ls.doString ("ATestModule.AFunction()"));
+   BOOST_REQUIRE_NO_THROW (ret = ls.doString ("return ATestModule.AFunction()"));
    BOOST_REQUIRE (ret.size() == 2);
    BOOST_CHECK (ret[0] == true);
    BOOST_CHECK (ret[1] == "Ahey!");
