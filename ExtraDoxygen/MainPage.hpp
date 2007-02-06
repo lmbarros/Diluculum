@@ -27,13 +27,17 @@
 
 /** @mainpage
 
-This is Diluculum's documentation page, as you can probably guess. Read the \ref
-pag-UsersGuide "User's Guide" or use the links at the page's top to navigate
-through the Diluculum's Reference.
+This is Diluculum's documentation page, as you can probably guess from the
+title. Read the \ref pag-UsersGuide "User's Guide" or use the links at the
+page's top to navigate through the Diluculum's Reference.
+
+Also, the tests found at the \c Tests directory under the source distribution
+use every single Diluculum feature available, so they serve as working examples
+on how to use this library.
 
 Quick facts about Diluculum:
 
-- It is distributed under the MIT license.
+- It is distributed under the MIT license (the same as Lua).
 - Its homepage is located at
   <A href="http://www.stackedboxes.org/Projects/Diluculum">
   http://www.stackedboxes.org/Projects/Diluculum</A>.

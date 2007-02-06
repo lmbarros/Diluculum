@@ -44,7 +44,7 @@ harmonious. In this regard, it offers essentially three capabilities:
 
 The next sections discuss each of these three items in more detail. One more
 note: Diluculum has unit tests for all its features, at the \c Tests directory
-in the source distribution. These tests also serve good as examples on how to
+in the source distribution. These tests also serve as good examples on how to
 use the library.
 
 
@@ -79,7 +79,7 @@ end
 \endverbatim
 
 In order to access the information in this file from C++, the first step is to
-create a \c Diluculum::LuaState, and execute the file, as show below.
+create a \c Diluculum::LuaState, and execute the file, as shown below.
 
 \code
 #include <Diluculum/LuaState.hpp>
@@ -271,20 +271,11 @@ class ValueBox
 \endcode
 
 As was the case with free functions, throwing a \c Diluculum::LuaError is the
-way to report errors from methods. The first step to make this class available
-to a Lua state is to call the \c DILUCULUM_WRAP_METHOD() macro for every
-exported method. This macro will create a function wrapping the method. In this
-case, we have just one exported method:
-
-\code
-DILUCULUM_WRAP_METHOD (ValueBox, swap);
-\endcode
-
-The next step is to call a sequence of macros that will create some data
-structures representing the class. (For the Lua-inclined readers: more
-specifically, it will create a global \c Diluculum::LuaValueMap representing the
-class; it will be used as the metatable for the objects in Lua.) These macro
-calls are shown below.
+way to report errors from methods. The class is exported to Lua by issuing a
+sequence of macro calls that will create some data structures representing the
+class. (For the Lua-inclined readers: more specifically, it will create a global
+\c Diluculum::LuaValueMap representing the class; it will be used as the
+metatable for the objects in Lua.) These macro calls are shown below.
 
 \code
 DILUCULUM_BEGIN_CLASS (ValueBox);
@@ -292,15 +283,16 @@ DILUCULUM_BEGIN_CLASS (ValueBox);
 DILUCULUM_END_CLASS (ValueBox);
 \endcode
 
-Notice that it was necessary to make a second macro call for every exported
-method. Ugly, isn't it? Anyway, now we are ready to register this class in a Lua
-state, so that it can actually be used. This requires one more macro call.
-After this final macro call, objects of this class can be instantiated from Lua.
-The code snippet below shows how to do this.
+I'm showing just a single call of \c DILUCULUM_CLASS_METHOD() here because the
+class being exported has just one method. It is OK to add as many methods as
+desired. Now we are ready to register this class in a Lua state, so that it can
+actually be used. This requires one more macro call. After this final macro
+call, objects of this class can be instantiated from Lua. The code snippet below
+shows how to do this.
 
 \code
 Diluculum::LuaState ls;
-DILUCULUM_REGISTER_CLASS (ls, ValueBox);
+DILUCULUM_REGISTER_CLASS (ls["ValueBox"], ValueBox);
 
 ls.doString ("box = ValueBox.new(3)");
 ls.doString ("print (box:swap('foo'))"); // prints '3'
@@ -312,13 +304,14 @@ ls.doString ("print (box:swap(789.987))"); // prints 'foo'
 \subsection sec-MemoryManagement Memory Management
 
 When an object instantiated in Lua is garbage collected, the object's destructor
-will be properly called, so that its resources are properly freed. It is also
+will be properly called, so that its resources are properly freed (assuming that
+the programmer in the C++ side wrote a proper destructor, of course). It is also
 possible to explicitly call the object's destructor in order to free its
 resources before the object is garbage collected. See below.
 
 \code
 Diluculum::LuaState ls;
-DILUCULUM_REGISTER_CLASS (ls, ValueBox);
+DILUCULUM_REGISTER_CLASS (ls["ValueBox"], ValueBox);
 
 ls.doString ("box = ValueBox.new()");
 
@@ -362,5 +355,44 @@ std::cout << vb.swap("abc") << '\n'; // prints '123'.
 Notice that when \c box is garbage collected in Lua, the C++ object will \e not
 be destroyed. In this case, cleaning the object is responsibility of the
 programmer on the C++ side.
+
+
+\subsection sec-DynamicModules Dynamically Loadable Modules
+
+Since release 0.4, Diluculum has some facilities for creating dynamically
+loadable Lua modules. These are those modules compiled to a dynamic-link
+library, and which are automatically loaded when the Lua programmer says
+something like
+
+\code
+require "MyModule"
+\endcode
+
+Actually, Diluculum doesn't do much in this regard, and using its facilities is
+\em not so much simpler than using the Lua API itself. Anyway, this is a user's
+guide, so it is supposed to explain how this thing works. So, here we go.
+Basically, all we can do is to create a module and add functions and classes to
+it. Here is an example, that shows how to create a module containing a single
+function and a single class that were defined previously in this guide.
+
+\code
+DILUCULUM_BEGIN_MODULE (MyFineModule);
+   DILUCULUM_MODULE_ADD_CLASS (ValueBox, "ValueBox");
+   DILUCULUM_MODULE_ADD_FUNCTION (DILUCULUM_WRAPPER_FUNCTION(MyFunction), "MyFunction");
+DILUCULUM_END_MODULE();
+\endcode
+
+So, if this is compiled to a properly named dynamic library (see
+<a href="http://www.lua.org/docs.html">Lua's Reference Manual</a> to know what
+constitutes a proper module name), the Lua programmer can say something like:
+
+\code
+require "MyFineModule"
+
+local v = MyFineModule.ValueBox.new(4321)
+v.swap ("Weeeeee!")
+
+local x, y, z = MyFineModule.MyFunction (4.567)
+\endcode
 
 */
