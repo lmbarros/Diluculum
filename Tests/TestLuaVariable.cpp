@@ -505,6 +505,11 @@ void TestLuaVariableFunctionCall()
    BOOST_CHECK (ret[0] == 2);
 
    // Now, so the same with some "authentic" Lua functions
+   ls.doString ("function ReturnOnePlease() return 1 end");
+   ret = ls["ReturnOnePlease"]();
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_CHECK (ret[0] == 1);
+
    ls.doString ("function Square (x) return x*x end");
    ret = ls["Square"](7);
    BOOST_REQUIRE (ret.size() == 1);
