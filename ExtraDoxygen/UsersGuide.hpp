@@ -133,7 +133,7 @@ std::cout << ret[0].asString() << '\n';
 \endcode
 
 Notice that no call to \c value() is necessary here, because function calls will
-aready return values (<tt>Diluculum::LuaValue</tt>s) instead of variables
+already return values (<tt>Diluculum::LuaValue</tt>s) instead of variables
 (<tt>Diluculum::LuaVariable</tt>s).
 
 The subscript operator also provides write access to the Lua state, so you can
