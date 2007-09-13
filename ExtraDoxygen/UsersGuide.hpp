@@ -297,7 +297,29 @@ DILUCULUM_REGISTER_CLASS (ls["ValueBox"], ValueBox);
 ls.doString ("box = ValueBox.new(3)");
 ls.doString ("print (box:swap('foo'))"); // prints '3'
 ls.doString ("print (box:swap(789.987))"); // prints 'foo'
+\endcode
 
+
+\subsection sec-CppAccessToObjsInstantiatedInLua C++ Access to Objects Instantiated in Lua
+
+Jason Gauci provided a handy method (two, actually -- there a \c const version)
+that provides access in the C++ side to an object instantiated in the Lua side.
+It works more or less like this:
+
+\code
+Diluculum::LuaState ls;
+DILUCULUM_REGISTER_CLASS (ls["ValueBox"], ValueBox);
+
+// Instantiate object in Lua
+ls.doString ("box = ValueBox.new('blah')");
+
+// Get a pointer to the object instantiated above
+ValueBox* vb = ls["box"].value().asObjectPointer<ValueBox*>();
+
+// Call a method through the pointer
+LuaValueList params;
+params.push_back (50.0);
+vb->swap (params);
 \endcode
 
 
