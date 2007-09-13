@@ -32,6 +32,7 @@
 #include <stdexcept>
 #include <string>
 #include <boost/variant.hpp>
+#include <Diluculum/CppObject.hpp>
 #include <Diluculum/LuaUserData.hpp>
 #include <Diluculum/Types.hpp>
 
@@ -206,6 +207,27 @@ namespace Diluculum
           *         (this is a strict check; no type conversion is performed).
           */
          LuaUserData& asUserData();
+
+         /** Assuming that the value stores a C++ object exported to or
+          *  instantiated in Lua, returns a pointer to the (\c const) C++
+          *  object.
+          */
+         template<class T>
+         T asObjectPtr() const
+         {
+            return static_cast<T>(
+               static_cast<const Impl::CppObject*>(asUserData().getData())->ptr);
+         }
+
+         /** Assuming that the value stores a C++ object exported to or
+          *  instantiated in Lua, returns a pointer to the C++ object.
+          */
+         template<class T>
+         T asObjectPtr()
+         {
+            return static_cast<T>(
+               static_cast<Impl::CppObject*>(asUserData().getData())->ptr);
+         }
 
          /** "Less than" operator for <tt>LuaValue</tt>s.
           *  @return The order relationship is quite arbitrary for

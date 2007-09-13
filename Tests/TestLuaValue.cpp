@@ -27,6 +27,7 @@
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaExceptions.hpp>
 #include <Diluculum/LuaValue.hpp>
+#include "WrappedClasses.hpp"
 
 
 // - CLuaFunctionExample -------------------------------------------------------
@@ -234,6 +235,59 @@ void TestLuaValueAsSomethingFunctions()
    BOOST_CHECK_THROW (anUserDataValue.asFunction(), TypeMismatchError);
 
    lua_close (ls);
+}
+
+
+
+// - TestLuaValueAsObjectPtr ---------------------------------------------------
+void TestLuaValueAsObjectPtr()
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+
+   // First, register our class into our 'LuaState'
+   DILUCULUM_REGISTER_CLASS (ls["Account"], Account);
+
+   // In Lua, instantiate the class and call some methods
+   ls.doString ("a = Account.new (100)");
+   ls.doString ("a:deposit (75)");
+   ls.doString ("a:withdraw (25)");
+
+   // Sanity check if our account has the right balance
+   Diluculum::LuaValueList ret = ls.doString ("return a:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0] == 150.0);
+
+   // Now, take a pointer to the object stored in the 'LuaState' and use it
+   Account* account = ls["a"].value().asObjectPtr<Account*>();
+   LuaValueList params;
+   params.push_back (50.0);
+   account->deposit (params);
+   account->deposit (params);
+   account->withdraw (params);
+
+   ret = ls.doString ("return a:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0] == 200.0);
+
+   // Ensure that calls from Lua are still working
+   ls.doString ("a:withdraw (125)");
+   ls.doString ("a:deposit (25)");
+
+   ret = ls.doString ("return a:balance()");
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0] == 100.0);
+
+   // Finally, try the const version of asObjectPtr()
+   const Account* constAccount = ls["a"].value().asObjectPtr<const Account*>();
+   ret = constAccount->balance (LuaValueList());
+   BOOST_REQUIRE (ret.size() == 1);
+   BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+   BOOST_CHECK (ret[0] == 100);
 }
 
 
@@ -589,6 +643,7 @@ test_suite* init_unit_test_suite (int, char*[])
    test->add (BOOST_TEST_CASE (&TestLuaValueType));
    test->add (BOOST_TEST_CASE (&TestLuaValueTypeName));
    test->add (BOOST_TEST_CASE (&TestLuaValueAsSomethingFunctions));
+   test->add (BOOST_TEST_CASE (&TestLuaValueAsObjectPtr));
    test->add (BOOST_TEST_CASE (&TestLuaValueRelationalOperators));
    test->add (BOOST_TEST_CASE (&TestLuaValueSubscriptOperator));
    test->add (BOOST_TEST_CASE (&TestLuaValueConstSubscriptOperator));

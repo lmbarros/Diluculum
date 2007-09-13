@@ -67,7 +67,7 @@ namespace
             return LuaValueList();
          }
 
-         LuaValueList balance (const LuaValueList& params)
+         LuaValueList balance (const LuaValueList& params) const
          {
             LuaValueList ret;
             ret.push_back (balance_);

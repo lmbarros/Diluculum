@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <string>
 #include <boost/bind.hpp>
+#include <Diluculum/CppObject.hpp>
 #include <Diluculum/LuaExceptions.hpp>
 #include <Diluculum/LuaState.hpp>
 #include <Diluculum/LuaUtils.hpp>
@@ -48,25 +49,6 @@ namespace Diluculum
        *  @note This is not intended to be called by Diluculum users.
        */
       void ReportErrorFromCFunction (lua_State* ls, const::std::string& what);
-
-
-
-      /** The data that is stored as userdata when a C++ object is exported to
-       *  or instantiated in Lua.
-       */
-      struct CppObject
-      {
-         public:
-            /// Pointer to the actual object.
-            void* ptr;
-
-            /** Should the \c ptr be <tt>delete</tt>d when the userdata is
-             *  garbage-collected in Lua? Essentially, if the object is
-             *  instantiated in Lua, it should be; if it is instantiated in C++,
-             *  it doesn't.
-             */
-            bool deleteMe;
-      };
 
 
 
