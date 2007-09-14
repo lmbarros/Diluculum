@@ -267,9 +267,9 @@ namespace Diluculum
    lua_Number LuaValue::asNumber() const
    {
       if (dataType_ == LUA_TNUMBER)
-			return *reinterpret_cast<const lua_Number*>(&data_);
-		else
-			throw TypeMismatchError ("number", typeName());
+         return *reinterpret_cast<const lua_Number*>(&data_);
+      else
+         throw TypeMismatchError ("number", typeName());
    }
 
 
@@ -278,9 +278,9 @@ namespace Diluculum
    const std::string& LuaValue::asString() const
    {
       if (dataType_ == LUA_TSTRING)
-			return *reinterpret_cast<const std::string*>(&data_);
-		else
-			throw TypeMismatchError ("string", typeName());
+         return *reinterpret_cast<const std::string*>(&data_);
+      else
+         throw TypeMismatchError ("string", typeName());
    }
 
 
@@ -289,9 +289,9 @@ namespace Diluculum
    bool LuaValue::asBoolean() const
    {
       if (dataType_ == LUA_TBOOLEAN)
-			return *reinterpret_cast<const bool*>(&data_);
-		else
-			throw TypeMismatchError ("boolean", typeName());
+         return *reinterpret_cast<const bool*>(&data_);
+      else
+         throw TypeMismatchError ("boolean", typeName());
    }
 
 
@@ -300,9 +300,9 @@ namespace Diluculum
    LuaValueMap LuaValue::asTable() const
    {
       if (dataType_ == LUA_TTABLE)
-			return *reinterpret_cast<const LuaValueMap*>(&data_);
-		else
-			throw TypeMismatchError ("table", typeName());
+         return *reinterpret_cast<const LuaValueMap*>(&data_);
+      else
+         throw TypeMismatchError ("table", typeName());
    }
 
 
@@ -311,9 +311,9 @@ namespace Diluculum
    lua_CFunction LuaValue::asFunction() const
    {
       if (dataType_ == LUA_TFUNCTION)
-			return *reinterpret_cast<const lua_CFunction*>(&data_);
-		else
-			throw TypeMismatchError ("function", typeName());
+         return *reinterpret_cast<const lua_CFunction*>(&data_);
+      else
+         throw TypeMismatchError ("function", typeName());
    }
 
 
@@ -322,17 +322,17 @@ namespace Diluculum
    const LuaUserData& LuaValue::asUserData() const
    {
       if (dataType_ == LUA_TUSERDATA)
-			return *reinterpret_cast<const LuaUserData*>(&data_);
-		else
-			throw TypeMismatchError ("userdata", typeName());
+         return *reinterpret_cast<const LuaUserData*>(&data_);
+      else
+         throw TypeMismatchError ("userdata", typeName());
    }
 
    LuaUserData& LuaValue::asUserData()
    {
       if (dataType_ == LUA_TUSERDATA)
-			return *reinterpret_cast<LuaUserData*>(&data_);
-		else
-			throw TypeMismatchError ("userdata", typeName());
+         return *reinterpret_cast<LuaUserData*>(&data_);
+      else
+         throw TypeMismatchError ("userdata", typeName());
    }
 
 
