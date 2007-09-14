@@ -38,10 +38,6 @@
 
 namespace Diluculum
 {
-   // Some forward declarations.
-   class LuaValue;
-
-
    /** A class that somewhat mimics a Lua value. Notice that a \c LuaValue is
     *  a C++-side thing. There is absolutely no relationship between a
     *  \c LuaValue and a Lua state. This is particularly important for tables
