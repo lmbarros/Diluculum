@@ -133,7 +133,7 @@ namespace Diluculum
          /** Returns one of the <tt>LUA_T*</tt> constants from <tt>lua.h</tt>,
           *  representing the type stored in this \c LuaValue.
           */
-         int type() const { return storedDataType_; }
+         int type() const { return dataType_; }
 
          /** Returns the type of this \c LuaValue as a string, just like the Lua
           *  built-in function \c type().
@@ -302,7 +302,7 @@ namespace Diluculum
          /** The actual type stored in this \c LuaValue. The values here are the
           *  type constants defined by Lua, like \c LUA_TNUMBER and \c LUA_TNIL.
           */
-         int storedDataType_;
+         int dataType_;
    };
 
 

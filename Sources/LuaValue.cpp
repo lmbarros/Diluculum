@@ -32,19 +32,19 @@ namespace Diluculum
 {
    // - LuaValue::LuaValue -----------------------------------------------------
    LuaValue::LuaValue()
-      : storedDataType_(LUA_TNIL)
+      : dataType_(LUA_TNIL)
    { }
 
 
    LuaValue::LuaValue (bool b)
-      : storedDataType_(LUA_TBOOLEAN)
+      : dataType_(LUA_TBOOLEAN)
    {
       memcpy (data_, &b, sizeof(bool));
    }
 
 
    LuaValue::LuaValue (float n)
-      : storedDataType_(LUA_TNUMBER)
+      : dataType_(LUA_TNUMBER)
    {
       lua_Number num = static_cast<lua_Number>(n);
       memcpy (data_, &num, sizeof(lua_Number));
@@ -52,7 +52,7 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (double n)
-      : storedDataType_(LUA_TNUMBER)
+      : dataType_(LUA_TNUMBER)
    {
       lua_Number num = static_cast<lua_Number>(n);
       memcpy (data_, &num, sizeof(lua_Number));
@@ -60,7 +60,7 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (long double n)
-      : storedDataType_(LUA_TNUMBER)
+      : dataType_(LUA_TNUMBER)
    {
       lua_Number num = static_cast<lua_Number>(n);
       memcpy (data_, &num, sizeof(lua_Number));
@@ -68,7 +68,7 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (short n)
-      : storedDataType_(LUA_TNUMBER)
+      : dataType_(LUA_TNUMBER)
    {
       lua_Number num = static_cast<lua_Number>(n);
       memcpy (data_, &num, sizeof(lua_Number));
@@ -76,7 +76,7 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (unsigned short n)
-      : storedDataType_(LUA_TNUMBER)
+      : dataType_(LUA_TNUMBER)
    {
       lua_Number num = static_cast<lua_Number>(n);
       memcpy (data_, &num, sizeof(lua_Number));
@@ -84,7 +84,7 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (int n)
-      : storedDataType_(LUA_TNUMBER)
+      : dataType_(LUA_TNUMBER)
    {
       lua_Number num = static_cast<lua_Number>(n);
       memcpy (data_, &num, sizeof(lua_Number));
@@ -92,7 +92,7 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (unsigned n)
-      : storedDataType_(LUA_TNUMBER)
+      : dataType_(LUA_TNUMBER)
    {
       lua_Number num = static_cast<lua_Number>(n);
       memcpy (data_, &num, sizeof(lua_Number));
@@ -100,7 +100,7 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (long n)
-      : storedDataType_(LUA_TNUMBER)
+      : dataType_(LUA_TNUMBER)
    {
       lua_Number num = static_cast<lua_Number>(n);
       memcpy (data_, &num, sizeof(lua_Number));
@@ -108,7 +108,7 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (unsigned long n)
-      : storedDataType_(LUA_TNUMBER)
+      : dataType_(LUA_TNUMBER)
    {
       lua_Number num = static_cast<lua_Number>(n);
       memcpy (data_, &num, sizeof(lua_Number));
@@ -116,35 +116,35 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (const std::string& s)
-      : storedDataType_(LUA_TSTRING)
+      : dataType_(LUA_TSTRING)
    {
       new(data_) std::string(s);
    }
 
 
    LuaValue::LuaValue (const char* s)
-      : storedDataType_(LUA_TSTRING)
+      : dataType_(LUA_TSTRING)
    {
       new(data_) std::string(s);
    }
 
 
    LuaValue::LuaValue (const LuaValueMap& t)
-      : storedDataType_(LUA_TTABLE)
+      : dataType_(LUA_TTABLE)
    {
       new(data_) LuaValueMap(t);
    }
 
 
    LuaValue::LuaValue (lua_CFunction f)
-      : storedDataType_(LUA_TFUNCTION)
+      : dataType_(LUA_TFUNCTION)
    {
       memcpy (data_, &f, sizeof(lua_CFunction));
    }
 
 
    LuaValue::LuaValue (const LuaUserData& ud)
-      : storedDataType_(LUA_TUSERDATA)
+      : dataType_(LUA_TUSERDATA)
    {
       new(data_) LuaUserData(ud);
    }
@@ -160,9 +160,9 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (const LuaValue& other)
-      : storedDataType_ (other.storedDataType_)
+      : dataType_ (other.dataType_)
    {
-      switch (storedDataType_)
+      switch (dataType_)
       {
          case LUA_TSTRING:
             new(data_) std::string(other.asString());
@@ -190,9 +190,9 @@ namespace Diluculum
    {
       destroyObjectAtData();
 
-      storedDataType_ = rhs.storedDataType_;
+      dataType_ = rhs.dataType_;
 
-      switch (storedDataType_)
+      switch (dataType_)
       {
          case LUA_TSTRING:
             new(data_) std::string (rhs.asString());
@@ -231,7 +231,7 @@ namespace Diluculum
    // - LuaValue::typeName -----------------------------------------------------
    std::string LuaValue::typeName() const
    {
-      switch (storedDataType_)
+      switch (dataType_)
       {
          case LUA_TNIL:
             return "nil";
@@ -266,7 +266,7 @@ namespace Diluculum
    // - LuaValue::asNumber() ---------------------------------------------------
    lua_Number LuaValue::asNumber() const
    {
-      if (storedDataType_ == LUA_TNUMBER)
+      if (dataType_ == LUA_TNUMBER)
 			return *reinterpret_cast<const lua_Number*>(&data_);
 		else
 			throw TypeMismatchError ("number", typeName());
@@ -277,7 +277,7 @@ namespace Diluculum
    // - LuaValue::asString -----------------------------------------------------
    const std::string& LuaValue::asString() const
    {
-      if (storedDataType_ == LUA_TSTRING)
+      if (dataType_ == LUA_TSTRING)
 			return *reinterpret_cast<const std::string*>(&data_);
 		else
 			throw TypeMismatchError ("string", typeName());
@@ -288,7 +288,7 @@ namespace Diluculum
    // - LuaValue::asBoolean ----------------------------------------------------
    bool LuaValue::asBoolean() const
    {
-      if (storedDataType_ == LUA_TBOOLEAN)
+      if (dataType_ == LUA_TBOOLEAN)
 			return *reinterpret_cast<const bool*>(&data_);
 		else
 			throw TypeMismatchError ("boolean", typeName());
@@ -299,7 +299,7 @@ namespace Diluculum
    // - LuaValue::asTable ------------------------------------------------------
    LuaValueMap LuaValue::asTable() const
    {
-      if (storedDataType_ == LUA_TTABLE)
+      if (dataType_ == LUA_TTABLE)
 			return *reinterpret_cast<const LuaValueMap*>(&data_);
 		else
 			throw TypeMismatchError ("table", typeName());
@@ -310,7 +310,7 @@ namespace Diluculum
    // - LuaValue::asFunction ---------------------------------------------------
    lua_CFunction LuaValue::asFunction() const
    {
-      if (storedDataType_ == LUA_TFUNCTION)
+      if (dataType_ == LUA_TFUNCTION)
 			return *reinterpret_cast<const lua_CFunction*>(&data_);
 		else
 			throw TypeMismatchError ("function", typeName());
@@ -321,7 +321,7 @@ namespace Diluculum
    // - LuaValue::asUserData ---------------------------------------------------
    const LuaUserData& LuaValue::asUserData() const
    {
-      if (storedDataType_ == LUA_TUSERDATA)
+      if (dataType_ == LUA_TUSERDATA)
 			return *reinterpret_cast<const LuaUserData*>(&data_);
 		else
 			throw TypeMismatchError ("userdata", typeName());
@@ -329,7 +329,7 @@ namespace Diluculum
 
    LuaUserData& LuaValue::asUserData()
    {
-      if (storedDataType_ == LUA_TUSERDATA)
+      if (dataType_ == LUA_TUSERDATA)
 			return *reinterpret_cast<LuaUserData*>(&data_);
 		else
 			throw TypeMismatchError ("userdata", typeName());
@@ -558,7 +558,7 @@ namespace Diluculum
    // - LuaValue::destroyObjectAtData ------------------------------------------
    void LuaValue::destroyObjectAtData()
    {
-      switch (storedDataType_)
+      switch (dataType_)
       {
          case LUA_TSTRING:
             reinterpret_cast<std::string*>(data_)->~basic_string();
