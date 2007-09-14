@@ -440,6 +440,11 @@ extern "C" int luaopen_ ## MODNAME (lua_State *luaState) \
 
 /** Closes a block (started by \c DILUCULUM_BEGIN_MODULE()) that defines a
  *  dynamically loadable Lua module.
+ *  @bug In principle, this function should return one parameter: the table
+ *       containing the module (this is more or less a convention). The current
+ *       implementation not only ignores the convention: it also seems to return
+ *       something invalid (function looks to be returning 1 without anything on
+ *       the stack).
  */
 #define DILUCULUM_END_MODULE() \
    return 1;                   \

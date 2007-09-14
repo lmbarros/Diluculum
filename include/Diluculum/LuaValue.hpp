@@ -31,7 +31,6 @@
 #include <map>
 #include <stdexcept>
 #include <string>
-#include <boost/variant.hpp>
 #include <Diluculum/CppObject.hpp>
 #include <Diluculum/LuaUserData.hpp>
 #include <Diluculum/Types.hpp>
@@ -56,82 +55,52 @@ namespace Diluculum
    {
       public:
          /// Constructs a \c LuaValue with a \c nil value.
-         LuaValue() { };
+         LuaValue();
 
          /// Constructs a \c LuaValue with boolean type and \c b value.
-         LuaValue (bool b)
-            : value_(b)
-         { }
+         LuaValue (bool b);
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (float n)
-            : value_(static_cast<lua_Number>(n))
-         { }
+         LuaValue (float n);
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (double n)
-            : value_(static_cast<lua_Number>(n))
-         { }
+         LuaValue (double n);
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (long double n)
-            : value_(static_cast<lua_Number>(n))
-         { }
+         LuaValue (long double n);
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (short n)
-            : value_(static_cast<lua_Number>(n))
-         { }
+         LuaValue (short n);
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (unsigned short n)
-            : value_(static_cast<lua_Number>(n))
-         { }
+         LuaValue (unsigned short n);
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (int n)
-            : value_(static_cast<lua_Number>(n))
-         { }
+         LuaValue (int n);
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (unsigned n)
-            : value_(static_cast<lua_Number>(n))
-         { }
+         LuaValue (unsigned n);
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (long n)
-            : value_(static_cast<lua_Number>(n))
-         { }
+         LuaValue (long n);
 
          /// Constructs a \c LuaValue with number type and \c n value.
-         LuaValue (unsigned long n)
-            : value_(static_cast<lua_Number>(n))
-         { }
+         LuaValue (unsigned long n);
 
          /// Constructs a \c LuaValue with string type and \c s value.
-         LuaValue (const std::string& s)
-            : value_(s)
-         { }
+         LuaValue (const std::string& s);
 
          /// Constructs a \c LuaValue with string type and \c s value.
-         LuaValue (const char* s)
-            : value_(std::string(s))
-         { }
+         LuaValue (const char* s);
 
          /// Constructs a \c LuaValue with table type and \c t value.
-         LuaValue (const LuaValueMap& t)
-            : value_(t)
-         { }
+         LuaValue (const LuaValueMap& t);
 
          /// Constructs a \c LuaValue with function type and \c f value.
-         LuaValue (lua_CFunction f)
-            : value_(f)
-         { }
+         LuaValue (lua_CFunction f);
 
          /// Constructs a \c LuaValue with "user data" type and \c ud value.
-         LuaValue (const LuaUserData& ud)
-            : value_(ud)
-         { }
+         LuaValue (const LuaUserData& ud);
 
          /** Constructs a \c LuaValue from a \c LuaValueList. The first value on
           *  the list is used to initialize the \c LuaValue. If the
@@ -139,6 +108,21 @@ namespace Diluculum
           *  to \c Nil.
           */
          LuaValue (const LuaValueList& v);
+
+         /// Copy constructor.
+         LuaValue (const LuaValue& other);
+
+         /** Destroys the \c LuaValue, freeing all the resources owned by it.
+          *  @todo What's the best way to call the destructor of a
+          *        \c std::string? I am calling <tt>~basic_string()</tt> because
+          *        it works with my current GCC under Linux and because it makes
+          *        sense. I hope it works in other platforms/compilers/standard
+          *        library implementations, too!
+          */
+         ~LuaValue() { destroyObjectAtData(); }
+
+         /// Assignment operator.
+         LuaValue& operator= (const LuaValue& rhs);
 
          /** Assigns a \c LuaValueList to a \c LuaValue. The first value on
           *  the list is used to initialize the \c LuaValue. If the
@@ -149,7 +133,7 @@ namespace Diluculum
          /** Returns one of the <tt>LUA_T*</tt> constants from <tt>lua.h</tt>,
           *  representing the type stored in this \c LuaValue.
           */
-         int type() const;
+         int type() const { return storedDataType_; }
 
          /** Returns the type of this \c LuaValue as a string, just like the Lua
           *  built-in function \c type().
@@ -291,12 +275,34 @@ namespace Diluculum
          const LuaValue& operator[] (const LuaValue& key) const;
 
       private:
-         /// Almost dummy class; simply represents the type of \c nil.
-         class NilType { };
 
-         /// Stores the value (and the type) stored in this \c LuaValue.
-         boost::variant <NilType, lua_Number, std::string, bool, LuaValueMap,
-                         lua_CFunction, LuaUserData> value_;
+         /** Destroys the object allocated at the \c data_ member, freeing its
+          *  resources.
+          */
+         void destroyObjectAtData();
+
+         /// This is used just to know the size of the \c data_ member.
+         union PossibleTypes
+         {
+               lua_Number typeNumber;
+               char typeString[sizeof(std::string)];
+               bool typeBool;
+               char typeLuaValueMap[sizeof(LuaValueMap)];
+               lua_CFunction typeCFunction;
+               char typeUserData[sizeof(LuaUserData)];
+         };
+
+         /** This stores the actual data of this \c LuaValue.
+          *  <p>Implementation details: This member is large enough to store the
+          *  largest value. The values are allocated here using placement new,
+          *  with destructors explicitly called whenever necessary.
+          */
+         char data_[sizeof(PossibleTypes)];
+
+         /** The actual type stored in this \c LuaValue. The values here are the
+          *  type constants defined by Lua, like \c LUA_TNUMBER and \c LUA_TNIL.
+          */
+         int storedDataType_;
    };
 
 

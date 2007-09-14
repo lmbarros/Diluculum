@@ -31,6 +31,125 @@
 namespace Diluculum
 {
    // - LuaValue::LuaValue -----------------------------------------------------
+   LuaValue::LuaValue()
+      : storedDataType_(LUA_TNIL)
+   { }
+
+
+   LuaValue::LuaValue (bool b)
+      : storedDataType_(LUA_TBOOLEAN)
+   {
+      memcpy (data_, &b, sizeof(bool));
+   }
+
+
+   LuaValue::LuaValue (float n)
+      : storedDataType_(LUA_TNUMBER)
+   {
+      lua_Number num = static_cast<lua_Number>(n);
+      memcpy (data_, &num, sizeof(lua_Number));
+   }
+
+
+   LuaValue::LuaValue (double n)
+      : storedDataType_(LUA_TNUMBER)
+   {
+      lua_Number num = static_cast<lua_Number>(n);
+      memcpy (data_, &num, sizeof(lua_Number));
+   }
+
+
+   LuaValue::LuaValue (long double n)
+      : storedDataType_(LUA_TNUMBER)
+   {
+      lua_Number num = static_cast<lua_Number>(n);
+      memcpy (data_, &num, sizeof(lua_Number));
+   }
+
+
+   LuaValue::LuaValue (short n)
+      : storedDataType_(LUA_TNUMBER)
+   {
+      lua_Number num = static_cast<lua_Number>(n);
+      memcpy (data_, &num, sizeof(lua_Number));
+   }
+
+
+   LuaValue::LuaValue (unsigned short n)
+      : storedDataType_(LUA_TNUMBER)
+   {
+      lua_Number num = static_cast<lua_Number>(n);
+      memcpy (data_, &num, sizeof(lua_Number));
+   }
+
+
+   LuaValue::LuaValue (int n)
+      : storedDataType_(LUA_TNUMBER)
+   {
+      lua_Number num = static_cast<lua_Number>(n);
+      memcpy (data_, &num, sizeof(lua_Number));
+   }
+
+
+   LuaValue::LuaValue (unsigned n)
+      : storedDataType_(LUA_TNUMBER)
+   {
+      lua_Number num = static_cast<lua_Number>(n);
+      memcpy (data_, &num, sizeof(lua_Number));
+   }
+
+
+   LuaValue::LuaValue (long n)
+      : storedDataType_(LUA_TNUMBER)
+   {
+      lua_Number num = static_cast<lua_Number>(n);
+      memcpy (data_, &num, sizeof(lua_Number));
+   }
+
+
+   LuaValue::LuaValue (unsigned long n)
+      : storedDataType_(LUA_TNUMBER)
+   {
+      lua_Number num = static_cast<lua_Number>(n);
+      memcpy (data_, &num, sizeof(lua_Number));
+   }
+
+
+   LuaValue::LuaValue (const std::string& s)
+      : storedDataType_(LUA_TSTRING)
+   {
+      new(data_) std::string(s);
+   }
+
+
+   LuaValue::LuaValue (const char* s)
+      : storedDataType_(LUA_TSTRING)
+   {
+      new(data_) std::string(s);
+   }
+
+
+   LuaValue::LuaValue (const LuaValueMap& t)
+      : storedDataType_(LUA_TTABLE)
+   {
+      new(data_) LuaValueMap(t);
+   }
+
+
+   LuaValue::LuaValue (lua_CFunction f)
+      : storedDataType_(LUA_TFUNCTION)
+   {
+      memcpy (data_, &f, sizeof(lua_CFunction));
+   }
+
+
+   LuaValue::LuaValue (const LuaUserData& ud)
+      : storedDataType_(LUA_TUSERDATA)
+   {
+      new(data_) LuaUserData(ud);
+   }
+
+
    LuaValue::LuaValue (const LuaValueList& v)
    {
       if (v.size() >= 1)
@@ -40,8 +159,63 @@ namespace Diluculum
    }
 
 
+   LuaValue::LuaValue (const LuaValue& other)
+      : storedDataType_ (other.storedDataType_)
+   {
+      switch (storedDataType_)
+      {
+         case LUA_TSTRING:
+            new(data_) std::string(other.asString());
+            break;
+
+         case LUA_TTABLE:
+            new(data_) LuaValueMap (other.asTable());
+            break;
+
+         case LUA_TUSERDATA:
+            new(data_) LuaUserData (other.asUserData());
+            break;
+
+         default:
+            // no constructor needed.
+            memcpy (data_, other.data_, sizeof(PossibleTypes));
+            break;
+      }
+   }
+
+
 
    // - LuaValue::operator= ----------------------------------------------------
+   LuaValue& LuaValue::operator= (const LuaValue& rhs)
+   {
+      destroyObjectAtData();
+
+      storedDataType_ = rhs.storedDataType_;
+
+      switch (storedDataType_)
+      {
+         case LUA_TSTRING:
+            new(data_) std::string (rhs.asString());
+            break;
+
+         case LUA_TTABLE:
+            new(data_) LuaValueMap (rhs.asTable());
+            break;
+
+         case LUA_TUSERDATA:
+            new(data_) LuaUserData (rhs.asUserData());
+            break;
+
+         default:
+            // no constructor needed.
+            memcpy (data_, rhs.data_, sizeof(PossibleTypes));
+            break;
+      }
+
+      return *this;
+   }
+
+
    const LuaValueList& LuaValue::operator= (const LuaValueList& rhs)
    {
       if (rhs.size() >= 1)
@@ -54,53 +228,36 @@ namespace Diluculum
 
 
 
-   // - LuaValue::type ---------------------------------------------------------
-   int LuaValue::type() const
-   {
-      if (value_.type() == typeid (NilType))
-         return LUA_TNIL;
-      else if (value_.type() == typeid (bool))
-         return LUA_TBOOLEAN;
-      else if (value_.type() == typeid (lua_Number))
-         return LUA_TNUMBER;
-      else if (value_.type() == typeid (std::string))
-         return LUA_TSTRING;
-      else if (value_.type() == typeid (LuaValueMap))
-         return LUA_TTABLE;
-      else if (value_.type() == typeid (lua_CFunction))
-         return LUA_TFUNCTION;
-      else if (value_.type() == typeid (LuaUserData))
-         return LUA_TUSERDATA;
-      else
-      {
-         assert (false
-                 && "Invalid type found in a call to 'LuaValue::type()'.");
-      }
-   }
-
-
-
    // - LuaValue::typeName -----------------------------------------------------
    std::string LuaValue::typeName() const
    {
-      if (value_.type() == typeid (NilType))
-         return "nil";
-      else if (value_.type() == typeid (bool))
-         return "boolean";
-      else if (value_.type() == typeid (lua_Number))
-         return "number";
-      else if (value_.type() == typeid (std::string))
-         return "string";
-      else if (value_.type() == typeid (LuaValueMap))
-         return "table";
-      else if (value_.type() == typeid (lua_CFunction))
-         return "function";
-      else if (value_.type() == typeid (LuaUserData))
-         return "userdata";
-      else
+      switch (storedDataType_)
       {
-         assert (false
-                 && "Invalid type found in a call to 'LuaValue::typeName()'.");
+         case LUA_TNIL:
+            return "nil";
+
+         case LUA_TBOOLEAN:
+            return "boolean";
+
+         case LUA_TNUMBER:
+            return "number";
+
+         case LUA_TSTRING:
+            return "string";
+
+         case LUA_TTABLE:
+            return "table";
+
+         case LUA_TFUNCTION:
+            return "function";
+
+         case LUA_TUSERDATA:
+            return "userdata";
+
+         default: // can't happen
+            assert (false
+                    && "Invalid type found in a call to 'LuaValue::typeName()'.");
+            return ""; // return something to make compilers happy.
       }
    }
 
@@ -109,14 +266,10 @@ namespace Diluculum
    // - LuaValue::asNumber() ---------------------------------------------------
    lua_Number LuaValue::asNumber() const
    {
-      try
-      {
-         return boost::get<lua_Number>(value_);
-      }
-      catch (boost::bad_get& e)
-      {
-         throw TypeMismatchError ("number", typeName());
-      }
+      if (storedDataType_ == LUA_TNUMBER)
+			return *reinterpret_cast<const lua_Number*>(&data_);
+		else
+			throw TypeMismatchError ("number", typeName());
    }
 
 
@@ -124,14 +277,10 @@ namespace Diluculum
    // - LuaValue::asString -----------------------------------------------------
    const std::string& LuaValue::asString() const
    {
-      try
-      {
-         return boost::get<const std::string&>(value_);
-      }
-      catch (boost::bad_get& e)
-      {
-         throw TypeMismatchError ("string", typeName());
-      }
+      if (storedDataType_ == LUA_TSTRING)
+			return *reinterpret_cast<const std::string*>(&data_);
+		else
+			throw TypeMismatchError ("string", typeName());
    }
 
 
@@ -139,14 +288,10 @@ namespace Diluculum
    // - LuaValue::asBoolean ----------------------------------------------------
    bool LuaValue::asBoolean() const
    {
-      try
-      {
-         return boost::get<bool>(value_);
-      }
-      catch (boost::bad_get& e)
-      {
-         throw TypeMismatchError ("boolean", typeName());
-      }
+      if (storedDataType_ == LUA_TBOOLEAN)
+			return *reinterpret_cast<const bool*>(&data_);
+		else
+			throw TypeMismatchError ("boolean", typeName());
    }
 
 
@@ -154,14 +299,10 @@ namespace Diluculum
    // - LuaValue::asTable ------------------------------------------------------
    LuaValueMap LuaValue::asTable() const
    {
-      try
-      {
-         return boost::get<LuaValueMap>(value_);
-      }
-      catch (boost::bad_get& e)
-      {
-         throw TypeMismatchError ("table", typeName());
-      }
+      if (storedDataType_ == LUA_TTABLE)
+			return *reinterpret_cast<const LuaValueMap*>(&data_);
+		else
+			throw TypeMismatchError ("table", typeName());
    }
 
 
@@ -169,14 +310,10 @@ namespace Diluculum
    // - LuaValue::asFunction ---------------------------------------------------
    lua_CFunction LuaValue::asFunction() const
    {
-      try
-      {
-         return boost::get<lua_CFunction>(value_);
-      }
-      catch (boost::bad_get& e)
-      {
-         throw TypeMismatchError ("function", typeName());
-      }
+      if (storedDataType_ == LUA_TFUNCTION)
+			return *reinterpret_cast<const lua_CFunction*>(&data_);
+		else
+			throw TypeMismatchError ("function", typeName());
    }
 
 
@@ -184,26 +321,18 @@ namespace Diluculum
    // - LuaValue::asUserData ---------------------------------------------------
    const LuaUserData& LuaValue::asUserData() const
    {
-      try
-      {
-         return boost::get<const LuaUserData&>(value_);
-      }
-      catch (boost::bad_get& e)
-      {
-         throw TypeMismatchError ("userdata", typeName());
-      }
+      if (storedDataType_ == LUA_TUSERDATA)
+			return *reinterpret_cast<const LuaUserData*>(&data_);
+		else
+			throw TypeMismatchError ("userdata", typeName());
    }
 
    LuaUserData& LuaValue::asUserData()
    {
-      try
-      {
-         return boost::get<LuaUserData&>(value_);
-      }
-      catch (boost::bad_get& e)
-      {
-         throw TypeMismatchError ("userdata", typeName());
-      }
+      if (storedDataType_ == LUA_TUSERDATA)
+			return *reinterpret_cast<LuaUserData*>(&data_);
+		else
+			throw TypeMismatchError ("userdata", typeName());
    }
 
 
@@ -396,26 +525,25 @@ namespace Diluculum
 
 
 
-   // - LuaValue::LuaValue -----------------------------------------------------
+   // - LuaValue::operator[] ---------------------------------------------------
    LuaValue& LuaValue::operator[] (const LuaValue& key)
    {
       if (type() != LUA_TTABLE)
          throw TypeMismatchError ("table", typeName());
 
-      LuaValueMap& table = boost::get<LuaValueMap>(value_);
+      LuaValueMap& table = *reinterpret_cast<LuaValueMap*>(data_);
 
       return table[key];
    }
 
 
 
-   // - LuaValue::LuaValue -----------------------------------------------------
    const LuaValue& LuaValue::operator[] (const LuaValue& key) const
    {
       if (type() != LUA_TTABLE)
          throw TypeMismatchError ("table", typeName());
 
-      const LuaValueMap& table = boost::get<LuaValueMap>(value_);
+      const LuaValueMap& table = *reinterpret_cast<const LuaValueMap*>(data_);
 
       LuaValueMap::const_iterator it = table.find(key);
 
@@ -423,6 +551,31 @@ namespace Diluculum
          return Nil;
 
       return it->second;
+   }
+
+
+
+   // - LuaValue::destroyObjectAtData ------------------------------------------
+   void LuaValue::destroyObjectAtData()
+   {
+      switch (storedDataType_)
+      {
+         case LUA_TSTRING:
+            reinterpret_cast<std::string*>(data_)->~basic_string();
+            break;
+
+         case LUA_TTABLE:
+            reinterpret_cast<LuaValueMap*>(data_)->~LuaValueMap();
+            break;
+
+         case LUA_TUSERDATA:
+            reinterpret_cast<LuaUserData*>(data_)->~LuaUserData();
+            break;
+
+         default:
+            // no destructor needed.
+            break;
+      }
    }
 
 } // namespace Diluculum
