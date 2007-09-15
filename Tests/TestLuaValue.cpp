@@ -36,11 +36,96 @@ int CLuaFunctionExample (lua_State* ls)
    return 0;
 }
 
+
+
 // - AnotherCLuaFunctionExample ------------------------------------------------
 int AnotherCLuaFunctionExample (lua_State* ls)
 {
    return 0;
 }
+
+
+
+// - TestLuaValueCopyConstructor -----------------------------------------------
+void TestLuaValueCopyConstructor()
+{
+   using namespace Diluculum;
+
+   LuaValue aNilValue;
+   LuaValue anotherNilValue (aNilValue);
+   BOOST_CHECK (aNilValue == anotherNilValue);
+
+   LuaValue aNumberValue (1.0);
+   LuaValue anotherNumberValue (aNumberValue);
+   BOOST_CHECK (aNumberValue == anotherNumberValue);
+
+   LuaValue aStringValue ("Foo");
+   LuaValue anotherStringValue (aStringValue);
+   BOOST_CHECK (aStringValue == anotherStringValue);
+
+   LuaValue aBooleanValue (true);
+   LuaValue anotherBooleanValue (aBooleanValue);
+   BOOST_CHECK (aBooleanValue == anotherBooleanValue);
+
+   LuaValueMap aLuaValueMap;
+   aLuaValueMap[1] = "one";
+   aLuaValueMap[2] = "three";
+   aLuaValueMap["confusing"] = true;
+   LuaValue aTableValue (aLuaValueMap);
+   LuaValue anotherTableValue (aTableValue);
+   BOOST_CHECK (aTableValue == anotherTableValue);
+
+   LuaValue aFunctionValue (CLuaFunctionExample);
+   LuaValue anotherFunctionValue (aFunctionValue);
+   BOOST_CHECK (aFunctionValue == anotherFunctionValue);
+
+   LuaValue anUserDataValue (LuaUserData (1024));
+   LuaValue anotherUserDataValue (anUserDataValue);
+   BOOST_CHECK (anUserDataValue == anotherUserDataValue);
+}
+
+
+
+// - TestLuaValueAssignmentOperator --------------------------------------------
+void TestLuaValueAssignmentOperator()
+{
+   using namespace Diluculum;
+
+   LuaValue anotherValue;
+
+   LuaValue aNilValue;
+   anotherValue = aNilValue;
+   BOOST_CHECK (aNilValue == anotherValue);
+
+   LuaValue aNumberValue (1.0);
+   anotherValue = aNumberValue;
+   BOOST_CHECK (aNumberValue == anotherValue);
+
+   LuaValue aStringValue ("Foo");
+   anotherValue = aStringValue;
+   BOOST_CHECK (aStringValue == anotherValue);
+
+   LuaValue aBooleanValue (true);
+   anotherValue = aBooleanValue;
+   BOOST_CHECK (aBooleanValue == anotherValue);
+
+   LuaValueMap aLuaValueMap;
+   aLuaValueMap[1] = "one";
+   aLuaValueMap[2] = "three";
+   aLuaValueMap["confusing"] = true;
+   LuaValue aTableValue (aLuaValueMap);
+   anotherValue = aLuaValueMap;
+   BOOST_CHECK (aTableValue == anotherValue);
+
+   LuaValue aFunctionValue (CLuaFunctionExample);
+   anotherValue = aFunctionValue;
+   BOOST_CHECK (aFunctionValue == anotherValue);
+
+   LuaValue anUserDataValue (LuaUserData (1024));
+   anotherValue = anUserDataValue;
+   BOOST_CHECK (anUserDataValue == anotherValue);
+}
+
 
 
 // - TestLuaValueAndValueLists -------------------------------------------------
@@ -61,6 +146,7 @@ void TestLuaValueAndValueLists()
    lv2 = valueList;
    BOOST_CHECK (lv2 == 123.456);
 }
+
 
 
 // - TestLuaValueType ----------------------------------------------------------
@@ -639,6 +725,8 @@ using boost::unit_test_framework::test_suite;
 test_suite* init_unit_test_suite (int, char*[])
 {
    test_suite* test = BOOST_TEST_SUITE ("'LuaValue' tests");
+   test->add (BOOST_TEST_CASE (&TestLuaValueCopyConstructor));
+   test->add (BOOST_TEST_CASE (&TestLuaValueAssignmentOperator));
    test->add (BOOST_TEST_CASE (&TestLuaValueAndValueLists));
    test->add (BOOST_TEST_CASE (&TestLuaValueType));
    test->add (BOOST_TEST_CASE (&TestLuaValueTypeName));
