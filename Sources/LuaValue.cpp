@@ -274,6 +274,24 @@ namespace Diluculum
 
 
 
+   // - LuaValue::asInteger() --------------------------------------------------
+   lua_Integer LuaValue::asInteger() const
+   {
+      if (dataType_ == LUA_TNUMBER)
+      {
+         lua_Number num = (*reinterpret_cast<const lua_Number*>(&data_));
+         lua_Integer res;
+         lua_number2integer (res, num);
+         return res;
+      }
+      else
+      {
+         throw TypeMismatchError ("number", typeName());
+      }
+   }
+
+
+
    // - LuaValue::asString -----------------------------------------------------
    const std::string& LuaValue::asString() const
    {

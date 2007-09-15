@@ -145,6 +145,14 @@ namespace Diluculum
           */
          lua_Number asNumber() const;
 
+         /** Return the value as an integer.
+          *  @throw TypeMismatchError If the value is not a number (this is a
+          *         strict check; no type conversion is performed -- no other
+          *         than the conversion from \c lua_Number to \c lua_Integer,
+          *         that is).
+          */
+         lua_Integer asInteger() const;
+
          /** Return the value as a string.
           *  @throw TypeMismatchError If the value is not a string (this is a
           *         strict check; no type conversion is performed).

@@ -236,8 +236,8 @@ void TestLuaValueAsSomethingFunctions()
 
    LuaValue aNilValue;
    LuaValue anotherNilValue = Nil;
-   LuaValue aNumberValue1 (1.0);
-   LuaValue aNumberValue2 (2.0);
+   LuaValue aNumberValue1 (1.1);
+   LuaValue aNumberValue2 (-2.0);
    LuaValue aStringValueFoo ("Foo");
    LuaValue aStringValueBar ("Bar");
    LuaValue aBooleanValue (true);
@@ -259,8 +259,10 @@ void TestLuaValueAsSomethingFunctions()
    LuaValue anUserDataValue (ud);
 
    // Try to get the proper values.
-   BOOST_CHECK (aNumberValue1.asNumber() == 1.0);
-   BOOST_CHECK (aNumberValue2.asNumber() == 2.0);
+   BOOST_CHECK (aNumberValue1.asNumber() == 1.1);
+   BOOST_CHECK (aNumberValue2.asNumber() == -2.0);
+   BOOST_CHECK (aNumberValue1.asInteger() == 1);
+   BOOST_CHECK (aNumberValue2.asInteger() == -2);
    BOOST_CHECK (aStringValueFoo.asString() == "Foo");
    BOOST_CHECK (aStringValueBar.asString() == "Bar");
    BOOST_CHECK (aBooleanValue.asBoolean() == true);
