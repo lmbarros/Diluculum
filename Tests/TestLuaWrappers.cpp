@@ -291,14 +291,15 @@ BOOST_AUTO_TEST_CASE(TestClassWrappingInTable)
 
 
 
-// - TestClassDestructor -------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestClassDestructor)
+// - TestClassDestructorObjectInstantiatedInLuaAndGarbageCollected -------------
+BOOST_AUTO_TEST_CASE(TestClassDestructorObjectInstantiatedInLuaAndGarbageCollected)
 {
+   // An object is instantiated from Lua. After the 'LuaState' in which it lives
+   // is destroyed, the object is expected to have been garbage-collected and
+   // its destructor called.
+
    using namespace Diluculum;
 
-   // First case: an object is instantiated from Lua. After the 'LuaState' in
-   // which it lives is destroyed, the object is expected to have been
-   // garbage-collected and its destructor called.
    DestructorTester::aFlag = false;
 
    {
@@ -311,11 +312,20 @@ BOOST_AUTO_TEST_CASE(TestClassDestructor)
    }
 
    BOOST_CHECK (DestructorTester::aFlag == true);
+}
 
-   // Second case: the object is instantiated in C++ and exported to a
-   // 'LuaState'. In this case, the object's destruction is responsibility of
-   // the programmer on the C++ side. So, the destructor should not be called
-   // after the object is garbage-collected in Lua.
+
+
+// - TestClassDestructorObjectInstantiatedInCpp --------------------------------
+BOOST_AUTO_TEST_CASE(TestClassDestructorObjectInstantiatedInCpp)
+{
+   // The object is instantiated in C++ and exported to a 'LuaState'. In this
+   // case, the object's destruction is responsibility of the programmer on the
+   // C++ side. So, the destructor should not be called after the object is
+   // garbage-collected in Lua.
+
+   using namespace Diluculum;
+
    DestructorTester::aFlag = false;
    LuaValueList params;
    DestructorTester dt (params);
@@ -336,9 +346,18 @@ BOOST_AUTO_TEST_CASE(TestClassDestructor)
    }
 
    BOOST_CHECK (DestructorTester::aFlag == false);
+}
 
-   // Third case: the object is instantiated in Lua, and its destructor is
-   // explicitly called.
+
+
+// - TestClassDestructorObjectInstantiatedInLuaAndDestructorCalled -------------
+BOOST_AUTO_TEST_CASE(TestClassDestructorObjectInstantiatedInLuaAndDestructorCalled)
+{
+   // The object is instantiated in Lua, and its destructor is explicitly
+   // called.
+
+   using namespace Diluculum;
+
    DestructorTester::aFlag = false;
 
    {
@@ -358,6 +377,45 @@ BOOST_AUTO_TEST_CASE(TestClassDestructor)
 
    // Just to be even more paranoid, ensure that 'aFlag' is still true
    BOOST_REQUIRE (DestructorTester::aFlag == true);
+}
+
+
+
+// - TestClassDestructorObjectInstantiatedInCppAndDestructorCalled -------------
+BOOST_AUTO_TEST_CASE(TestClassDestructorObjectInstantiatedInCppAndDestructorCalled)
+{
+   // The object is instantiated in C++, and its destructor is explicitly
+   // called. The destructor should not be called in this case.
+
+   using namespace Diluculum;
+
+   DestructorTester::aFlag = false;
+   LuaValueList params;
+   DestructorTester dt (params);
+
+   {
+      LuaState ls;
+      DILUCULUM_REGISTER_CLASS (ls["DestructorTester"], DestructorTester);
+
+      DILUCULUM_REGISTER_OBJECT (ls["dt"], DestructorTester, dt);
+
+      // Do something to assert that the object is there
+      LuaValueList ret = ls.doString ("return type (dt)");
+      BOOST_REQUIRE (ret.size() == 1);
+      BOOST_REQUIRE (ret[0].asString() == "userdata");
+
+      // Just to be paranoid, ensure that 'aFlag' is still false
+      BOOST_REQUIRE (DestructorTester::aFlag == false);
+
+      // Explicitly call the destructor
+      ls.doString ("dt:delete()");
+
+      // The destructor should not have been called
+      BOOST_CHECK (DestructorTester::aFlag == false);
+   }
+
+   // Keep being paranoid
+   BOOST_CHECK (DestructorTester::aFlag == false);
 }
 
 
