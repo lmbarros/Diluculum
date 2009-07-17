@@ -72,8 +72,10 @@ namespace Diluculum
           */
          explicit LuaState (lua_State* state, bool loadStdLib = false);
 
-         /** Destructs a \c LuaState. This calls \c lua_close()
-          *  on the underlying \c lua_State*.
+         /** Destructs a \c LuaState. If this \c LuaState owns the underlying \c
+          *  lua_State*, \c lua_close() will be called on it. See the
+          *  constructors' documentation for details on the \c lua_State*
+          *  ownership.
           */
          virtual ~LuaState();
 
