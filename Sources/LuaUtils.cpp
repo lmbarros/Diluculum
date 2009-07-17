@@ -24,6 +24,7 @@
 * IN THE SOFTWARE.                                                             *
 \******************************************************************************/
 
+#include <cstring>
 #include <Diluculum/LuaUtils.hpp>
 #include <Diluculum/LuaExceptions.hpp>
 #include <boost/lexical_cast.hpp>

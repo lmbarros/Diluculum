@@ -26,6 +26,7 @@
 
 #define BOOST_TEST_MODULE LuaValue
 
+#include <cstring>
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaExceptions.hpp>
 #include <Diluculum/LuaValue.hpp>

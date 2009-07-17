@@ -24,6 +24,7 @@
 * IN THE SOFTWARE.                                                             *
 \******************************************************************************/
 
+#include <cstring>
 #include <Diluculum/LuaValue.hpp>
 #include <Diluculum/LuaExceptions.hpp>
 

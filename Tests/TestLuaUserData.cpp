@@ -26,6 +26,7 @@
 
 #define BOOST_TEST_MODULE LuaUserData
 
+#include <cstring>
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaUserData.hpp>
 

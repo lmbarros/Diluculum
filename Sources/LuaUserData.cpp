@@ -24,6 +24,7 @@
 * IN THE SOFTWARE.                                                             *
 \******************************************************************************/
 
+#include <cstring>
 #include <Diluculum/LuaUserData.hpp>
 #include <cstring>
 
