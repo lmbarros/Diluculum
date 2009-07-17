@@ -24,6 +24,8 @@
 * IN THE SOFTWARE.                                                             *
 \******************************************************************************/
 
+#define BOOST_TEST_MODULE LuaWrappers
+
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaState.hpp>
 #include <Diluculum/LuaWrappers.hpp>
@@ -32,7 +34,7 @@
 
 
 // - TestFunctionWrapping ------------------------------------------------------
-void TestFunctionWrapping()
+BOOST_AUTO_TEST_CASE(TestFunctionWrapping)
 {
    using namespace Diluculum;
    LuaState ls;
@@ -122,7 +124,7 @@ void TestFunctionWrapping()
 
 
 // - TestClassWrapping ---------------------------------------------------------
-void TestClassWrapping()
+BOOST_AUTO_TEST_CASE(TestClassWrapping)
 {
    using namespace Diluculum;
    LuaState ls;
@@ -185,7 +187,7 @@ void TestClassWrapping()
 
 
 // - TestTwoClasses ------------------------------------------------------------
-void TestTwoClasses()
+BOOST_AUTO_TEST_CASE(TestTwoClasses)
 {
    using namespace Diluculum;
 
@@ -226,7 +228,7 @@ void TestTwoClasses()
 
 
 // - TestClassWrappingInTable --------------------------------------------------
-void TestClassWrappingInTable()
+BOOST_AUTO_TEST_CASE(TestClassWrappingInTable)
 {
    using namespace Diluculum;
    LuaState ls;
@@ -290,7 +292,7 @@ void TestClassWrappingInTable()
 
 
 // - TestClassDestructor -------------------------------------------------------
-void TestClassDestructor()
+BOOST_AUTO_TEST_CASE(TestClassDestructor)
 {
    using namespace Diluculum;
 
@@ -361,7 +363,7 @@ void TestClassDestructor()
 
 
 // - TestDynamicModule ---------------------------------------------------------
-void TestDynamicModule()
+BOOST_AUTO_TEST_CASE(TestDynamicModule)
 {
    using namespace Diluculum;
    LuaState ls;
@@ -381,21 +383,4 @@ void TestDynamicModule()
    BOOST_REQUIRE (ret.size() == 2);
    BOOST_CHECK (ret[0] == true);
    BOOST_CHECK (ret[1] == "Ahey!");
-}
-
-
-using boost::unit_test_framework::test_suite;
-
-// - init_unit_test_suite ------------------------------------------------------
-test_suite* init_unit_test_suite (int, char*[])
-{
-   test_suite* test = BOOST_TEST_SUITE ("'LuaWrappers' tests");
-   test->add (BOOST_TEST_CASE (&TestFunctionWrapping));
-   test->add (BOOST_TEST_CASE (&TestClassWrapping));
-   test->add (BOOST_TEST_CASE (&TestTwoClasses));
-   test->add (BOOST_TEST_CASE (&TestClassWrappingInTable));
-   test->add (BOOST_TEST_CASE (&TestClassDestructor));
-   test->add (BOOST_TEST_CASE (&TestDynamicModule));
-
-   return test;
 }

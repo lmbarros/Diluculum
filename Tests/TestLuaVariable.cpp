@@ -24,6 +24,8 @@
 * IN THE SOFTWARE.                                                             *
 \******************************************************************************/
 
+#define BOOST_TEST_MODULE LuaVariable
+
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaState.hpp>
 #include "WrappedFunctions.hpp"
@@ -82,7 +84,7 @@ int CLuaFunctionTimesTwoThreeFour (lua_State* ls)
 
 
 // - TestLuaVariableSubscriptOperator ------------------------------------------
-void TestLuaVariableSubscriptOperator()
+BOOST_AUTO_TEST_CASE(TestLuaVariableSubscriptOperator)
 {
    using namespace Diluculum;
 
@@ -163,7 +165,7 @@ void TestLuaVariableSubscriptOperator()
 
 
 // - TestLuaVariableAssignmentOperatorValue ------------------------------------
-void TestLuaVariableAssignmentOperatorValue()
+BOOST_AUTO_TEST_CASE(TestLuaVariableAssignmentOperatorValue)
 {
    using namespace Diluculum;
 
@@ -202,7 +204,7 @@ void TestLuaVariableAssignmentOperatorValue()
 
 
 // - TestLuaVariableAssignmentOperatorVariable ---------------------------------
-void TestLuaVariableAssignmentOperatorVariable()
+BOOST_AUTO_TEST_CASE(TestLuaVariableAssignmentOperatorVariable)
 {
    using namespace Diluculum;
 
@@ -248,7 +250,7 @@ void TestLuaVariableAssignmentOperatorVariable()
 
 
 // - TestLuaVariableCopyConstructor --------------------------------------------
-void TestLuaVariableCopyConstructor()
+BOOST_AUTO_TEST_CASE(TestLuaVariableCopyConstructor)
 {
    using namespace Diluculum;
 
@@ -275,7 +277,7 @@ void TestLuaVariableCopyConstructor()
 
 
 // - TestLuaVariableEqualityOperator -------------------------------------------
-void TestLuaVariableEqualityOperator()
+BOOST_AUTO_TEST_CASE(TestLuaVariableEqualityOperator)
 {
    using namespace Diluculum;
 
@@ -394,7 +396,7 @@ void TestLuaVariableEqualityOperator()
 
 
 // - TestLuaVariableExceptions -------------------------------------------------
-void TestLuaVariableExceptions()
+BOOST_AUTO_TEST_CASE(TestLuaVariableExceptions)
 {
    using namespace Diluculum;
 
@@ -429,7 +431,7 @@ void TestLuaVariableExceptions()
 
 
 // - TestLuaVariableFunctionCall -----------------------------------------------
-void TestLuaVariableFunctionCall()
+BOOST_AUTO_TEST_CASE(TestLuaVariableFunctionCall)
 {
    using namespace Diluculum;
 
@@ -550,7 +552,7 @@ void TestLuaVariableFunctionCall()
 
 
 // - TestLuaVariableCFunction --------------------------------------------------
-void TestLuaVariableCFunction()
+BOOST_AUTO_TEST_CASE(TestLuaVariableCFunction)
 {
    using namespace Diluculum;
 
@@ -569,7 +571,7 @@ void TestLuaVariableCFunction()
 
 
 // - TestLuaVariablePushLastTable ----------------------------------------------
-void TestLuaVariablePushLastTable()
+BOOST_AUTO_TEST_CASE(TestLuaVariablePushLastTable)
 {
    using namespace Diluculum;
    LuaState ls;
@@ -609,25 +611,4 @@ void TestLuaVariablePushLastTable()
    lua_gettable (rawState, 1);
    BOOST_REQUIRE (lua_isnumber (rawState, -1));
    BOOST_CHECK (lua_tonumber (rawState, -1) == 171);
-}
-
-
-
-using boost::unit_test_framework::test_suite;
-
-// - init_unit_test_suite ------------------------------------------------------
-test_suite* init_unit_test_suite (int, char*[])
-{
-   test_suite* test = BOOST_TEST_SUITE ("'LuaVariable' tests");
-   test->add (BOOST_TEST_CASE (&TestLuaVariableSubscriptOperator));
-   test->add (BOOST_TEST_CASE (&TestLuaVariableAssignmentOperatorValue));
-   test->add (BOOST_TEST_CASE (&TestLuaVariableAssignmentOperatorVariable));
-   test->add (BOOST_TEST_CASE (&TestLuaVariableCopyConstructor));
-   test->add (BOOST_TEST_CASE (&TestLuaVariableEqualityOperator));
-   test->add (BOOST_TEST_CASE (&TestLuaVariableExceptions));
-   test->add (BOOST_TEST_CASE (&TestLuaVariableFunctionCall));
-   test->add (BOOST_TEST_CASE (&TestLuaVariableCFunction));
-   test->add (BOOST_TEST_CASE (&TestLuaVariablePushLastTable));
-
-   return test;
 }

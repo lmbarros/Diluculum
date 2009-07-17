@@ -24,6 +24,8 @@
 * IN THE SOFTWARE.                                                             *
 \******************************************************************************/
 
+#define BOOST_TEST_MODULE LuaValue
+
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaExceptions.hpp>
 #include <Diluculum/LuaValue.hpp>
@@ -47,7 +49,7 @@ int AnotherCLuaFunctionExample (lua_State* ls)
 
 
 // - TestLuaValueCopyConstructor -----------------------------------------------
-void TestLuaValueCopyConstructor()
+BOOST_AUTO_TEST_CASE(TestLuaValueCopyConstructor)
 {
    using namespace Diluculum;
 
@@ -87,7 +89,7 @@ void TestLuaValueCopyConstructor()
 
 
 // - TestLuaValueAssignmentOperator --------------------------------------------
-void TestLuaValueAssignmentOperator()
+BOOST_AUTO_TEST_CASE(TestLuaValueAssignmentOperator)
 {
    using namespace Diluculum;
 
@@ -129,7 +131,7 @@ void TestLuaValueAssignmentOperator()
 
 
 // - TestLuaValueAndValueLists -------------------------------------------------
-void TestLuaValueAndValueLists()
+BOOST_AUTO_TEST_CASE(TestLuaValueAndValueLists)
 {
    using namespace Diluculum;
 
@@ -150,7 +152,7 @@ void TestLuaValueAndValueLists()
 
 
 // - TestLuaValueType ----------------------------------------------------------
-void TestLuaValueType()
+BOOST_AUTO_TEST_CASE(TestLuaValueType)
 {
    using namespace Diluculum;
 
@@ -189,7 +191,7 @@ void TestLuaValueType()
 
 
 // - TestLuaValueTypeName ------------------------------------------------------
-void TestLuaValueTypeName()
+BOOST_AUTO_TEST_CASE(TestLuaValueTypeName)
 {
    using namespace Diluculum;
 
@@ -228,7 +230,7 @@ void TestLuaValueTypeName()
 
 
 // - TestLuaValueAsSomethingFunctions ------------------------------------------
-void TestLuaValueAsSomethingFunctions()
+BOOST_AUTO_TEST_CASE(TestLuaValueAsSomethingFunctions)
 {
    using namespace Diluculum;
 
@@ -328,7 +330,7 @@ void TestLuaValueAsSomethingFunctions()
 
 
 // - TestLuaValueAsObjectPtr ---------------------------------------------------
-void TestLuaValueAsObjectPtr()
+BOOST_AUTO_TEST_CASE(TestLuaValueAsObjectPtr)
 {
    using namespace Diluculum;
 
@@ -381,7 +383,7 @@ void TestLuaValueAsObjectPtr()
 
 
 // - TestLuaValueRelationalOperators -------------------------------------------
-void TestLuaValueRelationalOperators()
+BOOST_AUTO_TEST_CASE(TestLuaValueRelationalOperators)
 {
    using namespace Diluculum;
 
@@ -617,7 +619,7 @@ void TestLuaValueRelationalOperators()
 
 
 // - TestLuaValueSubscriptOperator ---------------------------------------------
-void TestLuaValueSubscriptOperator()
+BOOST_AUTO_TEST_CASE(TestLuaValueSubscriptOperator)
 {
    using namespace Diluculum;
 
@@ -675,7 +677,7 @@ void TestLuaValueSubscriptOperator()
 
 
 // - TestLuaValueConstSubscriptOperator ----------------------------------------
-void TestLuaValueConstSubscriptOperator()
+BOOST_AUTO_TEST_CASE(TestLuaValueConstSubscriptOperator)
 {
    using namespace Diluculum;
 
@@ -717,26 +719,4 @@ void TestLuaValueConstSubscriptOperator()
 
    LuaValue boolValue(true);
    BOOST_CHECK_THROW (boolValue[false], TypeMismatchError);
-}
-
-
-
-using boost::unit_test_framework::test_suite;
-
-// - init_unit_test_suite ------------------------------------------------------
-test_suite* init_unit_test_suite (int, char*[])
-{
-   test_suite* test = BOOST_TEST_SUITE ("'LuaValue' tests");
-   test->add (BOOST_TEST_CASE (&TestLuaValueCopyConstructor));
-   test->add (BOOST_TEST_CASE (&TestLuaValueAssignmentOperator));
-   test->add (BOOST_TEST_CASE (&TestLuaValueAndValueLists));
-   test->add (BOOST_TEST_CASE (&TestLuaValueType));
-   test->add (BOOST_TEST_CASE (&TestLuaValueTypeName));
-   test->add (BOOST_TEST_CASE (&TestLuaValueAsSomethingFunctions));
-   test->add (BOOST_TEST_CASE (&TestLuaValueAsObjectPtr));
-   test->add (BOOST_TEST_CASE (&TestLuaValueRelationalOperators));
-   test->add (BOOST_TEST_CASE (&TestLuaValueSubscriptOperator));
-   test->add (BOOST_TEST_CASE (&TestLuaValueConstSubscriptOperator));
-
-   return test;
 }

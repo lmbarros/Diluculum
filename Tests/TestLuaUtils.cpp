@@ -24,6 +24,8 @@
 * IN THE SOFTWARE.                                                             *
 \******************************************************************************/
 
+#define BOOST_TEST_MODULE LuaUtils
+
 #include <boost/test/unit_test.hpp>
 #include <cstring>
 #include <Diluculum/LuaExceptions.hpp>
@@ -38,7 +40,7 @@ int CLuaFunctionExample (lua_State* ls)
 
 
 // - TestToLuaValue ------------------------------------------------------------
-void TestToLuaValue()
+BOOST_AUTO_TEST_CASE(TestToLuaValue)
 {
    using namespace Diluculum;
 
@@ -96,7 +98,7 @@ void TestToLuaValue()
 
 
 // - TestPushLuaValue ----------------------------------------------------------
-void TestPushLuaValue()
+BOOST_AUTO_TEST_CASE(TestPushLuaValue)
 {
    using namespace Diluculum;
 
@@ -135,18 +137,4 @@ void TestPushLuaValue()
 
    // Close the Lua state used in this test
    lua_close (ls);
-}
-
-
-
-using boost::unit_test_framework::test_suite;
-
-// - init_unit_test_suite ------------------------------------------------------
-test_suite* init_unit_test_suite (int, char*[])
-{
-   test_suite* test = BOOST_TEST_SUITE ("'LuaUtils' tests");
-   test->add (BOOST_TEST_CASE (&TestToLuaValue));
-   test->add (BOOST_TEST_CASE (&TestPushLuaValue));
-
-   return test;
 }

@@ -22,7 +22,7 @@ envBase = Environment (ENV = os.environ,
 
 # Add some flags manually...
 if envBase["CXX"] == "g++":
-    envBase["CXXFLAGS"] += " -Wall"
+    envBase["CXXFLAGS"] += " -Wall -DBOOST_ALL_DYN_LINK"
 
     buildMode = ARGUMENTS.get ("mode", "no-opt")
 
@@ -62,15 +62,15 @@ Just type 'scons' to build everything. To install, you can use
 #  This is one is used to build the Diluculum library. Currently, it is no
 #  different than the base building environment.
 # ------------------------------------------------------------------------------
-envLib = envBase.Copy()
+envLib = envBase.Clone()
 
 
 # ------------------------------------------------------------------------------
 #  The tests building environment
 #  This is one is used to build the Diluculum unit tests.
 # ------------------------------------------------------------------------------
-envTests = envBase.Copy (LIBS = [ "Diluculum", "lua", "dl",
-                                  "boost_unit_test_framework-gcc-mt" ])
+envTests = envBase.Clone (LIBS = [ "Diluculum", "lua", "dl",
+                                   "boost_unit_test_framework-gcc41-mt" ])
 
 
 
@@ -78,7 +78,7 @@ envTests = envBase.Copy (LIBS = [ "Diluculum", "lua", "dl",
 #  The module building environment
 #  This is one is used to build the Lua module created in one of the tests.
 # ------------------------------------------------------------------------------
-envModule = envBase.Copy (LIBS = [ "Diluculum", "lua", "dl" ], SHLIBPREFIX="")
+envModule = envBase.Clone (LIBS = [ "Diluculum", "lua", "dl" ], SHLIBPREFIX="")
 
 
 

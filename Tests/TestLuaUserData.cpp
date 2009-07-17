@@ -24,6 +24,8 @@
 * IN THE SOFTWARE.                                                             *
 \******************************************************************************/
 
+#define BOOST_TEST_MODULE LuaUserData
+
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaUserData.hpp>
 
@@ -40,7 +42,7 @@ memcpy (NAME.getData(), NAME ## _Bytes, sizeof(NAME ## _Bytes));
 
 
 // - TestUserDataConstruction --------------------------------------------------
-void TestUserDataConstruction()
+BOOST_AUTO_TEST_CASE(TestUserDataConstruction)
 {
    using namespace Diluculum;
 
@@ -69,7 +71,7 @@ void TestUserDataConstruction()
 
 
 // - TestUserDataGetData -------------------------------------------------------
-void TestUserDataGetData()
+BOOST_AUTO_TEST_CASE(TestUserDataGetData)
 {
    using namespace Diluculum;
 
@@ -96,7 +98,7 @@ void TestUserDataGetData()
 
 
 // - TestRelationalOperators ---------------------------------------------------
-void TestRelationalOperators()
+BOOST_AUTO_TEST_CASE(TestRelationalOperators)
 {
    using namespace Diluculum;
 
@@ -144,7 +146,7 @@ void TestRelationalOperators()
 
 
 // - TestUserDataCopies --------------------------------------------------------
-void TestUserDataCopies()
+BOOST_AUTO_TEST_CASE(TestUserDataCopies)
 {
    using namespace Diluculum;
 
@@ -173,18 +175,4 @@ void TestUserDataCopies()
 
    BOOST_ASSERT (memcmp (ud4.getData(), data4, sizeof(data4)) == 0);
    BOOST_ASSERT (ud5 == ud4);
-}
-
-
-using boost::unit_test_framework::test_suite;
-
-// - init_unit_test_suite ------------------------------------------------------
-test_suite* init_unit_test_suite (int, char*[])
-{
-   test_suite* test = BOOST_TEST_SUITE ("'LuaUserData' tests");
-   test->add (BOOST_TEST_CASE (&TestUserDataConstruction));
-   test->add (BOOST_TEST_CASE (&TestUserDataGetData));
-   test->add (BOOST_TEST_CASE (&TestRelationalOperators));
-   test->add (BOOST_TEST_CASE (&TestUserDataCopies));
-   return test;
 }

@@ -24,12 +24,14 @@
 * IN THE SOFTWARE.                                                             *
 \******************************************************************************/
 
+#define BOOST_TEST_MODULE LuaState
+
 #include <boost/test/unit_test.hpp>
 #include <Diluculum/LuaState.hpp>
 
 
 // - TestLuaStateNotOwner ------------------------------------------------------
-void TestLuaStateNotOwner()
+BOOST_AUTO_TEST_CASE(TestLuaStateNotOwner)
 {
    using namespace Diluculum;
 
@@ -62,7 +64,7 @@ void TestLuaStateNotOwner()
 
 
 // - TestLuaStateDoFileMultRet -------------------------------------------------
-void TestLuaStateDoFileMultRet()
+BOOST_AUTO_TEST_CASE(TestLuaStateDoFileMultRet)
 {
    using namespace Diluculum;
 
@@ -85,7 +87,7 @@ void TestLuaStateDoFileMultRet()
 
 
 // - TestLuaStateDoFile --------------------------------------------------------
-void TestLuaStateDoFile()
+BOOST_AUTO_TEST_CASE(TestLuaStateDoFile)
 {
    using namespace Diluculum;
 
@@ -101,7 +103,7 @@ void TestLuaStateDoFile()
 
 
 // - TestLuaStateDoStringMultRet -----------------------------------------------
-void TestLuaStateDoStringMultRet()
+BOOST_AUTO_TEST_CASE(TestLuaStateDoStringMultRet)
 {
    using namespace Diluculum;
 
@@ -150,7 +152,7 @@ void TestLuaStateDoStringMultRet()
 
 
 // - TestLuaStateDoString ------------------------------------------------------
-void TestLuaStateDoString()
+BOOST_AUTO_TEST_CASE(TestLuaStateDoString)
 {
    using namespace Diluculum;
 
@@ -171,7 +173,7 @@ void TestLuaStateDoString()
 
 
 // - TestLuaStateDoExceptions --------------------------------------------------
-void TestLuaStateDoExceptions()
+BOOST_AUTO_TEST_CASE(TestLuaStateDoExceptions)
 {
    using namespace Diluculum;
 
@@ -195,7 +197,7 @@ void TestLuaStateDoExceptions()
 
 
 // - TestLuaStateSubscriptOperator ---------------------------------------------
-void TestLuaStateSubscriptOperator()
+BOOST_AUTO_TEST_CASE(TestLuaStateSubscriptOperator)
 {
    // Some related, but more stressing tests are done in 'TestLuaVariable.cpp'.
 
@@ -235,23 +237,4 @@ void TestLuaStateSubscriptOperator()
    //... but also certify that we can set such variable's value.
    ls["nope"] = "yup";
    BOOST_CHECK (ls["nope"] == "yup");
-}
-
-
-
-using boost::unit_test_framework::test_suite;
-
-// - init_unit_test_suite ------------------------------------------------------
-test_suite* init_unit_test_suite (int, char*[])
-{
-   test_suite* test = BOOST_TEST_SUITE ("'LuaState' tests");
-   test->add (BOOST_TEST_CASE (&TestLuaStateNotOwner));
-   test->add (BOOST_TEST_CASE (&TestLuaStateDoFileMultRet));
-   test->add (BOOST_TEST_CASE (&TestLuaStateDoFile));
-   test->add (BOOST_TEST_CASE (&TestLuaStateDoStringMultRet));
-   test->add (BOOST_TEST_CASE (&TestLuaStateDoString));
-   test->add (BOOST_TEST_CASE (&TestLuaStateDoExceptions));
-   test->add (BOOST_TEST_CASE (&TestLuaStateSubscriptOperator));
-
-   return test;
 }
