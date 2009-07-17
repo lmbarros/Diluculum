@@ -50,7 +50,7 @@ namespace Diluculum
           *  This memory is initially filled with garbage. And this memory is
           *  automatically freed when the \c LuaUserData is destroyed.
           */
-         LuaUserData (size_t size);
+         explicit LuaUserData (size_t size);
 
          /** The copy constructor. The newly constructed \c LuaUserData will
           *  have its own block of memory, with the same contents as the
