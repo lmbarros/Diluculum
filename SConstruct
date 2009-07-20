@@ -87,6 +87,7 @@ envModule = envBase.Clone (LIBS = [ "Diluculum", "lua", "dl" ], SHLIBPREFIX="")
 #  The things that are actually built.
 # ------------------------------------------------------------------------------
 theStaticLib = envLib.Library ("lib/Diluculum", [ "Sources/LuaExceptions.cpp",
+                                                  "Sources/LuaFunction.cpp",
                                                   "Sources/LuaState.cpp",
                                                   "Sources/LuaUserData.cpp",
                                                   "Sources/LuaUtils.cpp",
@@ -102,6 +103,7 @@ envTests.Program ("Tests/TestLuaUtils", "Tests/TestLuaUtils.cpp")
 envTests.Program ("Tests/TestLuaState", "Tests/TestLuaState.cpp")
 envTests.Program ("Tests/TestLuaUserData", "Tests/TestLuaUserData.cpp")
 envTests.Program ("Tests/TestLuaWrappers", "Tests/TestLuaWrappers.cpp")
+envTests.Program ("Tests/TestLuaFunction", "Tests/TestLuaFunction.cpp")
 
 
 # --------------------------------------------------------------------

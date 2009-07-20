@@ -85,6 +85,12 @@ BOOST_AUTO_TEST_CASE(TestLuaValueCopyConstructor)
    LuaValue anUserDataValue (LuaUserData (1024));
    LuaValue anotherUserDataValue (anUserDataValue);
    BOOST_CHECK (anUserDataValue == anotherUserDataValue);
+
+// TODO: new test for pure Lua function
+//    char fakeBytecode[] = "garbage";
+//    LuaValue aLuaFunctionValue (LuaFunction (fakeBytecode, strlen(fakeBytecode)));
+//    LuaValue anotherLuaFunctionValue (aLuaFunctionValue);
+//    BOOST_CHECK (aLuaFunctionValue == anotherLuaFunctionValue);
 }
 
 

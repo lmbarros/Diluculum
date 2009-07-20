@@ -33,6 +33,7 @@
 #include <string>
 #include <Diluculum/CppObject.hpp>
 #include <Diluculum/LuaUserData.hpp>
+#include <Diluculum/LuaFunction.hpp>
 #include <Diluculum/Types.hpp>
 
 
@@ -94,6 +95,9 @@ namespace Diluculum
 
          /// Constructs a \c LuaValue with function type and \c f value.
          LuaValue (lua_CFunction f);
+
+         /// Constructs a \c LuaValue with function type and \c f value.
+         LuaValue (const LuaFunction& f);
 
          /// Constructs a \c LuaValue with "user data" type and \c ud value.
          LuaValue (const LuaUserData& ud);
@@ -175,11 +179,21 @@ namespace Diluculum
           */
          LuaValueMap asTable() const;
 
-         /** Return the value as a function.
-          *  @throw TypeMismatchError If the value is not a function (this is a
-          *         strict check; no type conversion is performed).
+         /** Return the value as a \c const Lua function.
+          *  @throw TypeMismatchError If the value is not a Lua function.
+          *         (this is a strict check; no type conversion is performed).
           */
-         lua_CFunction asFunction() const;
+         const LuaFunction& asFunction() const;
+
+//   TODO: implement the mutable version
+//          /** Return the value as a Lua function.
+//           *  @note Since this is returned as a non-\c const reference, the
+//           *        \c LuaFunction::getData() method can be used to get
+//           *        read/write access to the function bytecode.
+//           *  @throw TypeMismatchError If the value is not a Lua function
+//           *         (this is a strict check; no type conversion is performed).
+//           */
+//          LuaFunction& asFunction();
 
          /** Return the value as a \c const (full) user data.
           *  @throw TypeMismatchError If the value is not a (full) user data
@@ -292,7 +306,7 @@ namespace Diluculum
                char typeString[sizeof(std::string)];
                bool typeBool;
                char typeLuaValueMap[sizeof(LuaValueMap)];
-               lua_CFunction typeCFunction;
+               char typeFunction[sizeof(LuaFunction)];
                char typeUserData[sizeof(LuaUserData)];
          };
 

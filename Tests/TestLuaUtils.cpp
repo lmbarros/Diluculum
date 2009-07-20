@@ -29,6 +29,7 @@
 #include <boost/test/unit_test.hpp>
 #include <cstring>
 #include <Diluculum/LuaExceptions.hpp>
+#include <Diluculum/LuaState.hpp>
 #include <Diluculum/LuaUserData.hpp>
 #include <Diluculum/LuaUtils.hpp>
 
@@ -137,4 +138,18 @@ BOOST_AUTO_TEST_CASE(TestPushLuaValue)
 
    // Close the Lua state used in this test
    lua_close (ls);
+}
+
+
+// - TestLuaFunction -----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestLuaFunction)
+{
+   // 'LuaFunction's are a bit different from the other things that a 'LuaValue'
+   // can hold. In particular, one normally cannot construct a 'LuaFunction'
+   // from scratch. Instead, one is constructed through a 'LuaVariable'. Hence,
+   // 'LuaFunction' deserves an exclusive test case.
+
+   using namespace Diluculum;
+
+   LuaState ls;
 }

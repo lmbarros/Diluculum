@@ -140,7 +140,14 @@ namespace Diluculum
    LuaValue::LuaValue (lua_CFunction f)
       : dataType_(LUA_TFUNCTION)
    {
-      memcpy (data_, &f, sizeof(lua_CFunction));
+      new(data_) LuaFunction(f);
+   }
+
+
+   LuaValue::LuaValue (const LuaFunction& f)
+      : dataType_(LUA_TFUNCTION)
+   {
+      new(data_) LuaFunction(f);
    }
 
 
@@ -327,10 +334,12 @@ namespace Diluculum
 
 
    // - LuaValue::asFunction ---------------------------------------------------
-   lua_CFunction LuaValue::asFunction() const
+   const LuaFunction& LuaValue::asFunction() const
    {
       if (dataType_ == LUA_TFUNCTION)
-         return *reinterpret_cast<const lua_CFunction*>(&data_);
+      {
+         return *reinterpret_cast<const LuaFunction*>(&data_);
+      }
       else
          throw TypeMismatchError ("function", typeName());
    }

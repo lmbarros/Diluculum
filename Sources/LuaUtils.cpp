@@ -154,8 +154,14 @@ namespace Diluculum
          }
 
          case LUA_TFUNCTION:
-            lua_pushcfunction (state, value.asFunction());
+         {
+            const LuaFunction& f = value.asFunction();
+            if (f.isCFunction())
+               lua_pushcfunction (state, f.getCFunction());
+            else
+               assert(false && "TODO: Implement for pure Lua functions!");
             break;
+         }
 
          default:
          {

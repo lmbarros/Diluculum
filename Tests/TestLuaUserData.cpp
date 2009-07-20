@@ -1,5 +1,5 @@
 /******************************************************************************\
-* TestLuaUSerData.cpp                                                          *
+* TestLuaUserData.cpp                                                          *
 * Unit tests for things declared in 'LuaUserData.hpp'.                         *
 *                                                                              *
 *                                                                              *
