@@ -131,7 +131,7 @@ namespace Diluculum
       func.setReaderFlag (false);
       int status = lua_load (state_, LuaFunctionReader, &func,
                              chunkName.c_str());
-      throwOnLuaError(status);
+      throwOnLuaError (status);
 
       // Push the parameters
       typedef LuaValueList::const_iterator iter_t;

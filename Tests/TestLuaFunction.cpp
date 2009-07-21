@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE(TestCallAnonymousLuaFunctionNested)
 
    BOOST_REQUIRE_EQUAL (ret.size(), 1u);
    BOOST_REQUIRE_EQUAL (ret[0].type(), LUA_TSTRING);
-   BOOST_CHECK_EQUAL (ret[0].asString(), "blah and <emph>blah</emph>.");
+   BOOST_CHECK_EQUAL (ret[0].asString(), "blah and <emph>blah</emph>");
 }
 
 

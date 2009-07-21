@@ -52,6 +52,26 @@ namespace
 
       return 0;
    }
+
+
+
+   /** The \c lua_Reader used to get Lua bytecode from a \c LuaFunction. This is
+    *  used by \c LuaState::call();
+    *  @todo Duplicated from LuaState.cpp.
+    */
+   const char* LuaFunctionReader(lua_State* luaState, void* func,
+                                 size_t* size)
+   {
+      Diluculum::LuaFunction* f =
+         reinterpret_cast<Diluculum::LuaFunction*>(func);
+
+      if (f->getReaderFlag())
+         return 0;
+
+      *size = f->getSize();
+      return reinterpret_cast<const char*>(f->getData());
+   }
+
 } // (anonymous) namespace
 
 
@@ -192,7 +212,12 @@ namespace Diluculum
             }
             else
             {
-               assert(false && "TODO: Implement for pure Lua functions!");
+               LuaFunction* pf = const_cast<LuaFunction*>(&f); // yikes!
+               pf->setReaderFlag (false);
+               int status = lua_load (state, LuaFunctionReader, pf,
+                                      "Diluculum Lua chunk");
+               //throwOnLuaError (status);
+               // <--- TODO handle errors!
             }
             break;
          }
