@@ -26,8 +26,31 @@
 
 #include <cassert>
 #include <typeinfo>
+#include <boost/lexical_cast.hpp>
 #include <Diluculum/LuaState.hpp>
 #include <Diluculum/LuaUtils.hpp>
+
+
+namespace
+{
+   /** The \c lua_Reader used to get Lua bytecode from a \c LuaFunction. This is
+    *  used by \c LuaState::call();
+    */
+   const char* LuaFunctionReader(lua_State* luaState, void* func,
+                                 size_t* size)
+   {
+      Diluculum::LuaFunction* f =
+         reinterpret_cast<Diluculum::LuaFunction*>(func);
+
+      if (f->getReaderFlag())
+         return 0;
+
+      *size = f->getSize();
+      return reinterpret_cast<const char*>(f->getData());
+   }
+
+} // (anonymous) namespace
+
 
 
 namespace Diluculum
@@ -95,6 +118,71 @@ namespace Diluculum
       return results;
    }
 
+
+
+   // - LuaState::call ---------------------------------------------------------
+   LuaValueList LuaState::call (LuaFunction& func,
+                                const LuaValueList& params,
+                                const std::string& chunkName)
+   {
+      int topBefore = lua_gettop (state_);
+
+      // Load the bytecode from 'func' and push them into the stack
+      func.setReaderFlag (false);
+      int status = lua_load (state_, LuaFunctionReader, &func,
+                             chunkName.c_str());
+      throwOnLuaError(status);
+
+      // Push the parameters
+      typedef LuaValueList::const_iterator iter_t;
+      for (iter_t p = params.begin(); p != params.end(); ++p)
+         PushLuaValue (state_, *p);
+
+      status = lua_pcall (state_, params.size(), LUA_MULTRET, 0);
+
+      if (status != 0)
+      {
+         std::string errMessage = lua_tostring (state_, -1);
+         lua_pop (state_, 1);
+
+         switch (status)
+         {
+            case LUA_ERRRUN:
+               throw LuaRunTimeError(
+                  ("'LUA_ERRRUN' returned while calling function from Lua. "
+                   "Additional error message: '" + errMessage + "'.").c_str());
+
+            case LUA_ERRMEM:
+               throw LuaRunTimeError(
+                  ("'LUA_ERRMEM' returned while calling function from Lua. "
+                   "Additional error message: '" + errMessage + "'.").c_str());
+
+            case LUA_ERRERR:
+               throw LuaRunTimeError(
+                  ("'LUA_ERR' returned while calling function from Lua. "
+                   "Additional error message: '" + errMessage + "'.").c_str());
+
+            default:
+               throw LuaRunTimeError(
+                  ("Unknown error code ("
+                   + boost::lexical_cast<std::string>(status)
+                   + ") returned while calling function from Lua. "
+                   + "Additional error message: '" + errMessage
+                   + "'.").c_str());
+         }
+      }
+
+      int numResults = lua_gettop (state_) - topBefore;
+
+      LuaValueList results;
+
+      for (int i = numResults; i > 0; --i)
+         results.push_back (ToLuaValue (state_, -i));
+
+      lua_pop (state_, numResults);
+
+      return results;
+   }
 
 
    // - LuaState::operator[] ---------------------------------------------------

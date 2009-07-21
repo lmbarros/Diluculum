@@ -28,11 +28,36 @@
 #include <Diluculum/LuaUtils.hpp>
 #include <Diluculum/LuaExceptions.hpp>
 #include <boost/lexical_cast.hpp>
+#include <iostream>
+
+namespace
+{
+   /** The \c lua_Writer used in the calls to \c lua_dump() when converting a
+    * function implemented in Lua to a \c LuaFunction.
+    */
+   int LuaFunctionWriter(lua_State* luaState, const void* data, size_t size,
+                         void* func)
+   {
+      Diluculum::LuaFunction* f =
+         reinterpret_cast<Diluculum::LuaFunction*>(func);
+
+      size_t newSize = f->getSize() + size;
+
+      boost::scoped_array<char> buff (new char[newSize]);
+
+      memcpy (buff.get(), f->getData(), f->getSize());
+      memcpy (buff.get() + f->getSize(), data, size);
+
+      f->setData (buff.get(), newSize);
+
+      return 0;
+   }
+} // (anonymous) namespace
+
 
 
 namespace Diluculum
 {
-
    // - ToLuaValue -------------------------------------------------------------
    LuaValue ToLuaValue (lua_State* state, int index)
    {
@@ -84,11 +109,16 @@ namespace Diluculum
          case LUA_TFUNCTION:
          {
             if (lua_iscfunction (state, index))
+            {
                return lua_tocfunction (state, index);
+            }
             else
             {
-               throw LuaTypeError(
-                  "Lua functions not supported by 'ToLuaValue()'.");
+               LuaFunction func("", 0);
+               lua_pushvalue (state, index);
+               lua_dump(state, LuaFunctionWriter, &func);
+               lua_pop(state, 1);
+               return func;
             }
          }
 
@@ -157,9 +187,13 @@ namespace Diluculum
          {
             const LuaFunction& f = value.asFunction();
             if (f.isCFunction())
+            {
                lua_pushcfunction (state, f.getCFunction());
+            }
             else
+            {
                assert(false && "TODO: Implement for pure Lua functions!");
+            }
             break;
          }
 

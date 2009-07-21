@@ -30,12 +30,12 @@
 
 namespace Diluculum
 {
-//    // - LuaFunction::LuaFunction -----------------------------------------------
-//    LuaFunction::LuaFunction (void* data, size_t size)
-//       : size_(size), data_ (new char[size_])
-//    {
-// //       memcpy(data_.get(), data, size)
-//    }
+   // - LuaFunction::LuaFunction -----------------------------------------------
+   LuaFunction::LuaFunction (const void* data, size_t size)
+      : size_(size), data_ (new char[size_])
+   {
+      memcpy(data_.get(), data, size);
+   }
 
    LuaFunction::LuaFunction (lua_CFunction func)
       : functionType_(LUA_C_FUNCTION), size_(sizeof(lua_CFunction)),
@@ -61,6 +61,16 @@ namespace Diluculum
              && "Called LuaFunction::getCFunction() for a non-C function.");
 
       return *reinterpret_cast<lua_CFunction*>(data_.get());
+   }
+
+
+
+   // - LuaFunction::setData ---------------------------------------------------
+   void LuaFunction::setData (void* data, size_t size)
+   {
+      size_ = size;
+      data_.reset (new char[size]);
+      memcpy(data_.get(), data, size);
    }
 
 

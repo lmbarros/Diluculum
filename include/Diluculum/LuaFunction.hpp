@@ -50,10 +50,10 @@ namespace Diluculum
    {
       public:
 
-//          /** @todo Doc-me!
-//           *
-//           */
-//          LuaFunction (void* data, size_t size);
+         /** @todo Doc-me!
+          *
+          */
+         LuaFunction (const void* data, size_t size);
 
          /** @todo Doc-me!
           *
@@ -93,13 +93,22 @@ namespace Diluculum
           */
          size_t getSize() const { return size_; }
 
-         /// Returns a pointer to the data stored in this \c LuaFunction.
-         void* getData() { return data_.get(); }
+//          /// Returns a pointer to the data stored in this \c LuaFunction.
+//          void* getData() { return data_.get(); }
 
          /** Returns a \c const pointer to the data stored in this
           *  \c LuaFunction.
           */
          const void* getData() const { return data_.get(); }
+
+         /// @todo Doc-me!
+         void setData(void* data, size_t size);
+
+         /// Gets the "reader flag".
+         bool getReaderFlag() const { return readerFlag_; }
+
+         /// Sets the "reader flag" to a given value.
+         void setReaderFlag(bool f) { readerFlag_ = f; }
 
          /** The "greater than" operator for \c LuaFunction.
           *  @note Given two <tt>LuaFunction</tt>s, the decision on which one is
@@ -153,6 +162,11 @@ namespace Diluculum
 
          /// A (smart) pointer to the data owned by this \c LuaFunction.
          boost::scoped_array<char> data_;
+
+         /** A flag used when reading the bytecode data, in calls to \c
+          *  lua_load() and its \c lua_Reader.
+          */
+         bool readerFlag_;
    };
 
 } // namespace Diluculum

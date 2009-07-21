@@ -28,15 +28,100 @@
 
 #include <cstring>
 #include <boost/test/unit_test.hpp>
+#include <Diluculum/LuaState.hpp>
 #include <Diluculum/LuaFunction.hpp>
 
 
-// - TestDummy -----------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestDummy)
+// - TestPureLuaFunctionCallViaVariableArity0 ----------------------------------
+BOOST_AUTO_TEST_CASE(TestPureLuaFunctionCallViaVariableArity0)
 {
    using namespace Diluculum;
+
+   LuaState ls;
+   ls.doString("function func() return 171 end");
+   LuaVariable luaFunc = ls["func"];
+   LuaValueList ret = luaFunc();
+   BOOST_REQUIRE_EQUAL (ret.size(), 1u);
+   BOOST_CHECK_EQUAL (ret[0].asNumber(), 171);
 }
 
+
+
+// - TestPureLuaFunctionCallViaVariableArity1 ----------------------------------
+BOOST_AUTO_TEST_CASE(TestPureLuaFunctionCallViaVariableArity1)
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+   ls.doString("function func(p) return p*2 end");
+   LuaVariable luaFunc = ls["func"];
+   LuaValueList ret = luaFunc(222);
+   BOOST_REQUIRE_EQUAL (ret.size(), 1u);
+   BOOST_CHECK_EQUAL (ret[0].asNumber(), 444);
+}
+
+
+
+// - TestCallAnonymousLuaFunction ----------------------------------------------
+BOOST_AUTO_TEST_CASE(TestCallAnonymousLuaFunction)
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+   LuaValueList doStringRet =
+      ls.doString("return function(p1, p2) return p1 + p2, p1 * p2 end");
+   BOOST_REQUIRE_EQUAL (doStringRet.size(), 1u);
+   BOOST_REQUIRE_EQUAL (doStringRet[0].type(), LUA_TFUNCTION);
+
+   LuaFunction func = doStringRet[0].asFunction();
+
+   LuaValueList params;
+   params.push_back(3);
+   params.push_back(-4);
+
+   LuaValueList ret = ls.call (func, params);
+
+   BOOST_REQUIRE_EQUAL (ret.size(), 2u);
+   BOOST_REQUIRE_EQUAL (ret[0].type(), LUA_TNUMBER);
+   BOOST_REQUIRE_EQUAL (ret[1].type(), LUA_TNUMBER);
+   BOOST_CHECK_EQUAL (ret[0].asNumber(), -1);
+   BOOST_CHECK_EQUAL (ret[1].asNumber(), -12);
+}
+
+
+
+// - TestCallAnonymousLuaFunctionNested ----------------------------------------
+BOOST_AUTO_TEST_CASE(TestCallAnonymousLuaFunctionNested)
+{
+   using namespace Diluculum;
+
+   LuaState ls;
+   LuaValueList doStringRet =
+      ls.doString(
+         "return function(p) return '<emph>'..tostring(p)..'</emph>' end");
+   BOOST_REQUIRE_EQUAL (doStringRet.size(), 1u);
+   BOOST_REQUIRE_EQUAL (doStringRet[0].type(), LUA_TFUNCTION);
+
+   LuaValue emphFunc = doStringRet[0];
+
+   doStringRet =
+      ls.doString("return function(t, f) return t..' and '..f(t) end");
+
+   BOOST_REQUIRE_EQUAL (doStringRet.size(), 1u);
+   BOOST_REQUIRE_EQUAL (doStringRet[0].type(), LUA_TFUNCTION);
+
+   LuaFunction f = doStringRet[0].asFunction();
+
+   LuaValueList params;
+   params.push_back("blah");
+   params.push_back(emphFunc);
+
+   LuaValueList ret = ls.call (f, params);
+
+   BOOST_REQUIRE_EQUAL (ret.size(), 1u);
+   BOOST_REQUIRE_EQUAL (ret[0].type(), LUA_TSTRING);
+   BOOST_CHECK_EQUAL (ret[0].asString(), "blah and <emph>blah</emph>.");
+}
 
 
 // // - TestUserDataConstruction --------------------------------------------------

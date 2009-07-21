@@ -107,6 +107,15 @@ namespace Diluculum
          LuaValueList doString (const std::string& what)
          { return doStringOrFile (true, what); }
 
+         /** @todo Doc-me!
+          *  @throw ....
+          *  @todo Implementation has code copied and pasted from
+          *        \c LuaVariable::operator(). Move this to, maybe, LuaUtils.
+          */
+         LuaValueList call (LuaFunction& func,
+                            const LuaValueList& params,
+                            const std::string& chunkName = "Diluculum chunk");
+
          /** Returns a \c LuaVariable representing the global variable named
           *  \c variable. Since the returned value also has a subscript
           *  operator, this is a handy way to access variables stored in tables.

@@ -86,11 +86,10 @@ BOOST_AUTO_TEST_CASE(TestLuaValueCopyConstructor)
    LuaValue anotherUserDataValue (anUserDataValue);
    BOOST_CHECK (anUserDataValue == anotherUserDataValue);
 
-// TODO: new test for pure Lua function
-//    char fakeBytecode[] = "garbage";
-//    LuaValue aLuaFunctionValue (LuaFunction (fakeBytecode, strlen(fakeBytecode)));
-//    LuaValue anotherLuaFunctionValue (aLuaFunctionValue);
-//    BOOST_CHECK (aLuaFunctionValue == anotherLuaFunctionValue);
+   char fbc[] = "fake bytecode";
+   LuaValue aLuaFunctionValue (LuaFunction (fbc, strlen(fbc)));
+   LuaValue anotherLuaFunctionValue (aLuaFunctionValue);
+   BOOST_CHECK (aLuaFunctionValue == anotherLuaFunctionValue);
 }
 
 
@@ -188,8 +187,12 @@ BOOST_AUTO_TEST_CASE(TestLuaValueType)
    LuaValue aTableValue (aLuaValueMap);
    BOOST_CHECK (aTableValue.type() == LUA_TTABLE);
 
-   LuaValue aFunctionValue (CLuaFunctionExample);
-   BOOST_CHECK (aFunctionValue.type() == LUA_TFUNCTION);
+   LuaValue aCFunctionValue (CLuaFunctionExample);
+   BOOST_CHECK (aCFunctionValue.type() == LUA_TFUNCTION);
+
+   char fbc[] = "fake bytecode";
+   LuaValue aLuaFunctionValue (LuaFunction (fbc, strlen(fbc)));
+   BOOST_CHECK (aCFunctionValue.type() == LUA_TFUNCTION);
 
    LuaValue anUserDataValue (LuaUserData (1024));
    BOOST_CHECK (anUserDataValue.type() == LUA_TUSERDATA);
@@ -227,8 +230,12 @@ BOOST_AUTO_TEST_CASE(TestLuaValueTypeName)
    LuaValue aTableValue (aLuaValueMap);
    BOOST_CHECK (aTableValue.typeName() == "table");
 
-   LuaValue aFunctionValue (CLuaFunctionExample);
-   BOOST_CHECK (aFunctionValue.typeName() == "function");
+   LuaValue aCFunctionValue (CLuaFunctionExample);
+   BOOST_CHECK (aCFunctionValue.typeName() == "function");
+
+   char fbc[] = "fake bytecode";
+   LuaValue aLuaFunctionValue (LuaFunction (fbc, strlen(fbc)));
+   BOOST_CHECK (aCFunctionValue.typeName() == "function");
 
    LuaValue anUserDataValue (LuaUserData (1024));
    BOOST_CHECK (anUserDataValue.typeName() == "userdata");
@@ -251,7 +258,7 @@ BOOST_AUTO_TEST_CASE(TestLuaValueAsSomethingFunctions)
    LuaValue aStringValueBar ("Bar");
    LuaValue aBooleanValue (true);
    LuaValue anotherBooleanValue (false);
-   LuaValue aFunctionValue (CLuaFunctionExample);
+   LuaValue aCFunctionValue (CLuaFunctionExample);
 
    LuaValueMap lvm;
    lvm["Foo"] = false;
@@ -267,6 +274,9 @@ BOOST_AUTO_TEST_CASE(TestLuaValueAsSomethingFunctions)
    memcpy (ud.getData(), &ints, sizeof(ints));
    LuaValue anUserDataValue (ud);
 
+   char fbc[] = "fake bytecode";
+   LuaValue aLuaFunctionValue (LuaFunction (fbc, strlen(fbc)));
+
    // Try to get the proper values.
    BOOST_CHECK (aNumberValue1.asNumber() == 1.1);
    BOOST_CHECK (aNumberValue2.asNumber() == -2.0);
@@ -276,7 +286,7 @@ BOOST_AUTO_TEST_CASE(TestLuaValueAsSomethingFunctions)
    BOOST_CHECK (aStringValueBar.asString() == "Bar");
    BOOST_CHECK (aBooleanValue.asBoolean() == true);
    BOOST_CHECK (anotherBooleanValue.asBoolean() == false);
-   BOOST_CHECK (aFunctionValue.asFunction() == CLuaFunctionExample);
+   BOOST_CHECK (aCFunctionValue.asFunction() == CLuaFunctionExample);
 
    BOOST_CHECK (tableValue.asTable()["Foo"].asBoolean() == false);
    BOOST_CHECK (tableValue.asTable()[2.3].asNumber() == 4.3);
@@ -285,6 +295,8 @@ BOOST_AUTO_TEST_CASE(TestLuaValueAsSomethingFunctions)
    BOOST_CHECK (tableValue.asTable()[true].asString() == "Ahhhh!");
    BOOST_CHECK (memcmp (anUserDataValue.asUserData().getData(), ints,
                         sizeof(ints)) == 0);
+   BOOST_CHECK (memcmp (aLuaFunctionValue.asFunction().getData(), fbc,
+                        strlen(fbc)) == 0);
 
    // Ensure that we get the proper exception when doing the Wrong Thing
    BOOST_CHECK_THROW (aNilValue.asBoolean(), TypeMismatchError);
@@ -319,11 +331,17 @@ BOOST_AUTO_TEST_CASE(TestLuaValueAsSomethingFunctions)
    BOOST_CHECK_THROW (aBooleanValue.asFunction(), TypeMismatchError);
    BOOST_CHECK_THROW (aBooleanValue.asUserData(), TypeMismatchError);
 
-   BOOST_CHECK_THROW (aFunctionValue.asNumber(), TypeMismatchError);
-   BOOST_CHECK_THROW (aFunctionValue.asString(), TypeMismatchError);
-   BOOST_CHECK_THROW (aFunctionValue.asTable(), TypeMismatchError);
-   BOOST_CHECK_THROW (aFunctionValue.asBoolean(), TypeMismatchError);
-   BOOST_CHECK_THROW (aFunctionValue.asUserData(), TypeMismatchError);
+   BOOST_CHECK_THROW (aCFunctionValue.asNumber(), TypeMismatchError);
+   BOOST_CHECK_THROW (aCFunctionValue.asString(), TypeMismatchError);
+   BOOST_CHECK_THROW (aCFunctionValue.asTable(), TypeMismatchError);
+   BOOST_CHECK_THROW (aCFunctionValue.asBoolean(), TypeMismatchError);
+   BOOST_CHECK_THROW (aCFunctionValue.asUserData(), TypeMismatchError);
+
+   BOOST_CHECK_THROW (aLuaFunctionValue.asNumber(), TypeMismatchError);
+   BOOST_CHECK_THROW (aLuaFunctionValue.asString(), TypeMismatchError);
+   BOOST_CHECK_THROW (aLuaFunctionValue.asTable(), TypeMismatchError);
+   BOOST_CHECK_THROW (aLuaFunctionValue.asBoolean(), TypeMismatchError);
+   BOOST_CHECK_THROW (aLuaFunctionValue.asUserData(), TypeMismatchError);
 
    BOOST_CHECK_THROW (anUserDataValue.asNumber(), TypeMismatchError);
    BOOST_CHECK_THROW (anUserDataValue.asString(), TypeMismatchError);
@@ -402,11 +420,19 @@ BOOST_AUTO_TEST_CASE(TestLuaValueRelationalOperators)
    LuaValue aStringValueBar ("Bar");
    LuaValue aBooleanValue (true);
    LuaValue anotherBooleanValue (true);
-   LuaValue aFunctionValue (CLuaFunctionExample);
-   LuaValue anotherFunctionValue (AnotherCLuaFunctionExample);
+   LuaValue aCFunctionValue (CLuaFunctionExample);
+   LuaValue anotherCFunctionValue (AnotherCLuaFunctionExample);
 
    LuaValueMap aLuaValueMap;
    LuaValue aTableValue (aLuaValueMap);
+
+   char fbc1[] = "fake bytecode";
+   LuaValue aLuaFunctionValue (LuaFunction (fbc1, strlen(fbc1)));
+
+   char fbc2[] = "more fake bytecode";
+   LuaValue anotherLuaFunctionValue (LuaFunction (fbc2, strlen(fbc2)));
+
+   LuaValue sameLuaFunctionValue (LuaFunction (fbc1, strlen(fbc1)));
 
    int ints[] = { 12, 13, 14, 15, 16, 17, 18, 19 };
    LuaUserData ud1 (sizeof(ints));
@@ -425,12 +451,15 @@ BOOST_AUTO_TEST_CASE(TestLuaValueRelationalOperators)
 
    // operator<
    BOOST_CHECK (aBooleanValue < aNilValue);
-   BOOST_CHECK (aBooleanValue < aFunctionValue);
+   BOOST_CHECK (aBooleanValue < aCFunctionValue);
+   BOOST_CHECK (aBooleanValue < aLuaFunctionValue);
    BOOST_CHECK (aNilValue < aNumberValue1);
-   BOOST_CHECK (aFunctionValue < aNilValue);
+   BOOST_CHECK (aCFunctionValue < aNilValue);
    BOOST_CHECK (aNumberValue2 < aStringValueFoo);
-   BOOST_CHECK (aFunctionValue < aNumberValue2);
-   BOOST_CHECK (aFunctionValue < aStringValueFoo);
+   BOOST_CHECK (aCFunctionValue < aNumberValue2);
+   BOOST_CHECK (aCFunctionValue < aStringValueFoo);
+   BOOST_CHECK (aLuaFunctionValue < aNumberValue2);
+   BOOST_CHECK (aLuaFunctionValue < aStringValueFoo);
    BOOST_CHECK (aNilValue < aStringValueFoo);
    BOOST_CHECK (aBooleanValue < aStringValueFoo);
    BOOST_CHECK (aBooleanValue < aTableValue);
@@ -442,19 +471,24 @@ BOOST_AUTO_TEST_CASE(TestLuaValueRelationalOperators)
    BOOST_CHECK (aNumberValue1 < anUserDataValue);
    BOOST_CHECK (aStringValueFoo < anUserDataValue);
    BOOST_CHECK (aBooleanValue < anUserDataValue);
-   BOOST_CHECK (aFunctionValue < anUserDataValue);
+   BOOST_CHECK (aCFunctionValue < anUserDataValue);
+   BOOST_CHECK (aLuaFunctionValue < anUserDataValue);
    BOOST_CHECK (aNumberValue1 < 1.01);
    BOOST_CHECK (aNumberValue2 < 2.5L);
    BOOST_CHECK (aStringValueFoo < "Zzz");
 
    // ! operator>
    BOOST_CHECK (!(aBooleanValue > aNilValue));
-   BOOST_CHECK (!(aBooleanValue > aFunctionValue));
+   BOOST_CHECK (!(aBooleanValue > aCFunctionValue));
+   BOOST_CHECK (!(aBooleanValue > aLuaFunctionValue));
    BOOST_CHECK (!(aNilValue > aNumberValue1));
-   BOOST_CHECK (!(aFunctionValue > aNilValue));
+   BOOST_CHECK (!(aCFunctionValue > aNilValue));
+   BOOST_CHECK (!(aLuaFunctionValue > aNilValue));
    BOOST_CHECK (!(aNumberValue2 > aStringValueFoo));
-   BOOST_CHECK (!(aFunctionValue > aNumberValue2));
-   BOOST_CHECK (!(aFunctionValue > aStringValueFoo));
+   BOOST_CHECK (!(aCFunctionValue > aNumberValue2));
+   BOOST_CHECK (!(aCFunctionValue > aStringValueFoo));
+   BOOST_CHECK (!(aLuaFunctionValue > aNumberValue2));
+   BOOST_CHECK (!(aLuaFunctionValue > aStringValueFoo));
    BOOST_CHECK (!(aNilValue > aStringValueFoo));
    BOOST_CHECK (!(aBooleanValue > aStringValueFoo));
    BOOST_CHECK (!(aBooleanValue > aBooleanValue));
@@ -469,21 +503,26 @@ BOOST_AUTO_TEST_CASE(TestLuaValueRelationalOperators)
    BOOST_CHECK (!(aNumberValue1 > anUserDataValue));
    BOOST_CHECK (!(aStringValueFoo > anUserDataValue));
    BOOST_CHECK (!(aBooleanValue > anUserDataValue));
-   BOOST_CHECK (!(aFunctionValue > anUserDataValue));
+   BOOST_CHECK (!(aCFunctionValue > anUserDataValue));
+   BOOST_CHECK (!(aLuaFunctionValue > anUserDataValue));
    BOOST_CHECK (!(aNumberValue1 > 1.01));
    BOOST_CHECK (!(aNumberValue2 > 2.5L));
    BOOST_CHECK (!(aStringValueFoo > "Zzz"));
 
    // operator>
    BOOST_CHECK (aNilValue > aBooleanValue);
-   BOOST_CHECK (aNilValue > aFunctionValue);
+   BOOST_CHECK (aNilValue > aCFunctionValue);
+   BOOST_CHECK (aNilValue > aLuaFunctionValue);
    BOOST_CHECK (aNumberValue1 > aNilValue);
-   BOOST_CHECK (aNumberValue1 > aFunctionValue);
+   BOOST_CHECK (aNumberValue1 > aCFunctionValue);
+   BOOST_CHECK (aNumberValue1 > aLuaFunctionValue);
    BOOST_CHECK (aStringValueFoo > aNumberValue2);
    BOOST_CHECK (aStringValueFoo > aNilValue);
    BOOST_CHECK (aStringValueFoo > aBooleanValue);
-   BOOST_CHECK (aStringValueFoo > aFunctionValue);
-   BOOST_CHECK (aFunctionValue > aBooleanValue);
+   BOOST_CHECK (aStringValueFoo > aCFunctionValue);
+   BOOST_CHECK (aStringValueFoo > aLuaFunctionValue);
+   BOOST_CHECK (aCFunctionValue > aBooleanValue);
+   BOOST_CHECK (aLuaFunctionValue > aBooleanValue);
    BOOST_CHECK (aTableValue > aBooleanValue);
    BOOST_CHECK (aTableValue > aNilValue);
    BOOST_CHECK (aTableValue > aBooleanValue);
@@ -494,21 +533,26 @@ BOOST_AUTO_TEST_CASE(TestLuaValueRelationalOperators)
    BOOST_CHECK (anUserDataValue > aNumberValue1);
    BOOST_CHECK (anUserDataValue > aStringValueFoo);
    BOOST_CHECK (anUserDataValue > aBooleanValue);
-   BOOST_CHECK (anUserDataValue > aFunctionValue);
+   BOOST_CHECK (anUserDataValue > aCFunctionValue);
+   BOOST_CHECK (anUserDataValue > aLuaFunctionValue);
    BOOST_CHECK (aNumberValue1 > -10);
    BOOST_CHECK (aNumberValue2 > 1e-10f);
    BOOST_CHECK (aStringValueFoo > "");
 
    // ! operator<
    BOOST_CHECK (!(aNilValue < aBooleanValue));
-   BOOST_CHECK (!(aNilValue < aFunctionValue));
+   BOOST_CHECK (!(aNilValue < aCFunctionValue));
+   BOOST_CHECK (!(aNilValue < aLuaFunctionValue));
    BOOST_CHECK (!(aNumberValue1 < aNilValue));
-   BOOST_CHECK (!(aNumberValue1 < aFunctionValue));
+   BOOST_CHECK (!(aNumberValue1 < aCFunctionValue));
+   BOOST_CHECK (!(aNumberValue1 < aLuaFunctionValue));
    BOOST_CHECK (!(aStringValueFoo < aNumberValue2));
    BOOST_CHECK (!(aStringValueFoo < aNilValue));
    BOOST_CHECK (!(aStringValueFoo < aBooleanValue));
-   BOOST_CHECK (!(aStringValueFoo < aFunctionValue));
-   BOOST_CHECK (!(aFunctionValue < aBooleanValue));
+   BOOST_CHECK (!(aStringValueFoo < aCFunctionValue));
+   BOOST_CHECK (!(aStringValueFoo < aLuaFunctionValue));
+   BOOST_CHECK (!(aCFunctionValue < aBooleanValue));
+   BOOST_CHECK (!(aLuaFunctionValue < aBooleanValue));
    BOOST_CHECK (!(aBooleanValue < aBooleanValue));
    BOOST_CHECK (!(aNilValue < aNilValue));
    BOOST_CHECK (!(aTableValue < aStringValueFoo));
@@ -522,7 +566,8 @@ BOOST_AUTO_TEST_CASE(TestLuaValueRelationalOperators)
    BOOST_CHECK (!(anUserDataValue < aNumberValue1));
    BOOST_CHECK (!(anUserDataValue < aStringValueFoo));
    BOOST_CHECK (!(anUserDataValue < aBooleanValue));
-   BOOST_CHECK (!(anUserDataValue < aFunctionValue));
+   BOOST_CHECK (!(anUserDataValue < aCFunctionValue));
+   BOOST_CHECK (!(anUserDataValue < aLuaFunctionValue));
    BOOST_CHECK (!(aNumberValue1 < -10));
    BOOST_CHECK (!(aNumberValue2 < 1e-10f));
    BOOST_CHECK (!(aStringValueFoo < ""));
@@ -543,7 +588,8 @@ BOOST_AUTO_TEST_CASE(TestLuaValueRelationalOperators)
    BOOST_CHECK (aStringValueFoo == "Foo");
    BOOST_CHECK (aStringValueFoo == std::string("Foo"));
    BOOST_CHECK (aBooleanValue == true);
-   BOOST_CHECK (aFunctionValue == CLuaFunctionExample);
+   BOOST_CHECK (aCFunctionValue == CLuaFunctionExample);
+   BOOST_CHECK (aLuaFunctionValue == sameLuaFunctionValue);
    BOOST_CHECK (anUserDataValue == sameUserDataValue);
 
    // ! operator!=
@@ -557,13 +603,15 @@ BOOST_AUTO_TEST_CASE(TestLuaValueRelationalOperators)
    BOOST_CHECK (!(aStringValueFoo != "Foo"));
    BOOST_CHECK (!(aStringValueFoo != std::string("Foo")));
    BOOST_CHECK (!(aBooleanValue != true));
-   BOOST_CHECK (!(aFunctionValue != CLuaFunctionExample));
+   BOOST_CHECK (!(aCFunctionValue != CLuaFunctionExample));
+   BOOST_CHECK (!(aLuaFunctionValue != sameLuaFunctionValue));
    BOOST_CHECK (!(anUserDataValue != sameUserDataValue));
 
    // operator !=
-   BOOST_CHECK (aFunctionValue != 0);
-   BOOST_CHECK (anotherFunctionValue != 0);
-   BOOST_CHECK (aFunctionValue != anotherFunctionValue);
+   BOOST_CHECK (aCFunctionValue != 0);
+   BOOST_CHECK (anotherCFunctionValue != 0);
+   BOOST_CHECK (aCFunctionValue != anotherCFunctionValue);
+   BOOST_CHECK (aLuaFunctionValue != anotherLuaFunctionValue);
    BOOST_CHECK (anUserDataValue != anotherUserDataValue);
 
    // some tests with more complex tables

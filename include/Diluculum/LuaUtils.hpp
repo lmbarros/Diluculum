@@ -42,10 +42,13 @@ namespace Diluculum
     */
    LuaValue ToLuaValue (lua_State* state, int index);
 
-   /** Calls the appropriate <tt>lua_push*()</tt> function, in order to push the
-    *  value stored at \c value to the Lua stack.
+   /** Pushes the value stored at \c value into the Lua stack of \c state. For
+    *  most types, this is equivalent to simply calling the appropriate
+    *  <tt>lua_push*()</tt> function. For other types, like tables and Lua
+    *  functions, the implementation is more complicated.
     *  @note If \c value holds a table, then any entry that happens to have
-    *        \c Nil as key will be ignored.
+    *        \c Nil as key will be ignored. (Since Lua does not support \c nil
+    *        as a table index.)
     */
    void PushLuaValue (lua_State* state, const LuaValue& value);
 
