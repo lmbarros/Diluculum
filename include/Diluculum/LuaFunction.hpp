@@ -93,8 +93,8 @@ namespace Diluculum
           */
          size_t getSize() const { return size_; }
 
-//          /// Returns a pointer to the data stored in this \c LuaFunction.
-//          void* getData() { return data_.get(); }
+         /// Returns a pointer to the data stored in this \c LuaFunction.
+         void* getData() { return data_.get(); }
 
          /** Returns a \c const pointer to the data stored in this
           *  \c LuaFunction.

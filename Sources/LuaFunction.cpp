@@ -78,10 +78,10 @@ namespace Diluculum
    // - LuaFunction::operator= -------------------------------------------------
    const LuaFunction& LuaFunction::operator= (const LuaFunction& rhs)
    {
-//       size_ = rhs.getSize();
-//       data_.reset (new char[getSize()]);
-//       memcpy (getData(), rhs.getData(), getSize());
-      assert(false && "Not implemented yet!");
+      size_ = rhs.getSize();
+      functionType_ = rhs.functionType_;
+      data_.reset (new char[getSize()]);
+      memcpy (getData(), rhs.getData(), getSize());
       return *this;
    }
 
@@ -90,14 +90,14 @@ namespace Diluculum
    // - LuaFunction::operator> -------------------------------------------------
    bool LuaFunction::operator> (const LuaFunction& rhs) const
    {
-//       if (getSize() > rhs.getSize())
-//          return true;
-//       else if (getSize() < rhs.getSize())
-//          return false;
-//       else // getSize() == rhs.getSize()
-//          return memcmp (getData(), rhs.getData(), getSize()) > 0;
-      assert(false && "Not implemented yet!");
-      return false;
+      if (functionType_ > rhs.functionType_)
+         return true;
+      else if (getSize() > rhs.getSize())
+         return true;
+      else if (getSize() < rhs.getSize())
+         return false;
+      else // getSize() == rhs.getSize()
+         return memcmp (getData(), rhs.getData(), getSize()) > 0;
    }
 
 
@@ -105,14 +105,14 @@ namespace Diluculum
    // - LuaFunction::operator< -------------------------------------------------
    bool LuaFunction::operator< (const LuaFunction& rhs) const
    {
-//       if (getSize() < rhs.getSize())
-//          return true;
-//       else if (getSize() > rhs.getSize())
-//          return false;
-//       else // getSize() == rhs.getSize()
-//          return memcmp (getData(), rhs.getData(), getSize()) < 0;
-      assert(false && "Not implemented yet!");
-      return false;
+      if (functionType_ < rhs.functionType_)
+         return true;
+      else if (getSize() < rhs.getSize())
+         return true;
+      else if (getSize() > rhs.getSize())
+         return false;
+      else // getSize() == rhs.getSize()
+         return memcmp (getData(), rhs.getData(), getSize()) < 0;
    }
 
 
@@ -130,10 +130,9 @@ namespace Diluculum
    // - LuaFunction::operator!= ------------------------------------------------
    bool LuaFunction::operator!= (const LuaFunction& rhs) const
    {
-//       return getSize() != rhs.getSize()
-//          || memcmp (getData(), rhs.getData(), getSize()) != 0;
-      assert(false && "Not implemented yet!");
-      return false;
+      return functionType_ != rhs.functionType_
+         || getSize() != rhs.getSize()
+         || memcmp (getData(), rhs.getData(), getSize()) != 0;
    }
 
 } // namespace Diluculum
