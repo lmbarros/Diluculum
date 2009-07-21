@@ -141,15 +141,61 @@ BOOST_AUTO_TEST_CASE(TestPushLuaValue)
 }
 
 
-// - TestLuaFunction -----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestLuaFunction)
+
+// - TestPushLuaValueLuaFunction -----------------------------------------------
+BOOST_AUTO_TEST_CASE(TestPushLuaValueLuaFunction)
 {
    // 'LuaFunction's are a bit different from the other things that a 'LuaValue'
    // can hold. In particular, one normally cannot construct a 'LuaFunction'
    // from scratch. Instead, one is constructed through a 'LuaVariable'. Hence,
-   // 'LuaFunction' deserves an exclusive test case.
+   // 'LuaFunction' deserves exclusive test cases.
 
    using namespace Diluculum;
 
-   LuaState ls;
+   LuaState tmpLS;
+   tmpLS.doString ("function Squarer(n) return n * n end");
+
+   LuaValue val = tmpLS["Squarer"].value();
+
+   BOOST_REQUIRE (val.type() == LUA_TFUNCTION);
+
+   lua_State* ls = luaL_newstate();
+   PushLuaValue (ls, val);
+
+   BOOST_CHECK_EQUAL (lua_isfunction (ls, 1), true);
+   BOOST_CHECK_EQUAL (lua_iscfunction (ls, 1), false);
+}
+
+
+
+// - TestToLuaValueLuaFunction -------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestToLuaValueLuaFunction)
+{
+   // 'LuaFunction's are a bit different from the other things that a 'LuaValue'
+   // can hold. In particular, one normally cannot construct a 'LuaFunction'
+   // from scratch. Instead, one is constructed through a 'LuaVariable'. Hence,
+   // 'LuaFunction' deserves exclusive test cases.
+
+   using namespace Diluculum;
+
+   LuaState tmpLS;
+   tmpLS.doString("function Squarer(n) return n * n end");
+
+   LuaValue val = tmpLS["Squarer"].value();
+
+   lua_State* ls = luaL_newstate();
+   PushLuaValue (ls, val);
+
+   // Up this point, everything should work (another test already tests this)
+   LuaValue readBack = ToLuaValue (ls, 1);
+   BOOST_REQUIRE (readBack.type() == LUA_TFUNCTION);
+   LuaFunction readBackFunc = readBack.asFunction();
+
+   LuaState newLS;
+   LuaValueList params;
+   params.push_back(-5);
+   LuaValueList ret = newLS.call(readBackFunc, params, "Squarer chunk");
+
+   BOOST_REQUIRE_EQUAL (ret.size(), 1u);
+   BOOST_CHECK_EQUAL (ret[0].asInteger(), 25);
 }

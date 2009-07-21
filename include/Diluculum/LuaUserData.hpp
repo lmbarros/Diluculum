@@ -83,8 +83,6 @@ namespace Diluculum
           *        greater is somewhat arbitrary. Here, the userdata with larger
           *        \c size() is considered greater. If both are equal, the
           *        decision is based on the contents of the stored data.
-          *  @todo This is currently implemented using \c memcmp(). I think that
-          *        this is not part of the C++ standard yet (just of C99).
           */
          bool operator> (const LuaUserData& rhs) const;
 
@@ -92,8 +90,6 @@ namespace Diluculum
           *  @note Given two <tt>LuaUserData</tt>s, the decision on which one is
           *        lesser is somewhat arbitrary. The criterion is similar to the
           *        described for the "greater than" operator.
-          *  @todo This is currently implemented using \c memcmp(). I think that
-          *        this is not part of the C++ standard yet (just of C99).
           */
          bool operator< (const LuaUserData& rhs) const;
 

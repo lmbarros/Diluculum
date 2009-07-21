@@ -50,13 +50,25 @@ namespace Diluculum
    {
       public:
 
-         /** @todo Doc-me!
-          *
+         /** Constructs a \c LuaFunction from Lua bytecode. Typically, this
+          *  constructor is not called directly by end users. Instead, end users
+          *  use <tt>LuaState::operator[]</tt> to get a \c LuaVariable
+          *  containing a \c LuaFunction value, which can be accessed via
+          *  <tt>LuaVariable::value()</tt>.
+          *  @param data A pointer to the beginning of the memory area
+          *         containing Lua bytecode.
+          *  @param size The number of bytecode bytes to read.
+          *  @todo Since \c lua_load() is expected to work with both binary and
+          *        text Lua chunks, this implementation should also work if
+          *        \c data points to Lua source code defining a function. If
+          *        this is the case (I haven't tested!), it would be nice to
+          *        have another constructor with a simpler interface for this
+          *        case (say, receiving just a string as parameter).
           */
          LuaFunction (const void* data, size_t size);
 
-         /** @todo Doc-me!
-          *
+         /** Constructs a \c LuaFunction from a \c lua_CFunction (a Lua function
+          * implemented in C).
           */
          LuaFunction (lua_CFunction func);
 
@@ -85,9 +97,6 @@ namespace Diluculum
           */
          lua_CFunction getCFunction() const;
 
-// TODO: better names for the following. They should mention "pure Lua" or
-//       "bytecode".
-
          /** Returns the size, in bytes, of the data stored in this
           *  \c LuaFunction.
           */
@@ -101,7 +110,7 @@ namespace Diluculum
           */
          const void* getData() const { return data_.get(); }
 
-         /// @todo Doc-me!
+         /// Sets the data stored in this \c LuaFunction.
          void setData(void* data, size_t size);
 
          /// Gets the "reader flag".
@@ -115,8 +124,6 @@ namespace Diluculum
           *        greater is somewhat arbitrary. Here, the function with larger
           *        size is considered greater. If both are equal, the decision
           *        is based on the contents of the stored data.
-          *  @todo This is currently implemented using \c memcmp(). I think that
-          *        this is not part of the C++ standard yet (just of C99).
           */
          bool operator> (const LuaFunction& rhs) const;
 
@@ -124,8 +131,6 @@ namespace Diluculum
           *  @note Given two <tt>LuaFunction</tt>s, the decision on which one is
           *        lesser is somewhat arbitrary. The criterion is similar to the
           *        described for the "greater than" operator.
-          *  @todo This is currently implemented using \c memcmp(). I think that
-          *        this is not part of the C++ standard yet (just of C99).
           */
          bool operator< (const LuaFunction& rhs) const;
 
@@ -160,7 +165,10 @@ namespace Diluculum
          /// The number of bytes stored "in" \c data_.
          size_t size_;
 
-         /// A (smart) pointer to the data owned by this \c LuaFunction.
+         /** A (smart) pointer to the data owned by this \c
+          * LuaFunction. Depending on \c functionType_, the data pointed to by
+          * \data may store a pointer to a \c lua_CFunction or Lua bytecode.
+          */
          boost::scoped_array<char> data_;
 
          /** A flag used when reading the bytecode data, in calls to \c
