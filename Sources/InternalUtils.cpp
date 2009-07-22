@@ -98,6 +98,43 @@ namespace Diluculum
          }
       }
 
+
+
+      // - LuaFunctionWriter ---------------------------------------------------
+      int LuaFunctionWriter(lua_State* luaState, const void* data, size_t size,
+                            void* func)
+      {
+         Diluculum::LuaFunction* f =
+            reinterpret_cast<Diluculum::LuaFunction*>(func);
+
+         size_t newSize = f->getSize() + size;
+
+         boost::scoped_array<char> buff (new char[newSize]);
+
+         memcpy (buff.get(), f->getData(), f->getSize());
+         memcpy (buff.get() + f->getSize(), data, size);
+
+         f->setData (buff.get(), newSize);
+
+         return 0;
+      }
+
+
+
+      // - LuaFunctionReader ---------------------------------------------------
+      const char* LuaFunctionReader(lua_State* luaState, void* func,
+                                    size_t* size)
+      {
+         Diluculum::LuaFunction* f =
+            reinterpret_cast<Diluculum::LuaFunction*>(func);
+
+         if (f->getReaderFlag())
+            return 0;
+
+         *size = f->getSize();
+         return reinterpret_cast<const char*>(f->getData());
+      }
+
    } // namespace Impl
 
 } // namespace Diluculum

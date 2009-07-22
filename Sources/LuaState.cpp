@@ -32,28 +32,6 @@
 #include "InternalUtils.hpp"
 
 
-namespace
-{
-   /** The \c lua_Reader used to get Lua bytecode from a \c LuaFunction. This is
-    *  used by \c LuaState::call();
-    */
-   const char* LuaFunctionReader(lua_State* luaState, void* func,
-                                 size_t* size)
-   {
-      Diluculum::LuaFunction* f =
-         reinterpret_cast<Diluculum::LuaFunction*>(func);
-
-      if (f->getReaderFlag())
-         return 0;
-
-      *size = f->getSize();
-      return reinterpret_cast<const char*>(f->getData());
-   }
-
-} // (anonymous) namespace
-
-
-
 namespace Diluculum
 {
    // - LuaState::LuaState -----------------------------------------------------
@@ -127,10 +105,7 @@ namespace Diluculum
                                 const std::string& chunkName)
    {
       func.setReaderFlag (false);
-      int status = lua_load (state_, LuaFunctionReader, &func,
-                             chunkName.c_str());
-      Impl::ThrowOnLuaError (state_, status);
-
+      PushLuaValue (state_, LuaValue (func));
       return Impl::CallFunctionOnTop (state_, params);
    }
 

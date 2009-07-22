@@ -63,6 +63,18 @@ namespace Diluculum
        *  @throw LuaError If \c retCode is not a recognized Lua error code.
        */
       void ThrowOnLuaError (lua_State* ls, int statusCode);
+
+      /** The \c lua_Writer used in the calls to \c lua_dump() when converting a
+       * function implemented in Lua to a \c LuaFunction.
+       */
+      int LuaFunctionWriter(lua_State* luaState, const void* data, size_t size,
+                            void* func);
+
+      /** The \c lua_Reader used to get Lua bytecode from a \c LuaFunction. This
+       *  is used by \c LuaState::call();
+       */
+      const char* LuaFunctionReader(lua_State* luaState, void* func,
+                                    size_t* size);
    }
 
 } // namespace Diluculum

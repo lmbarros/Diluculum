@@ -31,52 +31,6 @@
 #include "InternalUtils.hpp"
 
 
-namespace
-{
-   /** The \c lua_Writer used in the calls to \c lua_dump() when converting a
-    * function implemented in Lua to a \c LuaFunction.
-    */
-   int LuaFunctionWriter(lua_State* luaState, const void* data, size_t size,
-                         void* func)
-   {
-      Diluculum::LuaFunction* f =
-         reinterpret_cast<Diluculum::LuaFunction*>(func);
-
-      size_t newSize = f->getSize() + size;
-
-      boost::scoped_array<char> buff (new char[newSize]);
-
-      memcpy (buff.get(), f->getData(), f->getSize());
-      memcpy (buff.get() + f->getSize(), data, size);
-
-      f->setData (buff.get(), newSize);
-
-      return 0;
-   }
-
-
-
-   /** The \c lua_Reader used to get Lua bytecode from a \c LuaFunction. This is
-    *  used by \c LuaState::call();
-    *  @todo Duplicated from LuaState.cpp.
-    */
-   const char* LuaFunctionReader(lua_State* luaState, void* func,
-                                 size_t* size)
-   {
-      Diluculum::LuaFunction* f =
-         reinterpret_cast<Diluculum::LuaFunction*>(func);
-
-      if (f->getReaderFlag())
-         return 0;
-
-      *size = f->getSize();
-      return reinterpret_cast<const char*>(f->getData());
-   }
-
-} // (anonymous) namespace
-
-
-
 namespace Diluculum
 {
    // - ToLuaValue -------------------------------------------------------------
@@ -138,7 +92,7 @@ namespace Diluculum
             {
                LuaFunction func("", 0);
                lua_pushvalue (state, index);
-               lua_dump(state, LuaFunctionWriter, &func);
+               lua_dump(state, Impl::LuaFunctionWriter, &func);
                lua_pop(state, 1);
                return func;
             }
@@ -216,7 +170,7 @@ namespace Diluculum
             {
                LuaFunction* pf = const_cast<LuaFunction*>(&f); // yikes!
                pf->setReaderFlag (false);
-               int status = lua_load (state, LuaFunctionReader, pf,
+               int status = lua_load (state, Impl::LuaFunctionReader, pf,
                                       "Diluculum Lua chunk");
                Impl::ThrowOnLuaError (state, status);
             }
