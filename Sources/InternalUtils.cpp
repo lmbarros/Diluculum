@@ -24,8 +24,10 @@
 * IN THE SOFTWARE.                                                             *
 \******************************************************************************/
 
+
 #include "InternalUtils.hpp"
 #include <Diluculum/LuaUtils.hpp>
+#include <cstring>
 #include <boost/lexical_cast.hpp>
 
 namespace Diluculum
