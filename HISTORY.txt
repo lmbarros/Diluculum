@@ -1,15 +1,10 @@
-Version 0.5 (02009-xx-xx)
+Version 0.5 (02009-07-22)
 ~~~~~~~~~~~
 
 Maybe the biggest change is the support to store functions in
 'LuaValue's. This allows some nice tricks like letting the Lua side
 register callbacks implemented in Lua, that will be eventually called
 by the C++ side (and this works even with anonymous functions).
-
-I also added a preliminary CMake-based build system. I plan to
-eventually use it as the "official" build system, but currently it
-does not handle the unit tests very well, nor does it look for Lua
-paths.
 
 Additionally, Diluculum 0.5 sports the following contributions by
 Jason Gauci:
@@ -29,7 +24,11 @@ Jason Gauci:
 Jason sent those more than two years ago! It is a shame I am releasing
 them just now!
 
-Other than that, a couple of bugs have been fixed.
+Finally, the build system has been changed to CMake. I strongly
+recommend everyone to add Diluculum source files to their own
+projects, so this shouldn't be a big issue.
+
+Other than that, a couple of miscellaneous bugs have been fixed.
 
 
 Version 0.4 (02007-02-06)

@@ -5,7 +5,8 @@ Barros <lmb _at_ stackedboxes _dot_ org>.
  List of Contributors
 ~~~~~~~~~~~~~~~~~~~~~~
 Hakki Dogusan <dogusanh _at_ tr _dot_ net> contributed the Code Blocks
-project file.
+project file. (No longer distributed with Diluculum, since the build
+system changed to CMake.)
 
 Jason Gauci <jgmath2000 _at_ gmail _dot_ com> contributed the
 implemention of 'LuaValue::asObjectPtr()' and the original

@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(TestLuaStateDoFileMultRet)
    using namespace Diluculum;
 
    LuaState ls;
-   const LuaValueList ret = ls.doFile ("Tests/TestLuaStateDoFile.lua");
+   const LuaValueList ret = ls.doFile ("TestLuaStateDoFile.lua");
 
    BOOST_REQUIRE (ret.size() == 5);
    BOOST_CHECK (ret[0] == "foo");
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(TestLuaStateDoFileMultRet)
    BOOST_CHECK (ret[4] == 4.5);
 
    const LuaValueList empty = ls.doFile(
-      "Tests/TestLuaStateDoFileNoReturn.lua");
+      "TestLuaStateDoFileNoReturn.lua");
    BOOST_CHECK (empty.size() == 0);
 }
 
@@ -92,11 +92,11 @@ BOOST_AUTO_TEST_CASE(TestLuaStateDoFile)
    using namespace Diluculum;
 
    LuaState ls;
-   const LuaValue ret = ls.doFile ("Tests/TestLuaStateDoFile.lua");
+   const LuaValue ret = ls.doFile ("TestLuaStateDoFile.lua");
 
    BOOST_CHECK (ret == "foo");
 
-   const LuaValue empty = ls.doFile("Tests/TestLuaStateDoFileNoReturn.lua");
+   const LuaValue empty = ls.doFile("TestLuaStateDoFileNoReturn.lua");
    BOOST_CHECK (empty == Nil);
 }
 
@@ -181,13 +181,13 @@ BOOST_AUTO_TEST_CASE(TestLuaStateDoExceptions)
 
    // Force a syntax error
    BOOST_CHECK_THROW (ls.doString ("@#$%#"), LuaSyntaxError);
-   BOOST_CHECK_THROW (ls.doFile ("Tests/SyntaxError.lua"), LuaSyntaxError);
+   BOOST_CHECK_THROW (ls.doFile ("SyntaxError.lua"), LuaSyntaxError);
 
    // "Lua threads" (coroutines) are not supported by 'LuaValue'. Trying to
    // return one must generate an error.
    BOOST_CHECK_THROW (ls.doString ("return coroutine.create(function() end)"),
                       LuaTypeError);
-   BOOST_CHECK_THROW (ls.doFile ("Tests/ReturnThread.lua"), LuaTypeError);
+   BOOST_CHECK_THROW (ls.doFile ("ReturnThread.lua"), LuaTypeError);
 
    // We are expected to throw in "file not found" situations
    BOOST_CHECK_THROW (ls.doFile ("__THiis_fi1e.doeSNt--exIst.lua"),
