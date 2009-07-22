@@ -164,9 +164,10 @@ namespace Diluculum
          /// The number of bytes stored "in" \c data_.
          size_t size_;
 
-         /** A (smart) pointer to the data owned by this \c
-          * LuaFunction. Depending on \c functionType_, the data pointed to by
-          * \data may store a pointer to a \c lua_CFunction or Lua bytecode.
+         /** A (smart) pointer to the data owned by this
+          * \c LuaFunction. Depending on \c functionType_, the data pointed to
+          * by \c data may store a pointer to a \c lua_CFunction or Lua
+          * bytecode.
           */
          boost::scoped_array<char> data_;
 

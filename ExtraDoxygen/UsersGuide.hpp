@@ -3,7 +3,7 @@
 * Additional Doxygen documentation for Diluculum: user's guide.                *
 *                                                                              *
 *                                                                              *
-* Copyright (C) 2005-2007 by Leandro Motta Barros.                             *
+* Copyright (C) 2005-2009 by Leandro Motta Barros.                             *
 *                                                                              *
 * Permission is hereby granted, free of charge, to any person obtaining a copy *
 * of this software and associated documentation files (the "Software"), to     *
@@ -49,7 +49,7 @@ use the library.
 
 
 
-\section sec-AcessingLuaState Accessing Data In a Lua State
+\section sec-AcessingLuaState Accessing Data in a Lua State
 
 The class \c Diluculum::LuaState encapsulates a <tt>lua_State*</tt>, that is a
 Lua interpreter. Lua is frequently used as a configuration language, and for
@@ -135,6 +135,9 @@ std::cout << ret[0].asString() << '\n';
 Notice that no call to \c value() is necessary here, because function calls will
 already return values (<tt>Diluculum::LuaValue</tt>s) instead of variables
 (<tt>Diluculum::LuaVariable</tt>s).
+
+For a different (and particularly useful) way to call Lua functions
+from the C++ side, see "Callbacks" below.
 
 The subscript operator also provides write access to the Lua state, so you can
 change or add new variables. Perhaps this doesn't make much sense if you are
@@ -224,6 +227,62 @@ And that's it. Not exactly a proper and "generic" wrapper like
 but may be useful for someone (it is for me!)
 
 
+\subsection sec-Callbacks Working with Callbacks
+
+Diluculum 0.5 introduced <tt>Diluculum::LuaFunction</tt>s, which are
+quite nice for callbacks (also known as "hooks"). Suppose you have an
+application that batch-processes a list of item in the C++
+side. Furthermore, you want to give your users the opportunity to run
+some Lua code of their own before processing each item.
+
+Your first step would be to create and export to Lua a C++ function
+(or method) which the user will call to "register" their
+callback. This would be something along the lines of:
+
+\code
+// This 'LuaValue' will contain the 'LuaFunction' with user code
+Diluculum::LuaValue TheCallback;
+
+// A user wanting to register a function to be called before each item
+// is processed will call this (from the Lua side) passing as
+// parameter the function they want to be called.
+Diluculum::LuaValueList RunBeforeProcessingItem(
+   const Diluculum::LuaValueList& params)
+{
+   if (params.size() != 1 || params[0].type() != LUA_TFUNCTION)
+      throw Diluculum::LuaError ("Bad parameters!");
+
+   TheCallback = params[0];
+
+   return Diluculum::LuaValueList();
+}
+\endcode
+
+Assuming that the above function were properly exported to the Lua
+state running the user code, the user would be able to register a
+callback very easily:
+
+\verbatim
+RunBeforeProcessingItem(function() print "Doing something..." end)
+\endverbatim
+
+Notice that even anonymous functions are supported! (You could pass a
+named function as well.)
+
+Finally, back in the C++ side, you'd call the callback by doing this
+before processing each item:
+
+\code
+// "Intermediary" objects, just to be explicit on what is going on
+Diluculum::LuaFunction f(TheCallBack.asFunction());
+Diluculum::LuaValueList params; // no parameters
+
+// 'ls' is the Diluculum::LuaState running the user Lua code
+ls.call (f, params, "BeforeProcessingItem callback");
+\endcode
+
+And that's it! (For the record, the third parameter to
+\c Diluculum::LuaState::call() is shown in error messages.)
 
 \section sec-WrappingClasses Wrapping C++ Classes and Objects
 
@@ -252,6 +311,13 @@ class ValueBox
             value_ = params[0];
       }
 
+      // It is OK to have other constructors, with other signatures -- but
+      // these will not be accessible from Lua.
+      ValueBox (int i)
+      {
+          // ...
+      }
+
       // Stores the value passed as parameter in the box, and returns the value
       // previously stored there.
       Diluculum::LuaValueList swap (const Diluculum::LuaValueList& params)
@@ -263,6 +329,13 @@ class ValueBox
          ret.push_back (value_);
          value_ = params[0];
          return ret;
+      }
+
+      // It is also OK to have methods that don't have the signature required
+      // by Diluculum, but these methods cannot be exported to Lua.
+      void someOtherMethod(double p)
+      {
+         // ...
       }
 
    private:
@@ -314,7 +387,7 @@ DILUCULUM_REGISTER_CLASS (ls["ValueBox"], ValueBox);
 ls.doString ("box = ValueBox.new('blah')");
 
 // Get a pointer to the object instantiated above
-ValueBox* vb = ls["box"].value().asObjectPointer<ValueBox*>();
+ValueBox* vb = ls["box"].value().asObjectPtr<ValueBox*>();
 
 // Call a method through the pointer
 LuaValueList params;
