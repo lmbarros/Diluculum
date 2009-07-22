@@ -97,15 +97,15 @@ namespace Diluculum
 
       if (isString)
       {
-         throwOnLuaError (luaL_loadbuffer (state_, str.c_str(),
-                                           str.length(), "line"));
+         Impl::ThrowOnLuaError (state_, luaL_loadbuffer (state_, str.c_str(),
+                                                         str.length(), "line"));
       }
       else
       {
-         throwOnLuaError (luaL_loadfile (state_, str.c_str()));
+         Impl::ThrowOnLuaError (state_, luaL_loadfile (state_, str.c_str()));
       }
 
-      throwOnLuaError (lua_pcall (state_, 0, LUA_MULTRET, 0));
+      Impl::ThrowOnLuaError (state_, lua_pcall (state_, 0, LUA_MULTRET, 0));
 
       const int numResults = lua_gettop (state_) - stackSizeAtBeginning;
 
@@ -129,7 +129,7 @@ namespace Diluculum
       func.setReaderFlag (false);
       int status = lua_load (state_, LuaFunctionReader, &func,
                              chunkName.c_str());
-      throwOnLuaError (status);
+      Impl::ThrowOnLuaError (state_, status);
 
       return Impl::CallFunctionOnTop (state_, params);
    }
@@ -139,44 +139,6 @@ namespace Diluculum
    LuaVariable LuaState::operator[] (const std::string& variable)
    {
       return LuaVariable (state_, variable);
-   }
-
-
-
-   // - LuaState::throwOnLuaError ----------------------------------------------
-   void LuaState::throwOnLuaError (int retCode)
-   {
-      if (retCode != 0)
-      {
-         std::string errorMessage;
-         if (lua_isstring (state_, -1))
-         {
-            errorMessage = lua_tostring (state_, -1);
-            lua_pop (state_, 1);
-         }
-         else
-         {
-            errorMessage =
-               "Sorry, there is no additional information about this error.";
-         }
-
-         switch (retCode)
-         {
-            case LUA_ERRRUN:
-               throw LuaRunTimeError (errorMessage.c_str());
-            case LUA_ERRFILE:
-               throw LuaFileError (errorMessage.c_str());
-            case LUA_ERRSYNTAX:
-               throw LuaSyntaxError (errorMessage.c_str());
-            case LUA_ERRMEM:
-               throw LuaMemoryError (errorMessage.c_str());
-            case LUA_ERRERR:
-               throw LuaErrorError (errorMessage.c_str());
-            default:
-               throw LuaError ("Unknown Lua return code passed "
-                               "to 'LuaState::throwOnLuaError'.");
-         }
-      }
    }
 
 } // namespace Diluculum

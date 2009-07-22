@@ -32,6 +32,7 @@ namespace Diluculum
 {
    namespace Impl
    {
+      // - CallFunctionOnTop ---------------------------------------------------
       LuaValueList CallFunctionOnTop (lua_State* ls, const LuaValueList& params)
       {
          int topBefore = lua_gettop (ls);
@@ -45,40 +46,7 @@ namespace Diluculum
 
          int status = lua_pcall (ls, params.size(), LUA_MULTRET, 0);
 
-         if (status != 0)
-         {
-            std::string errMessage = lua_tostring (ls, -1);
-            lua_pop (ls, 1);
-
-            switch (status)
-            {
-               case LUA_ERRRUN:
-                  throw LuaRunTimeError(
-                     ("'LUA_ERRRUN' returned while calling function from Lua. "
-                      "Additional error message: '" + errMessage
-                      + "'.").c_str());
-
-               case LUA_ERRMEM:
-                  throw LuaRunTimeError(
-                     ("'LUA_ERRMEM' returned while calling function from Lua. "
-                      "Additional error message: '" + errMessage
-                      + "'.").c_str());
-
-               case LUA_ERRERR:
-                  throw LuaRunTimeError(
-                     ("'LUA_ERR' returned while calling function from Lua. "
-                      "Additional error message: '" + errMessage
-                      + "'.").c_str());
-
-               default:
-                  throw LuaRunTimeError(
-                     ("Unknown error code ("
-                      + boost::lexical_cast<std::string>(status)
-                      + ") returned while calling function from Lua. "
-                      + "Additional error message: '" + errMessage
-                      + "'.").c_str());
-            }
-         }
+         ThrowOnLuaError (ls, status);
 
          int numResults = lua_gettop (ls) - topBefore + 1;
 
@@ -91,6 +59,45 @@ namespace Diluculum
 
          return results;
       }
-   }
+
+
+
+      // - ThrowOnLuaError -----------------------------------------------------
+      void ThrowOnLuaError (lua_State* ls, int statusCode)
+      {
+         if (statusCode != 0)
+         {
+            std::string errorMessage;
+            if (lua_isstring (ls, -1))
+            {
+               errorMessage = lua_tostring (ls, -1);
+               lua_pop (ls, 1);
+            }
+            else
+            {
+               errorMessage =
+                  "Sorry, there is no additional information about this error.";
+            }
+
+            switch (statusCode)
+            {
+               case LUA_ERRRUN:
+                  throw LuaRunTimeError (errorMessage.c_str());
+               case LUA_ERRFILE:
+                  throw LuaFileError (errorMessage.c_str());
+               case LUA_ERRSYNTAX:
+                  throw LuaSyntaxError (errorMessage.c_str());
+               case LUA_ERRMEM:
+                  throw LuaMemoryError (errorMessage.c_str());
+               case LUA_ERRERR:
+                  throw LuaErrorError (errorMessage.c_str());
+               default:
+                  throw LuaError ("Unknown Lua return code passed "
+                                  "to 'Diluculum::Impl::ThrowOnLuaError()'.");
+            }
+         }
+      }
+
+   } // namespace Impl
 
 } // namespace Diluculum

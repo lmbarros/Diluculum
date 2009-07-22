@@ -28,7 +28,8 @@
 #include <Diluculum/LuaUtils.hpp>
 #include <Diluculum/LuaExceptions.hpp>
 #include <boost/lexical_cast.hpp>
-#include <iostream>
+#include "InternalUtils.hpp"
+
 
 namespace
 {
@@ -217,8 +218,7 @@ namespace Diluculum
                pf->setReaderFlag (false);
                int status = lua_load (state, LuaFunctionReader, pf,
                                       "Diluculum Lua chunk");
-               //throwOnLuaError (status);
-               // <--- TODO handle errors!
+               Impl::ThrowOnLuaError (state, status);
             }
             break;
          }

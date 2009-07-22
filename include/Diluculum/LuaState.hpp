@@ -153,25 +153,6 @@ namespace Diluculum
           *  to decide whether it has to \c lua_close() it or not.)
           */
          const bool ownsState_;
-
-         /** Throws an exception if the number passed as parameter corresponds
-          *  to an error code from a function from the Lua API.  The exception
-          *  thrown is of the proper type, that is, of the subclass of
-          *   \c LuaError that best describes the error. Furthermore, the string
-          *  associated with the exception (the \c what parameter) is set to
-          *  whatever Lua returned as the error message.
-          *  <p>If the number passed as parameter is 0 (which is the code for
-          *  "no error"), the function does nothing.
-          *  @param retCode The return code for some Lua API function;
-          *         that's the value we want to check for "errorness".
-          *  @throw LuaRunTimeError If <tt>retCode == LUA_ERRRUN</tt>.
-          *  @throw LuaFileError If <tt>retCode == LUA_ERRFILE</tt>.
-          *  @throw LuaRunTimeError If <tt>retCode == LUA_ERRRUN</tt>.
-          *  @throw LuaSyntaxError If <tt>retCode == LUA_ERRSYNTAX</tt>.
-          *  @throw LuaMemoryError If <tt>retCode == LUA_ERRMEM</tt>.
-          *  @throw LuaError If \c retCode is not a recognized Lua error code.
-          */
-         void throwOnLuaError (int retCode);
    };
 
 } // namespace Diluculum

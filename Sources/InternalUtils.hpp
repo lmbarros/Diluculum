@@ -41,6 +41,28 @@ namespace Diluculum
        *  @param params The parameters to be passed to the function.
        */
       LuaValueList CallFunctionOnTop (lua_State* ls, const LuaValueList& params);
+
+      /** Throws an exception if the status code passed as parameter corresponds
+       *  to an error code from a function from the Lua API.  The exception
+       *  thrown is of the proper type, that is, of the subclass of \c LuaError
+       *  that best describes the error. Furthermore, the string associated with
+       *  the exception (the \c what parameter) is set to whatever Lua returned
+       *  as the error message.
+       *  <p>If the number passed as parameter is 0 (which is the code for "no
+       *  error"), the function does nothing.
+       *  @param statusCode The return code for some Lua API function; that's
+       *         the value we want to check for "errorness".
+       *  @param ls The Lua state on which the function that generated the
+       *         status code being tested was called. This is used just to get a
+       *         nice error message, if an error did actually happen.
+       *  @throw LuaRunTimeError If <tt>retCode == LUA_ERRRUN</tt>.
+       *  @throw LuaFileError If <tt>retCode == LUA_ERRFILE</tt>.
+       *  @throw LuaRunTimeError If <tt>retCode == LUA_ERRRUN</tt>.
+       *  @throw LuaSyntaxError If <tt>retCode == LUA_ERRSYNTAX</tt>.
+       *  @throw LuaMemoryError If <tt>retCode == LUA_ERRMEM</tt>.
+       *  @throw LuaError If \c retCode is not a recognized Lua error code.
+       */
+      void ThrowOnLuaError (lua_State* ls, int statusCode);
    }
 
 } // namespace Diluculum

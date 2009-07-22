@@ -185,16 +185,6 @@ namespace Diluculum
           */
          const LuaFunction& asFunction() const;
 
-//   TODO: implement the mutable version
-//          /** Return the value as a Lua function.
-//           *  @note Since this is returned as a non-\c const reference, the
-//           *        \c LuaFunction::getData() method can be used to get
-//           *        read/write access to the function bytecode.
-//           *  @throw TypeMismatchError If the value is not a Lua function
-//           *         (this is a strict check; no type conversion is performed).
-//           */
-//          LuaFunction& asFunction();
-
          /** Return the value as a \c const (full) user data.
           *  @throw TypeMismatchError If the value is not a (full) user data
           *         (this is a strict check; no type conversion is performed).
