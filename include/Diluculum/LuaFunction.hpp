@@ -43,8 +43,7 @@ namespace Diluculum
     *  used as the value of a \c LuaValue when it holds a Lua function.
     *  @note A \c LuaFunction does not have any reference to a Lua
     *        interpreter. Thus, it does not make sense to call a \c LuaFunction
-    *        object directly.
-    *  @todo Document the way to call a \c LuaFunction.
+    *        object directly. To call a \c LuaFunction, use \c LuaState::call().
     */
    class LuaFunction
    {

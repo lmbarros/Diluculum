@@ -107,8 +107,14 @@ namespace Diluculum
          LuaValueList doString (const std::string& what)
          { return doStringOrFile (true, what); }
 
-         /** @todo Doc-me!
-          *  @throw ....
+         /** Calls a given Lua function on this Lua state.
+          *  @param func The function to be called.
+          *  @param params the list of parameters to pass to the function.
+          *  @param chunkName The string to use as the "chunk name" in the
+          *         call. This is something added to error messages, in order to
+          *         make easier to stop where the error was.
+          *  @throw LuaError (or any of its subclasses), if some error is found
+          *         during the function execution.
           */
          LuaValueList call (LuaFunction& func,
                             const LuaValueList& params,

@@ -112,13 +112,7 @@ namespace Diluculum
          /// Copy constructor.
          LuaValue (const LuaValue& other);
 
-         /** Destroys the \c LuaValue, freeing all the resources owned by it.
-          *  @todo What's the best way to call the destructor of a
-          *        \c std::string? I am calling <tt>~basic_string()</tt> because
-          *        it works with my current GCC under Linux and because it makes
-          *        sense. I hope it works in other platforms/compilers/standard
-          *        library implementations, too!
-          */
+         /// Destroys the \c LuaValue, freeing all the resources owned by it.
          ~LuaValue() { destroyObjectAtData(); }
 
          /// Assignment operator.
