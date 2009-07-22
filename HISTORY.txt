@@ -8,7 +8,8 @@ by the C++ side (and this works even with anonymous functions).
 
 I also added a preliminary CMake-based build system. I plan to
 eventually use it as the "official" build system, but currently it
-does not handle the unit tests very well.
+does not handle the unit tests very well, nor does it look for Lua
+paths.
 
 Additionally, Diluculum 0.5 sports the following contributions by
 Jason Gauci:

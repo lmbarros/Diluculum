@@ -9,3 +9,10 @@ Project for the Code Blocks IDE. Contributed by Hakki Dogusan. (When
 he sent me the file, it was in a .zip file, buried in some directory
 structure. I'm distributing only the .cbp file. I hope this file can
 be easily used as I'm distributing it -- I don't know this IDE.)
+
+ CMakeLists.txt
+~~~~~~~~~~~~~~~~
+
+Preliminary build system based on CMake. Currently, it doesn't handle
+the unit tests very well nor does it look for Lua paths, but when it
+does, it'll probably become the oficial way to build Diluculum.
