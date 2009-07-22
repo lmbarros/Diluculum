@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = Diluculum
-PROJECT_NUMBER         = 0.4
+PROJECT_NUMBER         = 0.5
 OUTPUT_DIRECTORY       = Documentation
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = NO
