@@ -109,8 +109,6 @@ namespace Diluculum
 
          /** @todo Doc-me!
           *  @throw ....
-          *  @todo Implementation has code copied and pasted from
-          *        \c LuaVariable::operator(). Move this to, maybe, LuaUtils.
           */
          LuaValueList call (LuaFunction& func,
                             const LuaValueList& params,

@@ -30,6 +30,7 @@
 #include <Diluculum/LuaUserData.hpp>
 #include <Diluculum/LuaUtils.hpp>
 #include <Diluculum/LuaVariable.hpp>
+#include "InternalUtils.hpp"
 
 
 namespace Diluculum
@@ -80,61 +81,8 @@ namespace Diluculum
    // - LuaVariable::operator() ------------------------------------------------
    LuaValueList LuaVariable::operator() (const LuaValueList& params)
    {
-      int topBefore = lua_gettop (state_);
-
       pushTheReferencedValue();
-
-      if (lua_type (state_, -1) != LUA_TFUNCTION)
-         throw TypeMismatchError ("function", luaL_typename (state_, -1));
-
-      typedef LuaValueList::const_iterator iter_t;
-      for (iter_t p = params.begin(); p != params.end(); ++p)
-         PushLuaValue (state_, *p);
-
-      int ret = lua_pcall (state_, params.size(), LUA_MULTRET, 0);
-
-      if (ret != 0)
-      {
-         std::string errMessage = lua_tostring (state_, -1);
-         lua_pop (state_, 1);
-
-         switch (ret)
-         {
-            case LUA_ERRRUN:
-               throw LuaRunTimeError(
-                  ("'LUA_ERRRUN' returned while calling function from Lua. "
-                   "Additional error message: '" + errMessage + "'.").c_str());
-
-            case LUA_ERRMEM:
-               throw LuaRunTimeError(
-                  ("'LUA_ERRMEM' returned while calling function from Lua. "
-                   "Additional error message: '" + errMessage + "'.").c_str());
-
-            case LUA_ERRERR:
-               throw LuaRunTimeError(
-                  ("'LUA_ERR' returned while calling function from Lua. "
-                   "Additional error message: '" + errMessage + "'.").c_str());
-
-            default:
-               throw LuaRunTimeError(
-                  ("Unknown error code ("
-                   + boost::lexical_cast<std::string>(ret)
-                   + ") returned while calling function from Lua. "
-                   + "Additional error message: '" + errMessage
-                   + "'.").c_str());
-         }
-      }
-
-      int numResults = lua_gettop (state_) - topBefore;
-
-      LuaValueList results;
-
-      for (int i = numResults; i > 0; --i)
-         results.push_back (ToLuaValue (state_, -i));
-
-      lua_pop (state_, numResults);
-
-      return results;
+      return Impl::CallFunctionOnTop (state_, params);
    }
 
    LuaValueList LuaVariable::operator()()

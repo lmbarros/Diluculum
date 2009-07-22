@@ -86,7 +86,8 @@ envModule = envBase.Clone (LIBS = [ "Diluculum", "lua", "dl" ], SHLIBPREFIX="")
 #  The build targets
 #  The things that are actually built.
 # ------------------------------------------------------------------------------
-theStaticLib = envLib.Library ("lib/Diluculum", [ "Sources/LuaExceptions.cpp",
+theStaticLib = envLib.Library ("lib/Diluculum", [ "Sources/InternalUtils.cpp",
+                                                  "Sources/LuaExceptions.cpp",
                                                   "Sources/LuaFunction.cpp",
                                                   "Sources/LuaState.cpp",
                                                   "Sources/LuaUserData.cpp",
