@@ -547,6 +547,7 @@ namespace Diluculum
             assert(
                false
                && "Invalid type found in a call to 'LuaValue::operator==()'.");
+            return 0; // make compilers happy
          }
       }
    }

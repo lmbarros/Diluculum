@@ -90,7 +90,8 @@ namespace Diluculum
             return lua_tonumber (state, index);
 
          case LUA_TBOOLEAN:
-            return static_cast<bool>(lua_toboolean (state, index));
+            // this (instead of a cast) avoids a warning on Visual C++
+            return lua_toboolean (state, index) != 0;
 
          case LUA_TSTRING:
             return lua_tostring (state, index);
