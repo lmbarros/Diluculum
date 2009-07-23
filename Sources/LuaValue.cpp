@@ -184,6 +184,10 @@ namespace Diluculum
             new(data_) LuaUserData (other.asUserData());
             break;
 
+         case LUA_TFUNCTION:
+            new(data_) LuaFunction (other.asFunction());
+            break;
+
          default:
             // no constructor needed.
             memcpy (data_, other.data_, sizeof(PossibleTypes));
@@ -212,6 +216,10 @@ namespace Diluculum
 
          case LUA_TUSERDATA:
             new(data_) LuaUserData (rhs.asUserData());
+            break;
+
+         case LUA_TFUNCTION:
+            new(data_) LuaFunction (rhs.asFunction());
             break;
 
          default:
@@ -599,6 +607,10 @@ namespace Diluculum
 
          case LUA_TUSERDATA:
             reinterpret_cast<LuaUserData*>(data_)->~LuaUserData();
+            break;
+
+         case LUA_TFUNCTION:
+            reinterpret_cast<LuaFunction*>(data_)->~LuaFunction();
             break;
 
          default:
