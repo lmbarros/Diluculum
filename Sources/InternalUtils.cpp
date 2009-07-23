@@ -133,6 +133,8 @@ namespace Diluculum
          if (f->getReaderFlag())
             return 0;
 
+         f->setReaderFlag (true); // return 0 on the next call
+
          *size = f->getSize();
          return reinterpret_cast<const char*>(f->getData());
       }
