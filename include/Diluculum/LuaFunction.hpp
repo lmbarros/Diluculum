@@ -92,7 +92,8 @@ namespace Diluculum
 
          /**
           * Returns the value of this \c LuaFunction as a C function.
-          * @note Nothing is made to check if
+          * @note Will \c assert() if this \c LuaFunction does not hold a C
+          *       function.
           */
          lua_CFunction getCFunction() const;
 
