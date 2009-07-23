@@ -62,6 +62,9 @@ function(AddUnitTest name)
 endfunction(AddUnitTest)
 
 add_library(ATestModule SHARED Tests/ATestModule.cpp)
+target_link_libraries(ATestModule
+    ${LUA_LIBRARIES}
+    Diluculum)
 set_target_properties(ATestModule
     PROPERTIES PREFIX "")
 
