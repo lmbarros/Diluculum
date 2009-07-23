@@ -32,7 +32,7 @@ namespace Diluculum
 {
    // - LuaFunction::LuaFunction -----------------------------------------------
    LuaFunction::LuaFunction (const void* data, size_t size)
-      : size_(size), data_ (new char[size_])
+      : functionType_(LUA_LUA_FUNCTION), size_(size), data_ (new char[size_])
    {
       memcpy(data_.get(), data, size);
    }
