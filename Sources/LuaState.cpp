@@ -25,6 +25,7 @@
 \******************************************************************************/
 
 #include <cassert>
+#include <cstring>
 #include <typeinfo>
 #include <boost/lexical_cast.hpp>
 #include <Diluculum/LuaState.hpp>
@@ -113,7 +114,41 @@ namespace Diluculum
    // - LuaState::operator[] ---------------------------------------------------
    LuaVariable LuaState::operator[] (const std::string& variable)
    {
+      assert(variable != "_G" && "Can't access '_G'; use LuaState::globals().");
+
       return LuaVariable (state_, variable);
+   }
+
+
+   // - LuaState::globals ------------------------------------------------------
+   LuaValueMap LuaState::globals()
+   {
+      // Traverse the globals table adding the key/value pairs to 'ret'
+      LuaValueMap ret;
+
+      lua_pushnil (state_);
+      while (lua_next (state_, LUA_GLOBALSINDEX) != 0)
+      {
+         // Exclude from the results the tables that would result in infinite
+         // recursion
+         if (lua_type (state_, -2) == LUA_TSTRING)
+         {
+            const char* key = lua_tostring(state_, -2);
+            if (strcmp(key, "_G") == 0
+                || strcmp(key, "package") == 0)
+            {
+               lua_pop (state_, 1);
+               continue;
+            }
+         }
+
+         ret[ToLuaValue (state_, -2)] = ToLuaValue (state_, -1);
+
+         lua_pop (state_, 1);
+      }
+
+      // Alright, return the result
+      return ret;
    }
 
 } // namespace Diluculum

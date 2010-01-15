@@ -238,3 +238,25 @@ BOOST_AUTO_TEST_CASE(TestLuaStateSubscriptOperator)
    ls["nope"] = "yup";
    BOOST_CHECK (ls["nope"] == "yup");
 }
+
+
+
+// - TestGlobalsTableAccess ----------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestGlobalsTableAccess)
+{
+   using namespace Diluculum;
+
+   LuaState state;
+   LuaValueMap globals = state.globals();
+
+   BOOST_CHECK_EQUAL (globals["print"].type(), LUA_TFUNCTION);
+   BOOST_CHECK_EQUAL (globals["ipairs"].type(), LUA_TFUNCTION);
+   BOOST_CHECK_EQUAL (globals["io"].type(), LUA_TTABLE);
+   BOOST_CHECK_EQUAL (globals["math"].type(), LUA_TTABLE);
+   BOOST_CHECK_EQUAL (globals["math"]["sin"].type(), LUA_TFUNCTION);
+   BOOST_CHECK_EQUAL (globals["foo"].type(), LUA_TNIL);
+
+   state["foo"] = "Now I do exist.";
+   globals = state.globals();
+   BOOST_CHECK_EQUAL (globals["foo"].type(), LUA_TSTRING);
+}

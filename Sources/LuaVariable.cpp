@@ -177,6 +177,8 @@ namespace Diluculum
    // - LuaVariable::pushTheReferencedValue ------------------------------------
    void LuaVariable::pushTheReferencedValue() const
    {
+      assert (keys_.size() > 0 && "There should be at least one key here.");
+
       int index = LUA_GLOBALSINDEX;
 
       typedef std::vector<LuaValue>::const_iterator iter_t;
@@ -184,8 +186,6 @@ namespace Diluculum
       {
          PushLuaValue (state_, *p);
          lua_gettable (state_, index);
-
-         assert (keys_.size() > 0 && "There should be at least one key here.");
 
          if (keys_.size() > 1 && p != keys_.end()-1 && !lua_istable(state_, -1))
             throw TypeMismatchError ("table", p->typeName());

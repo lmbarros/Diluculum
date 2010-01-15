@@ -129,8 +129,22 @@ namespace Diluculum
           *  @returns The global variable named \c variable. If no such variable
           *           exists, returns a variable containing \c Nil.
           *  @note This operator does not throw exceptions.
+          *  @note Trying to access "_G" (the Lua globals table) with
+          *        <tt>LuaState::operator[]<tt> will not work (debug builds will
+          *        \c assert()). Please use \c globals() instead.
           */
          LuaVariable operator[] (const std::string& variable);
+
+         /**
+          * Provides access to the table of global variables.
+          * @note The returned table will not contain "_G" not "package",
+          *       because including them would result in tables referencing
+          *       themselves in a infinitely recursive manner. In Lua, tables
+          *       are reference types, so this recursion is OK. In Diluculum,
+          *       tables are value types, so this would result in a crash.
+          * @return The table of global variables in this Lua state.
+          */
+         LuaValueMap globals();
 
          /// Returns the encapsulated <tt>lua_State*</tt>.
          lua_State* getState() { return state_; }
