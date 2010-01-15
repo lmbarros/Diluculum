@@ -6,35 +6,34 @@
  Dependencies
 ~~~~~~~~~~~~~~
 Apart from Lua, Diluculum depends only on Boost
-(http://www.boost.org). I think so, at least.
+(http://www.boost.org).
 
 
- Building
-~~~~~~~~~~
-Diluculum's official build system is based on SCons
-(http://www.scons.org), so, ideally, you should have it (see "I Don't
-Have SCons" below if you want alternatives). So, Once you have the
-dependencies and SCons installed, just type 'scons' to build
-Diluculum. You may wish to use the 'mode' option to set the build
-mode. For instance, using 'scons mode=opt' you'll make an optimized
-build. Use 'scons -h' for help.
+ How to use Diluculum in your project
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I strongly recommend adding Diluculum source and header files to your
+project, so that it gets compiled and linked with your application by
+your own build system.
+
+Diluculum is reasonably small, so adding it to your project won't make
+it so much larger. And, since Diluculum is not widely used, adding it
+as an external dependency to your project would just upset your users.
 
 
- Installing
-~~~~~~~~~~~~
-Use 'scons install'. You'll most likely like to use the 'prefix'
-option to configure the installation root directory. In this case, the
-installation command would be something like
-'scons mode=opt prefix=/Foo/Bar/Diluculum install'.
+ Building as a standalone library
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+If you decide to ignore the advice on the previous section, or if you
+want to help with the development of Diluculum, the way to go is
+building with CMake. This way, you can easily compile and link the
+library and its unit tests.
 
- I Don't Have SCons
-~~~~~~~~~~~~~~~~~~~~
-Well, you should :-)
+If you don't know how to use CMake, I suggest searching for some
+tutorial on how to use it. Anyway, under a Unix-like system, building
+should look like this:
 
-Anyway, I'll try to be nice and will provide alternatives as long as I
-feel they worth the trouble to be created and maintained. Or, as
-people contribute with project files for their favorite IDE or build
-system.
-
-So, check the 'Build' directory for some alternatives.
+  $ cd <diluculum sources root directory>
+  $ mkdir build
+  $ cd build
+  $ cmake ..
+  $ make
