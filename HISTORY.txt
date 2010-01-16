@@ -1,3 +1,11 @@
+Version 0.5.1 (02010-01-15)
+~~~~~~~~~~~~~
+
+This is a minor release, which just adds LuaState::globals(). This
+kind of solves a problem reported by Yuriy Shmal, who noticed that
+trying to access "_G" from a LuaState resulted in a crash.
+
+
 Version 0.5 (02009-07-22)
 ~~~~~~~~~~~
 

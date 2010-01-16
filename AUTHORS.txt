@@ -11,3 +11,7 @@ system changed to CMake.)
 Jason Gauci <jgmath2000 _at_ gmail _dot_ com> contributed the
 implemention of 'LuaValue::asObjectPtr()' and the original
 implementation of the Boost-less version of 'LuaValue'.
+
+Yuriy Shmal <yuriy _at_ ellat _dot_ lv> reported that trying to access
+"_G" from a Lua state resulted in a crash. This lead to the addition
+of LuaState::globals().
