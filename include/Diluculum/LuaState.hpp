@@ -130,8 +130,8 @@ namespace Diluculum
           *           exists, returns a variable containing \c Nil.
           *  @note This operator does not throw exceptions.
           *  @note Trying to access "_G" (the Lua globals table) with
-          *        <tt>LuaState::operator[]<tt> will not work (debug builds will
-          *        \c assert()). Please use \c globals() instead.
+          *        <tt>LuaState::operator[]</tt> will not work (debug builds
+          *        will \c assert()). Please use \c globals() instead.
           */
          LuaVariable operator[] (const std::string& variable);
 
