@@ -241,6 +241,40 @@ BOOST_AUTO_TEST_CASE(TestLuaStateSubscriptOperator)
 
 
 
+// - TestCall ------------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestCall)
+{
+   using namespace Diluculum;
+
+   LuaState state;
+   state.doString("function doubleNum(i) return i * 2 end");
+   state.doString("function doubleHalveNum(i, j) return i * 2, j / 2 end");
+
+   {
+      LuaValueList params;
+      params.push_back(123);
+      LuaFunction f = state["doubleNum"].value().asFunction();
+      LuaValueList ret = state.call(f, params);
+
+      BOOST_REQUIRE_EQUAL (ret.size(), 1);
+      BOOST_CHECK_EQUAL (ret[0].asInteger(), 246);
+   }
+
+   {
+      LuaValueList params;
+      params.push_back(111);
+      params.push_back(888);
+      LuaFunction f = state["doubleHalveNum"].value().asFunction();
+      LuaValueList ret = state.call(f, params);
+
+      BOOST_REQUIRE_EQUAL (ret.size(), 2);
+      BOOST_CHECK_EQUAL (ret[0].asInteger(), 222);
+      BOOST_CHECK_EQUAL (ret[1].asInteger(), 444);
+   }
+}
+
+
+
 // - TestGlobalsTableAccess ----------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestGlobalsTableAccess)
 {
