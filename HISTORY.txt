@@ -1,3 +1,12 @@
+Version 0.5.2 (02010-05-28)
+~~~~~~~~~~~~~
+
+Another minor release, which fixes a single bug: strings comming from
+Lua with embedded zeroes were not properly handled. Thanks to Christof
+Warlich for reporting the bug and shortly after finding its cause and
+describing how to fix it.
+
+
 Version 0.5.1 (02010-01-15)
 ~~~~~~~~~~~~~
 
