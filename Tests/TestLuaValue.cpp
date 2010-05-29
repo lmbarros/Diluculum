@@ -775,3 +775,28 @@ BOOST_AUTO_TEST_CASE(TestLuaValueConstSubscriptOperator)
    LuaValue boolValue(true);
    BOOST_CHECK_THROW (boolValue[false], TypeMismatchError);
 }
+
+
+
+// - TestLuaValueWithStringWithEmbeddedNull ------------------------------------
+BOOST_AUTO_TEST_CASE(TestLuaValueWithStringWithEmbeddedNull)
+{
+   // This test was added to catch a problem reported by Christof Warlich (who
+   // also pinpointed the bug and shown the solution).
+   using namespace Diluculum;
+
+   LuaState state;
+   state.doString ("stringWithNull = 'ab\\0cd'");
+
+   LuaValue stringWithNull = state["stringWithNull"].value();
+   BOOST_REQUIRE_EQUAL (stringWithNull.type(), LUA_TSTRING);
+
+   std::string s = stringWithNull.asString();
+
+   BOOST_REQUIRE_EQUAL (s.size(), 5);
+   BOOST_CHECK_EQUAL (s[0], 'a');
+   BOOST_CHECK_EQUAL (s[1], 'b');
+   BOOST_CHECK_EQUAL (s[2], 0);
+   BOOST_CHECK_EQUAL (s[3], 'c');
+   BOOST_CHECK_EQUAL (s[4], 'd');
+}

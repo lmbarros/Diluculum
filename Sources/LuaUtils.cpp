@@ -49,7 +49,8 @@ namespace Diluculum
             return lua_toboolean (state, index) != 0;
 
          case LUA_TSTRING:
-            return lua_tostring (state, index);
+            return std::string(lua_tostring (state, index),
+                               lua_objlen(state, index));
 
          case LUA_TUSERDATA:
          {
