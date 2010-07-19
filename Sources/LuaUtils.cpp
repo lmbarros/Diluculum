@@ -126,8 +126,11 @@ namespace Diluculum
             break;
 
          case LUA_TSTRING:
-            lua_pushstring (state, value.asString().c_str());
+         {
+            const std::string& tmp = value.asString();
+            lua_pushlstring (state, tmp.c_str(), tmp.length());
             break;
+         }
 
          case LUA_TBOOLEAN:
             lua_pushboolean (state, value.asBoolean());
