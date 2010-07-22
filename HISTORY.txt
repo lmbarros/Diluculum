@@ -1,3 +1,23 @@
+Version 0.5.3 (02010-07-22)
+~~~~~~~~~~~~~
+
+Two small changes in this release:
+
+- Strings with embedded zeros going from C++ to Lua are properly
+  handled (this is the inverse case as the one in the previous
+  release).
+
+- A LuaFunction can now be constructed from a chunk of Lua source
+  code. A LuaFunction can also now be "default constructed" (by
+  default, it is constructed from an empty chunk, so it returns
+  nothing).
+
+Thanks again to Christof Warlich for reporting both of these points
+and suggesting fixes for them. (But in case of any problem with the
+second point, I (Leandro Motta Barros) am the one to blame, since I
+went through a different path than the one he suggested).
+
+
 Version 0.5.2 (02010-05-28)
 ~~~~~~~~~~~~~
 
