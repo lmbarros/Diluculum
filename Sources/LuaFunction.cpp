@@ -31,7 +31,7 @@
 namespace Diluculum
 {
    // - LuaFunction::LuaFunction -----------------------------------------------
-   LuaFunction::LuaFunction (const::std::string& luaChunk)
+   LuaFunction::LuaFunction (const std::string& luaChunk)
       : functionType_(LUA_LUA_FUNCTION), size_(luaChunk.size()),
         data_(new char[size_])
    {
