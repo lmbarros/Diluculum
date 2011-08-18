@@ -447,7 +447,7 @@ BOOST_AUTO_TEST_CASE(TestDynamicModule)
 #if 0
 
 //
-// The test case below is disabled because it will nor pass. In fact, I am still
+// The test case below is disabled because it will not pass. In fact, I am still
 // in doubt if I'd call this a bug or a limitation. I'd like to support this
 // syntax, but supporting it would complicate the things a bit (as far as I can
 // see, at least). Given that there is a reasonable workaround (simply use
