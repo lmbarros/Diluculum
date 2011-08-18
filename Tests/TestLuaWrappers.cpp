@@ -444,6 +444,33 @@ BOOST_AUTO_TEST_CASE(TestDynamicModule)
 }
 
 
+// - TestMultipleStates --------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestMultipleStates)
+{
+   // This test case was created in response to a bug report by James
+   // Doherty. This code used to cause a crash. (In fact, simply "calling"
+   // DILUCULUM_REGISTER_CLASS() in the loop was enough to cause a crash.)
+
+   using namespace Diluculum;
+
+   for (int i = 0; i < 100; ++i)
+   {
+      LuaState ls;
+      DILUCULUM_REGISTER_CLASS (ls["Account"], Account);
+
+      LuaValueList params;
+      Account aCppAccount(params);
+      DILUCULUM_REGISTER_OBJECT (ls["a1"], Account, aCppAccount);
+      ls.doString ("a1:deposit (11.11)");
+
+      LuaValueList ret = ls.doString ("return a1:balance()");
+      BOOST_REQUIRE (ret.size() == 1);
+      BOOST_REQUIRE (ret[0].type() == LUA_TNUMBER);
+      BOOST_CHECK (ret[0] == 11.11);
+   }
+}
+
+
 #if 0
 
 //
