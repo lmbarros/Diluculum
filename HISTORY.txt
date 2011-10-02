@@ -1,3 +1,14 @@
+Version 0.5.5 (02011-10-02)
+~~~~~~~~~~~~~
+
+A bugfix release. In particular fixes a bug that shows up when a class
+is registered in lots of 'LuaState's. (Bug reported by James Doherty.)
+
+(Note: there was no 0.5.4 release. I created a 0.5.4 tag, but its
+contents were wrong, so I just skipped this version number in
+"official releases".)
+
+
 Version 0.5.3 (02010-07-22)
 ~~~~~~~~~~~~~
 
