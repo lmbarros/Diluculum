@@ -28,6 +28,11 @@ include_directories(${Boost_INCLUDE_DIRS}
 link_directories(${Boost_LIBRARY_DIRS})
 
 
+# Enable warnings when compiling with G++
+if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
+endif(CMAKE_COMPILER_IS_GNUCXX)
+
 # Build the library
 set(DiluculumSources
     Sources/InternalUtils.cpp
