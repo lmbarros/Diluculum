@@ -159,6 +159,8 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (const LuaValueList& v)
+      // Avoids possible memory corruption during destroyObjectAtData
+      : dataType_(LUA_TNIL)
    {
       if (v.size() >= 1)
          *this = v[0];
