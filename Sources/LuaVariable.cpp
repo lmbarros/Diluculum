@@ -151,7 +151,7 @@ namespace Diluculum
    void LuaVariable::pushLastTable()
    {
       // Push the globals table onto the stack
-      lua_getglobal (state_, "_G");
+      lua_pushglobaltable (state_);
 
       // Reach the "final" table (and leave it at the stack top)
       typedef KeyList::const_iterator iter_t;
