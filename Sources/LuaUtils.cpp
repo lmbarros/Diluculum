@@ -50,12 +50,12 @@ namespace Diluculum
 
          case LUA_TSTRING:
             return std::string(lua_tostring (state, index),
-                               lua_objlen(state, index));
+                               lua_rawlen(state, index));
 
          case LUA_TUSERDATA:
          {
             void* addr = lua_touserdata (state, index);
-            size_t size = lua_objlen (state, index);
+            size_t size = lua_rawlen (state, index);
             LuaUserData ud (size);
             memcpy (ud.getData(), addr, size);
             return ud;
@@ -175,7 +175,7 @@ namespace Diluculum
                LuaFunction* pf = const_cast<LuaFunction*>(&f); // yikes!
                pf->setReaderFlag (false);
                int status = lua_load (state, Impl::LuaFunctionReader, pf,
-                                      "Diluculum Lua chunk");
+                                      "Diluculum Lua chunk", NULL);
                Impl::ThrowOnLuaError (state, status);
             }
             break;

@@ -126,8 +126,11 @@ namespace Diluculum
       // Traverse the globals table adding the key/value pairs to 'ret'
       LuaValueMap ret;
 
+      // Obtain global table
+      lua_rawgeti (state_, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS);
+
       lua_pushnil (state_);
-      while (lua_next (state_, LUA_GLOBALSINDEX) != 0)
+      while (lua_next (state_, -2) != 0)
       {
          // Exclude from the results the tables that would result in infinite
          // recursion
@@ -147,6 +150,8 @@ namespace Diluculum
          lua_pop (state_, 1);
       }
 
+      // Remove global table
+      lua_remove (state_, -2);
       // Alright, return the result
       return ret;
    }

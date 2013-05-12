@@ -159,6 +159,8 @@ namespace Diluculum
 
 
    LuaValue::LuaValue (const LuaValueList& v)
+      // Avoids possible memory corruption during destroyObjectAtData
+      : dataType_(LUA_TNIL)
    {
       if (v.size() >= 1)
          *this = v[0];
@@ -296,8 +298,7 @@ namespace Diluculum
       if (dataType_ == LUA_TNUMBER)
       {
          lua_Number num = (*reinterpret_cast<const lua_Number*>(&data_));
-         lua_Integer res;
-         lua_number2integer (res, num);
+         lua_Integer res = static_cast<lua_Integer>(num);
          return res;
       }
       else

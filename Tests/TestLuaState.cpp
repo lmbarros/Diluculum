@@ -39,9 +39,8 @@ BOOST_AUTO_TEST_CASE(TestLuaStateNotOwner)
    lua_State* rls; // raw Lua state
 
    rls = luaL_newstate();
-   lua_pushstring (rls, "x");
    lua_pushnumber (rls, 171);
-   lua_settable (rls, LUA_GLOBALSINDEX);
+   lua_setglobal (rls, "x");
 
    // Construct a 'LuaState' and check if the variable defined above can be
    // read. Also, store another variable, to see if it can be accessed
@@ -54,8 +53,7 @@ BOOST_AUTO_TEST_CASE(TestLuaStateNotOwner)
    }
 
    // At this point, 'ls' is destroyed. Ensure that 'rls' is still alive.
-   lua_pushstring (rls, "y");
-   lua_gettable (rls, LUA_GLOBALSINDEX);
+   lua_getglobal (rls, "y");
 
    BOOST_REQUIRE (lua_isnumber (rls, -1));
    BOOST_CHECK (lua_tonumber(rls, -1) == 555);
