@@ -39,8 +39,8 @@ Quick facts about Diluculum:
 
 - It is distributed under the MIT license (the same as Lua).
 - Its homepage is located at
-  <A href="http://www.stackedboxes.org/~lmb/en/diluculum">
-  http://www.stackedboxes.org/~lmb/en/diluculum</A>.
+  <A href="http://www.stackedboxes.org/~lmb/en/diluculum/index">
+  http://www.stackedboxes.org/~lmb/en/diluculum/index</A>.
 - It is developed by Leandro Motta Barros, who can be contacted at
   \verbatim
      lmb@sta
