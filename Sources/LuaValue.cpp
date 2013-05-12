@@ -302,8 +302,8 @@ namespace Diluculum
    {
       if (dataType_ == LUA_TNUMBER)
       {
-         lua_Number num = (*reinterpret_cast<const lua_Number*>(&data_));
-         lua_Integer res = static_cast<lua_Integer>(num);
+         const lua_Number* num = reinterpret_cast<const lua_Number*>(&data_);
+         lua_Integer res = static_cast<lua_Integer>(*num);
          return res;
       }
       else
